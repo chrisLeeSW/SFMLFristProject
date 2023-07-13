@@ -84,7 +84,7 @@ void ResourceMgr::UnLoadAll()
 
 void ResourceMgr::LoadCSVFILE(const std::string path)
 {
-	rapidcsv::Document doc(path);
+	rapidcsv::Document doc(path); 
 	std::vector<int> types = doc.GetColumn<int>(0);
 	std::vector<std::string> paths = doc.GetColumn<std::string>(1);
 	for (int i = 0;i < types.size();++i)

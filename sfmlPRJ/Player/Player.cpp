@@ -19,13 +19,15 @@ void Player::Init()
 	};
 	playerShootPool.Init();
 
-	//playerShootPool.OnCreate = [this](Shoot* bullet) {
-	//	bullet->textureId = "graphics/TouhuoPlayerShoot.png";
-	//	sf::IntRect rect = { 137,80,57,57 };
-	//	bullet->sprite.setTextureRect(rect);
-	//	bullet->pool = &playerShootPool;
-	//};
-	//playerShootPool.Init();
+	
+	/*playerShootPool.OnCreate = [this](Shoot* bullet) {
+		bullet->textureId = "graphics/TouhuoPlayerShoot.png";
+		sf::IntRect rect = { 137,80,57,57 };
+		bullet->sprite.setTextureRect(rect);
+		bullet->pool = &playerShootPool;
+	};
+	playerShootPool.Init();*/
+	
 
 }
 
@@ -129,6 +131,41 @@ void Player::PlayerShoot(float dt)
 			}
 			count++;
 		}
+	}
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::R))
+	{
+		if (playerShootPool.GetUseList().size() != 0)
+		{
+			std::cout << "ERR : List is not zero" << std::endl;
+			return;
+		}
+		playerShootPool.Release();
+		playerShootPool.OnCreate = [this](Shoot* bullet) {
+			bullet->SetFileName("Animations/Player_Ani_Shooting_test.csv");
+			bullet->pool = &playerShootPool;
+		};
+		playerShootPool.Init();
+		/*Shoot* shoot = playerShootPool.Get();
+		shoot->SetFileName("Animations/Player_Ani_Shooting_test.csv");
+		shoot->Init();
+		shoot->PlayerFire(GetPosition() + sf::Vector2f{ 20.f ,0.f });
+		if (sceneGame != nullptr)
+		{
+			sceneGame->AddGo(shoot);
+		}*/
+	}
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::T))
+	{
+		if (playerShootPool.GetUseList().size() != 0)
+		{
+			std::cout << "ERR : List is not zero" << std::endl;
+			return;
+		}
+		playerShootPool.OnCreate = [this](Shoot* bullet) {
+			bullet->SetFileName("Animations/Player_Ani_Shooting.csv");
+			bullet->pool = &playerShootPool;
+		};
+		playerShootPool.Init();
 	}
 }
 

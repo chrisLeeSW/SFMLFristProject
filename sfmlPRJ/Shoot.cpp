@@ -3,11 +3,13 @@
 
 void Shoot::Init()
 {
+
+	SpriteGo::Init();
 	animation.AddClip(*RESOURCE_MGR.GetAnimationClip(fileNames));
 	animation.SetTarget(&sprite);
 	SetOrigin(Origins::MC);
 
-	SpriteGo::Init();
+	
 	//SetOrigin(Origins::MC);
 }
 
@@ -31,6 +33,7 @@ void Shoot::Update(float dt)
 		if (position.y <= -600.f)
 		{
 			pool->Return(this);
+			std::cout << "Realse" << std::endl;
 		}
 	}
 	else if (type == CharceterType::Boss)
@@ -42,8 +45,8 @@ void Shoot::Update(float dt)
 		}
 	}
 	sprite.setPosition(position);
-	animation.Update(dt);
 
+	animation.Update(dt);
 	SpriteGo::Update(dt);
 }
 
@@ -59,7 +62,6 @@ void Shoot::PlayerFire(sf::Vector2f pos)
 	position = pos;
 	direction = sf::Vector2f{ 0.f,-1.f };
 	std::cout << position.x << std::endl;
-	sprite.setScale(0.5f, 0.5f);
 	animation.Play("Shooting");
 }
 
@@ -70,7 +72,9 @@ void Shoot::BossFire(sf::Vector2f pos)
 	direction = sf::Vector2f{ 0.f,1.f };
 }
 
-void Shoot::SetFileName(std::string n)
+void Shoot::SetFileName(const std::string& n)
 {
 	fileNames = n;
+	animationClipName = fileNames;
 }
+/*  animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Player_Ani_Shooting.csv")); //*fileNames));  */

@@ -29,16 +29,17 @@ public:
 
 	void BossFire(sf::Vector2f pos);
 
-	void SetFileName(std::string n);
+	void SetFileName(const std::string& n);
 	ObjectPool<Shoot>* pool = nullptr;
 protected:
 	AnimationController animation;
-	std::string fileNames;
+	std::string fileNames ="";
 	sf::Vector2f direction ;
 
 	float speed = 300.f;
 
 	CharceterType type = CharceterType::None;
+	std::string animationClipName;
 };
 
 /*
