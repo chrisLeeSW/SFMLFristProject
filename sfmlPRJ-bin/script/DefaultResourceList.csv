@@ -1,0 +1,11 @@
+"RESOURCE_TYPE(0: 텍스처 , 1: 폰트,2: 사운드 클립 3: 애니메이션 클립",RESOURCE_PATH
+0,graphics/TouhouPlayer.png
+3,Animations/Player_Ani_Idel.csv
+3,Animations/Player_Ani_Move.csv
+0,graphics/TouhouShooting.png
+0,graphics/TouhuoPlayerShoot.png
+0,graphics/Boss.png
+3,Animations/Boss/Idle.csv
+3,Animations/Boss/Move.csv
+0,graphics/ShootingPatten.png
+3,Animations/Player_Ani_Shooting.csv

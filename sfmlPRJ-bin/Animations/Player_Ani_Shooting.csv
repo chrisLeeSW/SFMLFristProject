@@ -1,0 +1,6 @@
+ID,FPS,LOOPTYPE,,
+Shooting,10,1,,
+,,,,
+TEXTURE ID,LEFT,TOP,WIDTH,HEIGHT
+graphics/ShootingPatten.png,80,112,16,16
+graphics/ShootingPatten.png,96,112,16,16

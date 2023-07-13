@@ -1,0 +1,8 @@
+ID,FPS,LOOPTYPE,,
+Idle,10,1,,
+,,,,
+TEXTURE ID,LEFT,TOP,WIDTH,HEIGHT
+graphics/TouhouPlayer.png,871,30,23,43
+graphics/TouhouPlayer.png,903,31,22,42
+graphics/TouhouPlayer.png,936,31,23,41
+graphics/TouhouPlayer.png,968,30,25,44
