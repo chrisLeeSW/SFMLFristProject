@@ -30,7 +30,6 @@ void Shoot::Update(float dt)
 {
 	if (type == CharceterType::Player)
 	{
-		position += direction * speed * dt;
 		if (position.y <= -600.f)
 		{
 			pool->Return(this);
@@ -44,7 +43,7 @@ void Shoot::Update(float dt)
 	if (type == CharceterType::Boss)
 	{
 		
-		position += direction * speed * dt;
+	
 		if (position.y >= 600.f)
 		{
 			pool->Return(this);
@@ -54,6 +53,8 @@ void Shoot::Update(float dt)
 			pool->Return(this);
 		}
 	}
+	position += direction * speed * dt;
+	position += velocity *dt;
 	sprite.setPosition(position);
 	animation.Update(dt);
 
@@ -97,6 +98,16 @@ void Shoot::BossNormalFirePatten1(sf::Vector2f pos, float angle, std::string cli
 	animation.Play(clipName);
 }
 
+void Shoot::testFire(sf::Vector2f pos, sf::Vector2f dir,float angle)
+{
+	type = CharceterType::Boss;
+	SetPosition(pos);
+	float radian = Utils::DegreesToRadians(angle);
+	direction = sf::Vector2f(std::cos(radian), std::sin(radian));
+	velocity = dir;
+	//animation.Play(clipName);
+}
+
 void Shoot::SetPlayer(Player* player)
 {
 	this->player = player;
@@ -105,4 +116,9 @@ void Shoot::SetPlayer(Player* player)
 void Shoot::SetBoss(Boss* boss)
 {
 	this->boss = boss;
+}
+
+void Shoot::SetDirection(sf::Vector2f dir)
+{
+	direction = dir;
 }

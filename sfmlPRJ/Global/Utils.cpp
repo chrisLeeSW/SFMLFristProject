@@ -164,3 +164,14 @@ std::wstring Utils::ConverToUTF(const std::string& text)
 	}
 	return uiText;
 }
+
+
+sf::Vector2f Utils::RotateVector(const sf::Vector2f& vector, float angle, const sf::Vector2f& rotationAxis)
+{
+	float radian = Utils::DegreesToRadians(angle);
+	float cosAngle = std::cos(radian);
+	float sinAngle = std::sin(radian);
+	float x = vector.x * cosAngle - vector.y * sinAngle;
+	float y = vector.x * sinAngle + vector.y * cosAngle;
+	return sf::Vector2f(x, y);
+}

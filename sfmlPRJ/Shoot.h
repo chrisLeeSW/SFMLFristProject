@@ -37,18 +37,21 @@ public:
 
 	void BossNormalFire(sf::Vector2f pos,float angle,std::string clipName);
 	void BossNormalFirePatten1(sf::Vector2f pos, float angle, std::string clipName);
+	void testFire(sf::Vector2f pos,sf::Vector2f dir,float angle);
 
 	void SetAnimationId(const std::string& n);
 	ObjectPool<Shoot>* pool = nullptr;
 
 	void SetPlayer(Player* player);
 	void SetBoss(Boss* boss);
+
+	void SetDirection(sf::Vector2f);
 protected:
 	AnimationController animation;
 	std::string animationClipName;
 	std::string animationId ="";
 	sf::Vector2f direction ;
-
+	sf::Vector2f velocity = { 0.f,0.f };
 	float speed = 500.f;
 
 	CharceterType type = CharceterType::None;
