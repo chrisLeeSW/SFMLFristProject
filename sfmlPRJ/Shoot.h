@@ -2,6 +2,9 @@
 #include "SpriteGo.h"
 #include "ObjectPool.h"
 #include "AnimationController.h"
+
+class Player;
+class Boss;
 class Shoot : public SpriteGo
 {
 
@@ -12,10 +15,15 @@ public:
 		Player,
 		Boss,
 	};
+	enum class PlayerShootingInfo
+	{
+
+	};
 	enum class BossAttackType
 	{
 		Straight,
 	};
+
 	Shoot(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId,n){}
 	virtual ~Shoot() override { Release();}
 
@@ -27,19 +35,25 @@ public:
 	
 	void PlayerFire(sf::Vector2f pos); //CharceterType type,float angle
 
-	void BossFire(sf::Vector2f pos);
+	void BossNormalFire(sf::Vector2f pos,float angle,std::string clipName);
+	void BossNormalFirePatten1(sf::Vector2f pos, float angle, std::string clipName);
 
-	void SetFileName(const std::string& n);
+	void SetAnimationId(const std::string& n);
 	ObjectPool<Shoot>* pool = nullptr;
+
+	void SetPlayer(Player* player);
+	void SetBoss(Boss* boss);
 protected:
 	AnimationController animation;
-	std::string fileNames ="";
+	std::string animationClipName;
+	std::string animationId ="";
 	sf::Vector2f direction ;
 
-	float speed = 300.f;
+	float speed = 500.f;
 
 	CharceterType type = CharceterType::None;
-	std::string animationClipName;
+	Player* player;
+	Boss* boss;
 };
 
 /*

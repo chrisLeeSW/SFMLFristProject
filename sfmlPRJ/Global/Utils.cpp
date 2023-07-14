@@ -130,12 +130,22 @@ float Utils::Angle(const sf::Vector2f& start, const sf::Vector2f& end)
 
 float Utils::Angle(const sf::Vector2f& dir)
 {
-	return (float)(atan2(dir.y, dir.x) * (180.f / M_PI));
+	return (float)(atan2(dir.y, dir.x) * (180.f / M_PI)); // radinda 단위를 디그리 단위로 변경
+}
+
+float Utils::Angle(float a, float b)
+{
+	return atan2(a, b); //radinda 단위
+}
+
+float Utils::DegreesToRadians(float angle)
+{
+	return angle * (M_PI / 180.0f);
 }
 
 sf::Vector2f Utils::DirectionFromAngle(float angle)
 {
-	float radians = angle * (M_PI / 180.f);
+	float radians = angle * (M_PI / 180.f); 
 	return sf::Vector2f(std::cos(radians), std::sin(radians));	
 }
 

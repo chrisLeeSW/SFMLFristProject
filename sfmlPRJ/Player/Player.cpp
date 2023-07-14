@@ -1,34 +1,26 @@
 #include "stdafx.h"
 #include "Player.h"
 #include "SceneGame.h"
+
+#include "Boss.h"
 void Player::Init()
 {
 
 	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Player_Ani_Idel.csv"));
 	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Player_Ani_Move.csv"));
-	//animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Player_Ani_Shooting.csv"));
-
 
 	animation.SetTarget(&sprite);
 
 	SetOrigin(Origins::MC);
 
 	playerShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->SetFileName("Animations/Player_Ani_Shooting.csv");
+		bullet->SetPlayer(this);
 		bullet->pool = &playerShootPool;
 	};
 	playerShootPool.Init();
-
-	
-	/*playerShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->textureId = "graphics/TouhuoPlayerShoot.png";
-		sf::IntRect rect = { 137,80,57,57 };
-		bullet->sprite.setTextureRect(rect);
-		bullet->pool = &playerShootPool;
-	};
-	playerShootPool.Init();*/
-	
-
+	hitboxCircle.setRadius(2.5f);
+	hitboxCircle.setFillColor(sf::Color::Yellow);
+	Utils::SetOrigin(hitboxCircle, Origins::MC);
 }
 
 void Player::Release()
@@ -42,6 +34,8 @@ void Player::Reset()
 	animation.Play("Idle");
 	SetOrigin(Origins::MC);
 	SetPosition(0.f, 260.f);
+	hitboxCircle.setPosition(position);
+	Utils::SetOrigin(hitboxCircle, Origins::MC);
 }
 
 void Player::Update(float dt)
@@ -50,6 +44,12 @@ void Player::Update(float dt)
 	PlayerShoot(dt);
 	SpriteGo::Update(dt);
 	animation.Update(dt);
+}
+
+void Player::Draw(sf::RenderWindow& window)
+{
+	SpriteGo::Draw(window);
+	window.draw(hitboxCircle);
 }
 
 void Player::PlayerMove(float dt)
@@ -70,6 +70,7 @@ void Player::PlayerMove(float dt)
 		speed = 500.f;
 	}
 	position += direction * speed * dt;
+	hitboxCircle.setPosition(position);
 	SetPosition(position);
 
 
@@ -104,27 +105,29 @@ void Player::PlayerShoot(float dt)
 		while (count < 5)
 		{
 			Shoot* shoot = playerShootPool.Get();
+			std::string str = "Shooting"; //
+			shoot->SetAnimationId(str); //
+			shoot->SetBoss(boss);
 			if (count == 0)
-				shoot->PlayerFire(GetPosition());
+				shoot->PlayerFire(GetPosition() );
 			else if (count == 1)
 			{
 				shoot->PlayerFire(GetPosition() + sf::Vector2f{ 20.f * count ,0.f * count });
 			}
 			else if (count == 2)
 			{
-				shoot->PlayerFire(GetPosition() + sf::Vector2f{ -20.f * 0.5f *  count ,0.f * count });
+				shoot->PlayerFire(GetPosition()  + sf::Vector2f{ -20.f * 0.5f *  count ,0.f * count });
 			}
 			else if (count>=3)
 			{
 				if (count % 2 == 1)
 				{
-					shoot->PlayerFire(GetPosition() + sf::Vector2f{20.f * (count/2+1) ,0.f * count });
+					shoot->PlayerFire(GetPosition()  + sf::Vector2f{20.f * (count/2+1) ,0.f * count });
 				}
 				else if (count % 2 == 0)
-					shoot->PlayerFire(GetPosition() + sf::Vector2f{ -20.f  * (count/2) ,0.f * count });
+					shoot->PlayerFire(GetPosition()  + sf::Vector2f{ -20.f  * (count/2) ,0.f * count });
 			}
 			shoot->sortLayer = -1;
-			std::cout << GetPosition().x << std::endl;
 			if (sceneGame != nullptr)
 			{
 				sceneGame->AddGo(shoot);
@@ -132,40 +135,17 @@ void Player::PlayerShoot(float dt)
 			count++;
 		}
 	}
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::R))
+
+
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num1) && hitboxDraw)
 	{
-		if (playerShootPool.GetUseList().size() != 0)
-		{
-			std::cout << "ERR : List is not zero" << std::endl;
-			return;
-		}
-		playerShootPool.Release();
-		playerShootPool.OnCreate = [this](Shoot* bullet) {
-			bullet->SetFileName("Animations/Player_Ani_Shooting_test.csv");
-			bullet->pool = &playerShootPool;
-		};
-		playerShootPool.Init();
-		/*Shoot* shoot = playerShootPool.Get();
-		shoot->SetFileName("Animations/Player_Ani_Shooting_test.csv");
-		shoot->Init();
-		shoot->PlayerFire(GetPosition() + sf::Vector2f{ 20.f ,0.f });
-		if (sceneGame != nullptr)
-		{
-			sceneGame->AddGo(shoot);
-		}*/
+		hitboxCircle.setFillColor(sf::Color::Color(255, 255, 255, 0));
+		hitboxDraw = false;
 	}
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::T))
+	else if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num1) && !hitboxDraw)
 	{
-		if (playerShootPool.GetUseList().size() != 0)
-		{
-			std::cout << "ERR : List is not zero" << std::endl;
-			return;
-		}
-		playerShootPool.OnCreate = [this](Shoot* bullet) {
-			bullet->SetFileName("Animations/Player_Ani_Shooting.csv");
-			bullet->pool = &playerShootPool;
-		};
-		playerShootPool.Init();
+		hitboxCircle.setFillColor(sf::Color::Yellow);
+		hitboxDraw = true;
 	}
 }
 
@@ -179,3 +159,16 @@ void Player::ChangeFlip(float x)
 	sprite.setScale(scale);
 }
 
+bool Player::CheckCollisionWithBullet(const Shoot& bullet)
+{
+	if (sprite.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
+	{
+		
+		if (hitboxCircle.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
+		{
+			std::cout << "isCollied Player" << std::endl;
+			return true;
+		}
+	}
+	return false;
+}

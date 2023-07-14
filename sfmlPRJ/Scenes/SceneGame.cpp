@@ -12,7 +12,11 @@ void SceneGame::Init()
 {
 	Release();
 	player = (Player*)AddGo(new Player());
-	//bossCirno = (Boss*)AddGo(new Boss());
+	bossCirno = (Boss*)AddGo(new Boss());
+
+	bossCirno->SetPlayer(player);
+	player->SetBoss(bossCirno);
+
 	for (auto go : gameObjects)
 	{
 		go->Init();

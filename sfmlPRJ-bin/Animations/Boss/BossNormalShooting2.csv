@@ -1,0 +1,7 @@
+ID,FPS,LOOPTYPE,,
+BossNormalShooting2,10,1,,
+,,,,
+TEXTURE ID,LEFT,TOP,WIDTH,HEIGHT
+graphics/ShootingPatten.png,0,96,16,16
+graphics/ShootingPatten.png,16,96,16,16
+graphics/ShootingPatten.png,32,96,16,16

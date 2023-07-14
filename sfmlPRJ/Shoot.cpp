@@ -1,15 +1,17 @@
 #include "stdafx.h"
 #include "Shoot.h"
-
+#include "Player.h"
+#include "Boss.h"
 void Shoot::Init()
 {
 
 	SpriteGo::Init();
-	animation.AddClip(*RESOURCE_MGR.GetAnimationClip(fileNames));
+	
+	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Player_Ani_Shooting.csv"));
+	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Boss/BossNormalShooting1.csv"));
+	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Boss/BossNormalShooting2.csv"));
 	animation.SetTarget(&sprite);
 	SetOrigin(Origins::MC);
-
-	
 	//SetOrigin(Origins::MC);
 }
 
@@ -28,25 +30,33 @@ void Shoot::Update(float dt)
 {
 	if (type == CharceterType::Player)
 	{
-		position += direction*speed * dt;
-
+		position += direction * speed * dt;
 		if (position.y <= -600.f)
 		{
 			pool->Return(this);
 			std::cout << "Realse" << std::endl;
 		}
+		if (boss->CheckCollisionWithBullet(*this))
+		{
+			pool->Return(this);
+		}
 	}
-	else if (type == CharceterType::Boss)
+	if (type == CharceterType::Boss)
 	{
+		
 		position += direction * speed * dt;
 		if (position.y >= 600.f)
 		{
 			pool->Return(this);
 		}
+		if (player->CheckCollisionWithBullet(*this))
+		{
+			pool->Return(this);
+		}
 	}
 	sprite.setPosition(position);
-
 	animation.Update(dt);
+
 	SpriteGo::Update(dt);
 }
 
@@ -57,24 +67,42 @@ void Shoot::Draw(sf::RenderWindow& window)
 
 void Shoot::PlayerFire(sf::Vector2f pos)
 {
-	
+
 	type = CharceterType::Player;
-	position = pos;
+	SetPosition(pos);
 	direction = sf::Vector2f{ 0.f,-1.f };
-	std::cout << position.x << std::endl;
-	animation.Play("Shooting");
+	animation.Play(animationId);
+
 }
 
-void Shoot::BossFire(sf::Vector2f pos)
+void Shoot::BossNormalFire(sf::Vector2f pos, float angle,std::string clipName)
 {
 	type = CharceterType::Boss;
-	position = pos;
-	direction = sf::Vector2f{ 0.f,1.f };
+	SetPosition(pos);
+	direction = sf::Vector2f(std::cos(angle),std::sin(angle));
+	animation.Play(clipName);
 }
 
-void Shoot::SetFileName(const std::string& n)
+void Shoot::SetAnimationId(const std::string& n)
 {
-	fileNames = n;
-	animationClipName = fileNames;
+	animationId = n;
 }
-/*  animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Player_Ani_Shooting.csv")); //*fileNames));  */
+
+void Shoot::BossNormalFirePatten1(sf::Vector2f pos, float angle, std::string clipName)
+{
+	type = CharceterType::Boss;
+	SetPosition(pos);
+	float radian = Utils::DegreesToRadians(angle);
+	direction = sf::Vector2f(std::cos(radian), std::sin(radian));
+	animation.Play(clipName);
+}
+
+void Shoot::SetPlayer(Player* player)
+{
+	this->player = player;
+}
+
+void Shoot::SetBoss(Boss* boss)
+{
+	this->boss = boss;
+}
