@@ -18,7 +18,7 @@ protected:
 	bool filpX = false;
 	
 	ObjectPool<Shoot> playerShootPool;
-	float attackTime = 0.8f;;
+	float attackTime = 0.8f;
 	bool autoShot = false;
 
 	Boss* boss;

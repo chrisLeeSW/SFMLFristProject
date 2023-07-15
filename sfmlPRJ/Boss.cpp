@@ -2,8 +2,8 @@
 #include "Boss.h"
 #include "SceneGame.h"
 #include "Scene.h"
-
 #include "Player.h"
+
 void Boss::Init()
 {
 	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Boss/Idle.csv"));
@@ -76,96 +76,31 @@ void Boss::BossMove(float dt)
 	hitboxShape.setPosition(position);
 	SetPosition(position);
 
-	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad0) && testTime < 0.8f)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad0) && testTime < 0.2f)
 	{
-		testTime = 1.0f;
-		Scene* scene = SCENE_MGR.GetCurrScene();
-		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-		int shootCount = 5;
-		for (int count = 0;count < shootCount;++count)
-		{
-			Shoot* shoot = bossShootPool.Get();
-			shoot->SetPlayer(player);
-			sf::Vector2f playerPosition = player->GetPosition();
-			sf::Vector2f shootDirection = playerPosition - GetPosition();
-			float angle = Utils::Angle(shootDirection.y, playerPosition.x);
-			if (count >= 1)
-			{
-				if (count % 2 == 1)
-					angle += Utils::DegreesToRadians(10.0f * (count / 2 + 1)); // 1 2 
-				else if (count % 2 == 0)
-					angle += Utils::DegreesToRadians(-10.0f * (count / 2)); // 1 2
-			}
-			shoot->BossNormalFire(position, angle,"BossNormalShooting1");
-			shoot->sortLayer = -1;
-			if (sceneGame != nullptr)
-			{
-				sceneGame->AddGo(shoot);
-			}
-		}
+		testTime = 0.3f;
+		shootPatternMgr.ChangePattern(0);
+		shootPatternMgr.SetCharacterAll(player,this);
+		shootPatternMgr.ShootBullets();
 	}
 
-	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad1) && testTime < 0.8f)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad1) && testTime < 0.2f)
 	{
-		testTime = 1.0f;
-		Scene* scene = SCENE_MGR.GetCurrScene();
-		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-		int shootCount = 6;
-		float pattenAngle = 360.f / shootCount;
-		for (int count = 0; count < shootCount; ++count)
-		{
-			Shoot* shoot = bossShootPool.Get();
-			shoot->SetPlayer(player);
-
-			float additionalAngle = pattenAngle * count;
-			shoot->BossNormalFirePatten1(position, additionalAngle,"BossNormalShooting2");
-			shoot->sortLayer = -1;
-			if (sceneGame != nullptr)
-			{
-				sceneGame->AddGo(shoot);
-			}
-		}
-	}
-	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad2) && testTime < 0.8f)
-	{
-		testTime = 1.0f;
-		Scene* scene = SCENE_MGR.GetCurrScene();
-		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-		const int bulletCount = 10;  // 총알 개수
-
-		// 이전 총알의 위치를 초기화
-		sf::Vector2f previousPosition = GetPosition();
-
-		// 총알 생성 및 초기화
-		for (int i = 0; i < bulletCount; ++i)
-		{
-			Shoot* bullet = bossShootPool.Get();
-			bullet->SetPlayer(player);
-
-			// 총알의 시작 위치 계산
-			float startDistance = 20.f;  // 시작 위치와의 거리
-			float distanceInterval = 10.f;  // 총알 간의 거리 간격
-			sf::Vector2f startPosition = previousPosition - sf::Vector2f(startDistance * i, distanceInterval * i);
-			bullet->SetPosition(startPosition);
-
-			// 총알의 이동 방향 계산
-			float bulletAngle = Utils::DegreesToRadians(90.f);  // 총알의 기본 이동 각도 (직진)
-			float angleRange = 30.f;  // 총알의 각도 범위
-			float angleOffset = angleRange * i / (bulletCount - 1) - angleRange * 0.5f;  // 총알의 각도 오프셋
-			bulletAngle += Utils::DegreesToRadians(angleOffset);
-			sf::Vector2f bulletDirection = sf::Vector2f(std::cos(bulletAngle), std::sin(bulletAngle));
-			bullet->testFire(startPosition, bulletDirection, 90);
-
-			// 총알을 게임에 추가
-			if (sceneGame != nullptr)
-			{
-				sceneGame->AddGo(bullet);
-			}
-
-			previousPosition = startPosition; // 현재 총알의 시작 위치를 이전 총알의 위치로 설정
-		}
+		testTime = 0.3f;
+		testTime = 0.3f;
+		shootPatternMgr.ChangePattern(1);
+		shootPatternMgr.SetCharacterAll(player, this);
+		shootPatternMgr.ShootBullets();
 	}
 
+	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad2) && testTime < 0.2f)
+	{
+		testTime = 0.3f;
+		testTime = 0.3f;
+		shootPatternMgr.ChangePattern(2);
+		shootPatternMgr.SetCharacterAll(player, this);
+		shootPatternMgr.ShootBullets();
+	}
 
 
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad0) && !hitboxDraw)
@@ -248,5 +183,46 @@ bool Boss::CheckCollisionWithBullet(const Shoot& bullet)
 	//		{
 	//			sceneGame->AddGo(shoot);
 	//		}
+	//	}
+	//}
+
+
+//if (INPUT_MGR.GetKey(sf::Keyboard::Numpad2) && testTime < 0.8f)
+	//{
+	//	testTime = 1.0f;
+	//	Scene* scene = SCENE_MGR.GetCurrScene();
+	//	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
+	//	const int bulletCount = 10;  // 총알 개수
+
+	//	// 이전 총알의 위치를 초기화
+	//	sf::Vector2f previousPosition = GetPosition();
+
+	//	// 총알 생성 및 초기화
+	//	for (int i = 0; i < bulletCount; ++i)
+	//	{
+	//		Shoot* bullet = bossShootPool.Get();
+	//		bullet->SetPlayer(player);
+
+	//		// 총알의 시작 위치 계산
+	//		float startDistance = 20.f;  // 시작 위치와의 거리
+	//		float distanceInterval = 10.f;  // 총알 간의 거리 간격
+	//		sf::Vector2f startPosition = previousPosition - sf::Vector2f(startDistance * i, distanceInterval * i);
+	//		bullet->SetPosition(startPosition);
+
+	//		// 총알의 이동 방향 계산
+	//		float bulletAngle = Utils::DegreesToRadians(90.f);  // 총알의 기본 이동 각도 (직진)
+	//		float angleRange = 30.f;  // 총알의 각도 범위
+	//		float angleOffset = angleRange * i / (bulletCount - 1) - angleRange * 0.5f;  // 총알의 각도 오프셋
+	//		bulletAngle += Utils::DegreesToRadians(angleOffset);
+	//		sf::Vector2f bulletDirection = sf::Vector2f(std::cos(bulletAngle), std::sin(bulletAngle));
+	//		bullet->testFire(startPosition, bulletDirection, 90);
+
+	//		// 총알을 게임에 추가
+	//		if (sceneGame != nullptr)
+	//		{
+	//			sceneGame->AddGo(bullet);
+	//		}
+
+	//		previousPosition = startPosition; // 현재 총알의 시작 위치를 이전 총알의 위치로 설정
 	//	}
 	//}

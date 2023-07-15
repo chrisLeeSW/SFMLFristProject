@@ -15,9 +15,21 @@ public:
 		Player,
 		Boss,
 	};
-	enum class PlayerShootingInfo
+	enum class NoramalPatten
 	{
-
+		None = -1,
+		SectorType,
+		AngleDirectionType,
+		FrequencyType,
+	};
+	struct NormalPattenInfo
+	{
+		NoramalPatten pattenType= NoramalPatten::None;
+		sf::Vector2f pos = {0.f,0.f};
+		float angle =0.f;
+		std::string animationClipId = "";
+		float frequency=1.f;
+		float amplitude=1.f;
 	};
 	enum class BossAttackType
 	{
@@ -33,11 +45,16 @@ public:
 	virtual void Update(float dt) override;
 	virtual void Draw(sf::RenderWindow& window) override;
 	
+	void BossFire(float dt);
+	void PlayerFire(float dt);
+
 	void PlayerFire(sf::Vector2f pos); //CharceterType type,float angle
+	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId);
+	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float freq, float amp);
 
 	void BossNormalFire(sf::Vector2f pos,float angle,std::string clipName);
 	void BossNormalFirePatten1(sf::Vector2f pos, float angle, std::string clipName);
-	void testFire(sf::Vector2f pos,sf::Vector2f dir,float angle);
+	void testFire(sf::Vector2f pos, float frequency, float amplitude, std::string clipName);
 
 	void SetAnimationId(const std::string& n);
 	ObjectPool<Shoot>* pool = nullptr;
@@ -46,10 +63,23 @@ public:
 	void SetBoss(Boss* boss);
 
 	void SetDirection(sf::Vector2f);
+
+	bool test = false;
+	float accumulatedTime = 0.f;
+	void frequencyMovement(float dt);
 protected:
+	NormalPattenInfo pattenInfo;
+	
+	bool testCode = false;
+
+	float frequency;
+	float amplitude;
+	float accuTime;
+
 	AnimationController animation;
 	std::string animationClipName;
 	std::string animationId ="";
+
 	sf::Vector2f direction ;
 	sf::Vector2f velocity = { 0.f,0.f };
 	float speed = 500.f;

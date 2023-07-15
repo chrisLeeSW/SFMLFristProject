@@ -4,6 +4,7 @@
 #include "AnimationController.h"
 #include "Shoot.h"
 
+#include "ShootMGR.h"
 class Player;
 class Boss :public SpriteGo
 {
@@ -33,6 +34,7 @@ protected:
 	float testTime = 0.8f;
 
 	std::vector < NormalAttackInfo> attackInfo;
+
 public:
 	Boss(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId, n) {}
 	virtual ~Boss() override { Release(); }
@@ -47,5 +49,7 @@ public:
 
 	void SetPlayer(Player* player){ this->player = player; }
 	bool CheckCollisionWithBullet(const Shoot& bullet);
+private:
+	ShootMGR shootPatternMgr;
 };
 

@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./;./3rd;./DataTables;./SFML-2.5.1/include;./Global;./Framework;./Scenes;./GameObjects;./Animation;./Player;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;./3rd;./DataTables;./SFML-2.5.1/include;./Global;./Framework;./Scenes;./GameObjects;./Animation;./Player;./ShootPattern;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -140,7 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./;./3rd;./DataTables;./SFML-2.5.1/include;./Global;./Framework;./Scenes;./GameObjects;./Animation;./Player;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;./3rd;./DataTables;./SFML-2.5.1/include;./Global;./Framework;./Scenes;./GameObjects;./Animation;./Player;./ShootPattern;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -173,6 +173,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Framework\ResourceMgr.cpp" />
+    <ClCompile Include="Pattern2.cpp" />
+    <ClCompile Include="Pattern3.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ShootPattern\Pattern1.cpp" />
     <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Player2.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -191,6 +197,8 @@
     <ClCompile Include="Scenes\SceneTitle.cpp" />
     <ClCompile Include="GameObjects\TextGo.cpp" />
     <ClCompile Include="Shoot.cpp" />
+    <ClCompile Include="ShootPattern\ShootMGR.cpp" />
+    <ClCompile Include="ShootPattern\ShootPattern.cpp" />
     <ClCompile Include="UiButton.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +218,9 @@
     <ClInclude Include="Framework\InputMgr.h" />
     <ClInclude Include="Framework\ResourceMgr.h" />
     <ClInclude Include="Global\Utils.h" />
+    <ClInclude Include="Pattern2.h" />
+    <ClInclude Include="Pattern3.h" />
+    <ClInclude Include="ShootPattern\Pattern1.h" />
     <ClInclude Include="Player\Player.h" />
     <ClInclude Include="Player2.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -227,6 +238,8 @@
     <ClInclude Include="GameObjects\SoundGo.h" />
     <ClInclude Include="Scenes\SceneTitle.h" />
     <ClInclude Include="Shoot.h" />
+    <ClInclude Include="ShootPattern\ShootMGR.h" />
+    <ClInclude Include="ShootPattern\ShootPattern.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Global\Variables.h" />
     <ClInclude Include="GameObjects\TextGo.h" />
