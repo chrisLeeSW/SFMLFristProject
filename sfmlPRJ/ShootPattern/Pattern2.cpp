@@ -35,3 +35,7 @@ void Pattern2::ShootBullets()
 		}
 	}
 }
+
+void Pattern2::Update(float dt)
+{
+}

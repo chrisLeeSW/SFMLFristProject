@@ -4,18 +4,27 @@
 #include "Pattern1.h"
 #include "Pattern2.h"
 #include "Pattern3.h"
+#include "Pattern4.h"
+#include "Pattern5.h"
+#include "Pattern6.h"
+#include "Pattern7.h"
 ShootMGR::ShootMGR() : currentPatternIndex(0)
 {
     patterns.push_back(new Pattern1());
     patterns.push_back(new Pattern2());
     patterns.push_back(new Pattern3());
+    patterns.push_back(new Pattern4());
+    patterns.push_back(new Pattern5());
+    patterns.push_back(new Pattern6());
+    patterns.push_back(new Pattern7());
 }
 
 ShootMGR::~ShootMGR()
 {
     for (auto pattern : patterns)
     {
-        delete pattern;
+        if (pattern != nullptr)
+            delete pattern;
     }
 }
 
@@ -34,7 +43,7 @@ void ShootMGR::ChangePattern(int patternIndex)
 
 void ShootMGR::Update(float dt)
 {
-   // patterns[currentPatternIndex]->Update(dt);
+    patterns[currentPatternIndex]->Update(dt);
 }
 
 void ShootMGR::ShootBullets()
@@ -46,4 +55,3 @@ void ShootMGR::SetCharacterAll(Player* player, Boss* boss)
 {
     patterns[currentPatternIndex]->SetCharceterAll(player, boss);
 }
-

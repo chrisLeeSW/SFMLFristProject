@@ -3,6 +3,8 @@
 #include "ObjectPool.h"
 #include "AnimationController.h"
 
+#include "UniqueShootMGR.h"
+
 class Player;
 class Boss;
 class Shoot : public SpriteGo
@@ -21,6 +23,14 @@ public:
 		SectorType,
 		AngleDirectionType,
 		FrequencyType,
+		ColumnType,
+		RowRightType,
+		RowLeftType,
+	};
+	enum class UniqueType
+	{
+		None=-1,
+		TornadoType,
 	};
 	struct NormalPattenInfo
 	{
@@ -30,12 +40,8 @@ public:
 		std::string animationClipId = "";
 		float frequency=1.f;
 		float amplitude=1.f;
+		float speed = 500.f;
 	};
-	enum class BossAttackType
-	{
-		Straight,
-	};
-
 	Shoot(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId,n){}
 	virtual ~Shoot() override { Release();}
 
@@ -67,7 +73,28 @@ public:
 	bool test = false;
 	float accumulatedTime = 0.f;
 	void frequencyMovement(float dt);
+
+
+	void SetPositionTest(sf::Vector2f test1pos, sf::Vector2f test2dir)
+	{
+		uniqueType = UniqueType::TornadoType;
+		position = test1pos;
+		direction = test2dir;
+	}
+	bool testUnique = false;
+	bool GetTestUnique()const
+	{
+		return testUnique;
+	}
+	void ShootBulletWithAngle(float angle, const std::string& clipId)
+	{
+		type = CharceterType::Boss;
+		direction = sf::Vector2f(std::cos(angle), std::sin(angle));
+		animation.Play(clipId);
+	}
+
 protected:
+	UniqueType uniqueType = UniqueType::None;
 	NormalPattenInfo pattenInfo;
 	
 	bool testCode = false;
@@ -82,7 +109,7 @@ protected:
 
 	sf::Vector2f direction ;
 	sf::Vector2f velocity = { 0.f,0.f };
-	float speed = 500.f;
+
 
 	CharceterType type = CharceterType::None;
 	Player* player;

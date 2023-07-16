@@ -18,7 +18,7 @@ void Pattern1::ShootBullets()
 	std::string str ="BossNormalShooting1";
 	Scene* scene = SCENE_MGR.GetCurrScene();
 	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-	int shootCount = 5;
+	int shootCount = 5; //
 	for (int count = 0;count < shootCount;++count)
 	{
 		Shoot* shoot = bossShootPool.Get();
@@ -38,8 +38,12 @@ void Pattern1::ShootBullets()
 		shoot->sortLayer = -1;
 		if (sceneGame != nullptr)
 		{
-			sceneGame->AddGo(shoot);
+			sceneGame->AddGo(shoot); //
 		}
-		std::cout <<"Pattern1 : "<< bossShootPool.GetPool().size() << std::endl;
+		std::cout <<"Pattern1 : "<< bossShootPool.GetUseList().size() << std::endl;
 	}
+}
+
+void Pattern1::Update(float dt)
+{
 }

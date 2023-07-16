@@ -63,55 +63,139 @@ void Boss::Draw(sf::RenderWindow& window)
 
 void Boss::BossMove(float dt)
 {
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::O))
+	bossAtk -= dt;
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad4))
+	{
+		direction.x = -1.f;
+	}
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad6))
+	{
+		direction.x = 1.f;
+	}
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad8))
+	{
+		direction.y = -1.f;
+	}
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad5))
+	{
+		direction.y = 1.f;
+	}
+	if (INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad4) || INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad5) || INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad6) || INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad8))
+	{
+		direction = { 0.f,0.f };
+	}
+
+	/*if (INPUT_MGR.GetKeyDown(sf::Keyboard::O))
 	{
 		direction.y =1.f;
 	}
 	if (INPUT_MGR.GetKeyUp(sf::Keyboard::O))
 	{
 		direction.y = 0.f;
-	}
-	testTime -= dt;
+	}*/
+
+	bossAttackTime -= dt;
 	position += direction * speed * dt;
 	hitboxShape.setPosition(position);
 	SetPosition(position);
 
-	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad0) && testTime < 0.2f)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad0) && bossAttackTime < 0.2f)
 	{
-		testTime = 0.3f;
+		bossAttackTime = 0.3f;
 		shootPatternMgr.ChangePattern(0);
-		shootPatternMgr.SetCharacterAll(player,this);
+		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
 	}
 
-	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad1) && testTime < 0.2f)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad1) && bossAttackTime < 0.2f)
 	{
-		testTime = 0.3f;
-		testTime = 0.3f;
+		bossAttackTime = 0.3f;
+		bossAttackTime = 0.3f;
 		shootPatternMgr.ChangePattern(1);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
 	}
 
-	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad2) && testTime < 0.2f)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad2) && bossAttackTime < 0.2f)
 	{
-		testTime = 0.3f;
-		testTime = 0.3f;
+		bossAttackTime = 0.3f;
+		bossAttackTime = 0.3f;
 		shootPatternMgr.ChangePattern(2);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
 	}
-
-
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad0) && !hitboxDraw)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad3) && bossAttackTime < 0.2f)
 	{
-		hitboxShape.setFillColor(sf::Color::Color(255, 255, 255, 0));
-		hitboxDraw = false;
+		bossAttackTime = 0.3f;
+		bossAttackTime = 0.3f;
+		shootPatternMgr.ChangePattern(3);
+		shootPatternMgr.SetCharacterAll(player, this);
+		shootPatternMgr.ShootBullets();
 	}
-	else if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad0) && hitboxDraw)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Num1) && bossAttackTime < 0.2f)
 	{
-		hitboxShape.setFillColor(sf::Color::Yellow);
-		hitboxDraw = true;
+		bossAttackTime = 0.3f;
+		bossAttackTime = 0.3f;
+		shootPatternMgr.ChangePattern(4);
+		shootPatternMgr.SetCharacterAll(player, this);
+		shootPatternMgr.ShootBullets();
+	}
+	if (INPUT_MGR.GetKey(sf::Keyboard::Num2) && bossAttackTime < 0.2f)
+	{
+		bossAttackTime = 0.3f;
+		bossAttackTime = 0.3f;
+		shootPatternMgr.ChangePattern(5);
+		shootPatternMgr.SetCharacterAll(player, this);
+		shootPatternMgr.ShootBullets();
+	}
+	//
+	if (INPUT_MGR.GetKey(sf::Keyboard::Num3) && bossAttackTime < 0.2f)
+	{
+		bossAttackTime = 0.3f;
+		Scene* scene = SCENE_MGR.GetCurrScene();
+		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
+
+		Shoot* shoot = bossShootPool.Get();
+		shoot->SetPlayer(player);
+		shoot->SetPositionTest(position, { 0.f,1.f });
+		if (sceneGame != nullptr)
+		{
+			sceneGame->AddGo(shoot); //
+		}
+	}
+	if (testShootBullet)
+	{
+		shootPatternMgr.ChangePattern(6);
+		shootPatternMgr.SetCharacterAll(player, this);
+
+		if (bossAtk < 0.f && count != maxCount)
+		{
+
+			//shootPatternMgr.Update(dt);
+
+			Scene* scene = SCENE_MGR.GetCurrScene();
+			SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
+			float angleInterval = 360.f / maxCount;
+
+			Shoot* shoot = bossShootPool.Get();
+			shoot->SetPlayer(player);
+			float angle = angleInterval * count;
+			shoot->SetPattenInfo(Shoot::NoramalPatten::AngleDirectionType, poolShootPos, angle, "BossNormalShooting1");
+
+			shoot->sortLayer = -1;
+			if (sceneGame != nullptr)
+			{
+				sceneGame->AddGo(shoot);
+			}
+			++count;
+			bossAtk = delay;
+		}
+
+	}
+	if (count == maxCount)
+	{
+		testShootBullet = false;
+		count = 0;
 	}
 
 }

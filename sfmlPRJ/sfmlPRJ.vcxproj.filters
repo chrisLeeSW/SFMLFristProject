@@ -66,16 +66,10 @@
     <ClCompile Include="Animation\AnimationController.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerTest.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Animation\AnimationClip.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Player2.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="UiButton.cpp">
+    <ClCompile Include="Framework\UiButton.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="GameObjects\SoundGo.cpp">
@@ -105,10 +99,25 @@
     <ClCompile Include="ShootPattern\Pattern1.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Pattern2.cpp">
+    <ClCompile Include="ShootPattern\Pattern2.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Pattern3.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShootPattern\Pattern4.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShootPattern\Pattern5.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ShootPattern\Pattern6.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Pattern7.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UniqueShootMGR.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -179,13 +188,7 @@
     <ClInclude Include="Animation\AnimationController.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerTest.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Player2.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="UiButton.h">
+    <ClInclude Include="Framework\UiButton.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="GameObjects\SoundGo.h">
@@ -215,10 +218,25 @@
     <ClInclude Include="ShootPattern\Pattern1.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Pattern2.h">
+    <ClInclude Include="ShootPattern\Pattern2.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Pattern3.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ShootPattern\Pattern4.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ShootPattern\Pattern5.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ShootPattern\Pattern6.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Pattern7.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UniqueShootMGR.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,12 +2,10 @@
 #include "ShootPattern.h"
 #include "ObjectPool.h"
 #include "Shoot.h"
-
 class Player;
 class Boss;
-class Pattern3 :public ShootPattern
+class Pattern6 : public ShootPattern
 {
-
 protected:
 	Player* player;
 	Boss* boss;
@@ -15,10 +13,9 @@ protected:
 	ObjectPool<Shoot> bossShootPool;
 
 public:
-	Pattern3();
+	Pattern6();
 	void ShootBullets() override;
 	void Update(float dt)override;
 	void SetCharceterAll(Player* player, Boss* boss) { this->player = player; this->boss = boss; }
 };
-
 

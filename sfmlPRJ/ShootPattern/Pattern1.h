@@ -17,6 +17,7 @@ protected:
 public:
 	Pattern1();
 	void ShootBullets() override;
+	void Update(float dt)override;
     void SetCharceterAll(Player* player, Boss* boss) { this->player = player;this->boss = boss; }
 };
 

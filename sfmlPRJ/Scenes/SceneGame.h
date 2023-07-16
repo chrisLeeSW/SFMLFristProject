@@ -7,6 +7,7 @@ class SceneGame : public Scene
 protected:
 	Player* player;
 	Boss* bossCirno;
+
 public:
 	SceneGame();
 	virtual ~SceneGame() override = default;

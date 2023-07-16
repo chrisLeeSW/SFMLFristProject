@@ -2,6 +2,10 @@
 #include "Shoot.h"
 #include "Player.h"
 #include "Boss.h"
+
+#include "Scene.h"
+#include "SceneGame.h"
+
 void Shoot::Init()
 {
 
@@ -24,6 +28,8 @@ void Shoot::Reset()
 {
 	animation.Play("Shooting");
 	testCode = false;
+
+	testUnique = false;
 	SpriteGo::Reset();
 }
 
@@ -56,19 +62,39 @@ void Shoot::Update(float dt)
 		BossFire(dt);
 	}
 	//velocity += acceleration * dt;
+//
+	if (uniqueType == UniqueType::TornadoType && position.y >= 0.f)
+	{
+		testUnique = true;
+		boss->GetShootBulletTestCode(testUnique);
+		boss->SetPoolPos(position);
+	}
+	if (testUnique)
+	{
+		testUnique = -testUnique;
+		uniqueType = UniqueType::None;
+		pool->Return(this);
+	}
+//
 
 
 
 	if (pattenInfo.pattenType == NoramalPatten::FrequencyType)
 	{
-		position.x += direction.x * speed * dt; // x축으로 직진
-		position.y = pattenInfo.pos.y + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude; // 주파수 진폭
+		position.x = pattenInfo.pos.x + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude;
+		position.y += direction.y * pattenInfo.speed * dt;
+		//position.x += direction.x * speed * dt; 
+		 //position.y = pattenInfo.pos.y + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude; // 주파수 진폭
+		//position.y += direction.y * speed * dt;
 	}
 	else
 	{
-		position += direction * speed * dt;
+		position += direction * pattenInfo.speed * dt;
 		position += velocity * dt;
 	}
+
+
+
 	sprite.setPosition(position);
 	animation.Update(dt);
 
@@ -108,10 +134,30 @@ void Shoot::BossFire(float dt)
 			animation.Play(pattenInfo.animationClipId);
 		}
 		break;
+		case NoramalPatten::ColumnType:
+		{
+			SetPosition(pattenInfo.pos);
+			direction = { 0.f,1.f };
+			animation.Play(pattenInfo.animationClipId);
+		}
+		break;
+		case NoramalPatten::RowRightType:
+		{
+			SetPosition(pattenInfo.pos);
+			direction = { 1.f,0.f };
+			animation.Play(pattenInfo.animationClipId);
+		}
+		break;
+		case NoramalPatten::RowLeftType:
+		{
+			SetPosition(pattenInfo.pos);
+			direction = { -1.f,0.f };
+			animation.Play(pattenInfo.animationClipId);
+		}
+		break;
 		}
 		testCode = true;
 	}
-
 	if (position.y >= 600.f)
 	{
 		pool->Return(this);
@@ -248,6 +294,7 @@ void Shoot::frequencyMovement(float dt)
 	// 총알의 누적 시간을 업데이트합니다.
 	accumulatedTime += dt;
 }
+
 /*
 
 if (INPUT_MGR.GetKey(sf::Keyboard::Numpad2) && testTime < 0.8f)
@@ -303,6 +350,54 @@ else
 {
 	acceleration.x = -50.f; // 감속 또는 역방향 가속
 }
+
+
+*/
+
+/*
+* case NoramalPatten::FrequencyType:
+		{
+			SetPosition(pattenInfo.pos);
+			direction = sf::Vector2f(std::cos(pattenInfo.angle), std::sin(pattenInfo.angle));
+			animation.Play(pattenInfo.animationClipId);
+		}
+		break;
+
+if (pattenInfo.pattenType == NoramalPatten::FrequencyType)
+	{
+		position.x += direction.x * speed * dt;
+		position.y = pattenInfo.pos.y + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude; // 주파수 진폭
+	}
+	제자리 진폭만하는 코드 발생 -> ;;시간초 줘서 없애면서 위치 값을 좀더 주면 어떨지 생각해보자 
+
+	shoopattern 은 
+	Scene* scene = SCENE_MGR.GetCurrScene();
+	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
+	int shootCount = 1;
+	float minFrequency = 2.f;  // 최소 주파수
+	float maxFrequency = 50.f;  // 최대 주파수
+	float amplitude = 1000.0f;   // 진폭
+
+	for (int count = 0; count < shootCount; ++count)
+	{
+		Shoot* shoot = bossShootPool.Get();
+		shoot->SetPlayer(player);
+
+		sf::Vector2f playerPosition = player->GetPosition();
+		sf::Vector2f shootDirection = playerPosition - boss->GetPosition();
+		float angle = Utils::Angle(shootDirection.y, playerPosition.x);
+		float frequency = minFrequency + static_cast<float>(count) / shootCount * (maxFrequency - minFrequency);
+		// 주파수를 적용하여 각도에 변화를 줌
+		angle += std::sin(frequency * count) * amplitude;
+
+		shoot->SetPattenInfo(Shoot::NoramalPatten::FrequencyType, boss->GetPosition(), angle, "BossNormalShooting1", minFrequency, maxFrequency);
+		shoot->sortLayer = -1;
+
+		if (sceneGame != nullptr)
+		{
+			sceneGame->AddGo(shoot);
+		}
+	}
 
 
 */
