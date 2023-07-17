@@ -16,12 +16,12 @@ void Pattern3::ShootBullets()
 {
     Scene* scene = SCENE_MGR.GetCurrScene();
     SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-    int shootCount = 2;
+    int shootCount = 1;
     float minFrequency = 2.f;  // 최소 주파수
     float maxFrequency = 50.f;  // 최대 주파수
-    float amplitude = 10.0f;   // 진폭
+    float amplitude = 100.f;   // 진폭
 
-    for (int count = 0; count <= shootCount; ++count)
+    for (int count = 0; count < shootCount; ++count)
     {
         Shoot* shoot = bossShootPool.Get();
         shoot->SetPlayer(player);
@@ -30,13 +30,14 @@ void Pattern3::ShootBullets()
         sf::Vector2f shootDirection = playerPosition - boss->GetPosition();
         float angle = Utils::Angle(shootDirection.y, playerPosition.x);
         float frequency = minFrequency + static_cast<float>(count) / shootCount * (maxFrequency - minFrequency);
-        // 주파수를 적용하여 각도에 변화를 줌
-        angle += Utils::DegreesToRadians(10.0f * (count ));
-        angle += std::sin(frequency * count) * amplitude;
+       
+      
+        angle += Utils::DegreesToRadians(10.f * (count));
+       // angle += std::sin(frequency * count) * amplitude;
 
         shoot->SetPattenInfo(Shoot::NoramalPatten::FrequencyType, boss->GetPosition(), angle, "BossNormalShooting1", minFrequency, maxFrequency);
+        shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
         shoot->sortLayer = -1;
-
         if (sceneGame != nullptr)
         {
             sceneGame->AddGo(shoot);
@@ -47,4 +48,11 @@ void Pattern3::ShootBullets()
 
 void Pattern3::Update(float dt)
 {
+}
+
+void Pattern3::SetWallBounds(sf::Vector2f pos, float width, float height)
+{
+    wallBounds = pos;
+    imgWidth = width;
+    imgHeight = height;
 }

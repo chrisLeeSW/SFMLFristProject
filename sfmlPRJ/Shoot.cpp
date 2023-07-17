@@ -78,13 +78,16 @@ void Shoot::Update(float dt)
 //
 
 
-
+	if (pattenInfo.pattenType == NoramalPatten::FrequencyType)
+	{
+		pattenInfo.speed = 1000.f;
+	}
 	if (pattenInfo.pattenType == NoramalPatten::FrequencyType)
 	{
 		position.x = pattenInfo.pos.x + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude;
 		position.y += direction.y * pattenInfo.speed * dt;
 		//position.x += direction.x * speed * dt; 
-		 //position.y = pattenInfo.pos.y + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude; // 주파수 진폭
+		 //position.y = pattenInfo.pos.y + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude; 
 		//position.y += direction.y * speed * dt;
 	}
 	else
@@ -94,9 +97,28 @@ void Shoot::Update(float dt)
 	}
 
 
-
+	
 	sprite.setPosition(position);
 	animation.Update(dt);
+
+	if (position.y - sprite.getGlobalBounds().height * 0.5f < WallBounds.y - sprite.getGlobalBounds().height * 0.5) //(position.y <= -600.f)
+	{
+		pool->Return(this);
+	
+	}
+	else if (position.y + sprite.getGlobalBounds().height * 0.5f > WallBounds.y + bgHeight)
+	{
+		pool->Return(this);
+	}
+	else if (position.x - sprite.getGlobalBounds().width * 0.5f < WallBounds.x-20.f)
+	{
+		pool->Return(this);
+	}
+	else if (position.x + sprite.getGlobalBounds().width * 0.5f > WallBounds.x + bgWidth +20.f)
+	{
+		pool->Return(this);
+	}
+	
 
 	SpriteGo::Update(dt);
 }
@@ -130,7 +152,8 @@ void Shoot::BossFire(float dt)
 		case NoramalPatten::FrequencyType:
 		{
 			SetPosition(pattenInfo.pos);
-			direction = sf::Vector2f(std::cos(pattenInfo.angle), std::sin(pattenInfo.angle));
+			//direction = sf::Vector2f(std::cos(pattenInfo.angle), std::sin(pattenInfo.angle));
+			direction = { 1.f,0.1f };
 			animation.Play(pattenInfo.animationClipId);
 		}
 		break;
@@ -158,10 +181,6 @@ void Shoot::BossFire(float dt)
 		}
 		testCode = true;
 	}
-	if (position.y >= 600.f)
-	{
-		pool->Return(this);
-	}
 	if (player->CheckCollisionWithBullet(*this))
 	{
 		pool->Return(this);
@@ -170,10 +189,20 @@ void Shoot::BossFire(float dt)
 
 void Shoot::PlayerFire(float dt)
 {
-	if (position.y <= -600.f)
+	if(position.y-sprite.getGlobalBounds().height*0.5f < WallBounds.y - sprite.getGlobalBounds().height*0.5) //(position.y <= -600.f)
 	{
 		pool->Return(this);
-		std::cout << "Realse" << std::endl;
+		std::cout << "Realse y" << std::endl;
+	}
+	else if (position.x - sprite.getGlobalBounds().width * 0.5f < WallBounds.x)
+	{
+		pool->Return(this);
+		std::cout << "Realse X" << std::endl;
+	}
+	else if (position.x + sprite.getGlobalBounds().width * 0.5f > WallBounds.x + bgWidth)
+	{
+		pool->Return(this);
+		std::cout << "Realse d" << std::endl;
 	}
 	if (boss->CheckCollisionWithBullet(*this))
 	{
@@ -293,6 +322,13 @@ void Shoot::frequencyMovement(float dt)
 
 	// 총알의 누적 시간을 업데이트합니다.
 	accumulatedTime += dt;
+}
+
+void Shoot::SetWallBounds(sf::Vector2f boundf, float widthX, float heightY)
+{
+	bgWidth = widthX;
+	bgHeight = heightY;
+	WallBounds = boundf;
 }
 
 /*

@@ -28,6 +28,7 @@ void Pattern2::ShootBullets()
 		float additionalAngle = pattenAngle * count;
 		//shoot->BossNormalFirePatten1(boss->GetPosition(), additionalAngle, "BossNormalShooting2");
 		shoot->SetPattenInfo(Shoot::NoramalPatten::AngleDirectionType, boss->GetPosition(), additionalAngle, str);
+		shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
 		shoot->sortLayer = -1;
 		if (sceneGame != nullptr)
 		{
@@ -38,4 +39,12 @@ void Pattern2::ShootBullets()
 
 void Pattern2::Update(float dt)
 {
+}
+
+
+void Pattern2::SetWallBounds(sf::Vector2f pos, float width, float height)
+{
+	wallBounds = pos;
+	imgWidth = width;
+	imgHeight = height;
 }

@@ -16,7 +16,7 @@ ShootMGR::ShootMGR() : currentPatternIndex(0)
     patterns.push_back(new Pattern4());
     patterns.push_back(new Pattern5());
     patterns.push_back(new Pattern6());
-    patterns.push_back(new Pattern7());
+   // patterns.push_back(new Pattern7());
 }
 
 ShootMGR::~ShootMGR()
@@ -54,4 +54,9 @@ void ShootMGR::ShootBullets()
 void ShootMGR::SetCharacterAll(Player* player, Boss* boss)
 {
     patterns[currentPatternIndex]->SetCharceterAll(player, boss);
+}
+
+void ShootMGR::SetWallBounds(sf::Vector2f pos, float width, float height)
+{
+    patterns[currentPatternIndex]->SetWallBounds(pos, width, height);
 }

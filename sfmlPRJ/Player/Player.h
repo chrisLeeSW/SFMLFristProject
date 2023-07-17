@@ -22,6 +22,11 @@ protected:
 	bool autoShot = false;
 
 	Boss* boss;
+
+
+	sf::Vector2f WallBounds;
+	float bgWidth;
+	float bgHeight;
 public:
 	Player(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId, n) {}
 	virtual ~Player() override { Release(); }
@@ -38,5 +43,7 @@ public:
 
 	void SetBoss(Boss* boss) { this->boss = boss; }
 	bool CheckCollisionWithBullet(const Shoot& bullet);
+	
+	void SetWallBounds(sf::Vector2f boundf, float widthX, float widthY);
 };
 

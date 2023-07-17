@@ -6,7 +6,7 @@
 #include "Pattern7.h"
 UniqueShootMGR::UniqueShootMGR()
 {
-	patterns.push_back(new Pattern7());
+	//patterns.push_back(new Pattern7());
 }
 
 UniqueShootMGR::~UniqueShootMGR()

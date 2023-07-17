@@ -1,5 +1,5 @@
 ID,FPS,LOOPTYPE,,
-Move,10,1,,
+Move,5,0,,
 ,,,,
 TEXTURE ID,LEFT,TOP,WIDTH,HEIGHT
 graphics/TouhouPlayer.png,871,78,22,41

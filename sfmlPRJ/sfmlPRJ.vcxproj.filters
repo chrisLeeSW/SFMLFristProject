@@ -87,7 +87,7 @@
     <ClCompile Include="Shoot.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Boss.cpp">
+    <ClCompile Include="Player\Boss.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ShootPattern\ShootMGR.cpp">
@@ -206,7 +206,7 @@
     <ClInclude Include="Shoot.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Boss.h">
+    <ClInclude Include="Player\Boss.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ShootPattern\ShootMGR.h">

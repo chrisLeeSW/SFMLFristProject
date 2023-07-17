@@ -35,15 +35,23 @@ void Pattern1::ShootBullets()
 		}
 		//shoot->BossNormalFire(boss->GetPosition(), angle, "BossNormalShooting1");
 		shoot->SetPattenInfo(Shoot::NoramalPatten::SectorType, boss->GetPosition(), angle, str);
+		shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
 		shoot->sortLayer = -1;
 		if (sceneGame != nullptr)
 		{
 			sceneGame->AddGo(shoot); //
 		}
-		std::cout <<"Pattern1 : "<< bossShootPool.GetUseList().size() << std::endl;
+		
 	}
 }
 
 void Pattern1::Update(float dt)
 {
+}
+
+void Pattern1::SetWallBounds(sf::Vector2f pos, float width, float height)
+{
+	wallBounds = pos;
+	imgWidth = width;
+	imgHeight = height;
 }

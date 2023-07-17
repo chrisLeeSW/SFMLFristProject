@@ -20,10 +20,6 @@ void Boss::Init()
 	};
 	bossShootPool.Init();
 
-	hitboxShape.setSize({ 32.f, 32.f });
-	hitboxShape.setFillColor(sf::Color::Color(255, 255, 255, 0));
-	Utils::SetOrigin(hitboxShape, Origins::MC);
-
 	{
 		NormalAttackInfo info;
 		info.animationClipId = "BossNormalShooting1";
@@ -44,7 +40,7 @@ void Boss::Reset()
 {
 	animation.Play("Idle");
 	SetOrigin(Origins::MC);
-	SetPosition(0.f, -260.f);
+	SetPosition(-270.f, -250.f);
 }
 
 void Boss::Update(float dt)
@@ -58,7 +54,6 @@ void Boss::Update(float dt)
 void Boss::Draw(sf::RenderWindow& window)
 {
 	SpriteGo::Draw(window);
-	window.draw(hitboxShape);
 }
 
 void Boss::BossMove(float dt)
@@ -67,10 +62,22 @@ void Boss::BossMove(float dt)
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad4))
 	{
 		direction.x = -1.f;
+		SetScale(1.f, 1.f);
+		if (!moveBoss)
+		{
+			animation.Play("Move");
+			moveBoss = true;
+		}
 	}
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad6))
 	{
 		direction.x = 1.f;
+		SetScale(-1.f, 1.f);
+		if (!moveBoss)
+		{
+			animation.Play("Move");
+			moveBoss = true;
+		}
 	}
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad8))
 	{
@@ -83,28 +90,67 @@ void Boss::BossMove(float dt)
 	if (INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad4) || INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad5) || INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad6) || INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad8))
 	{
 		direction = { 0.f,0.f };
+		animation.Play("Idle");
+		moveBoss=false;
 	}
-
-	/*if (INPUT_MGR.GetKeyDown(sf::Keyboard::O))
-	{
-		direction.y =1.f;
-	}
-	if (INPUT_MGR.GetKeyUp(sf::Keyboard::O))
-	{
-		direction.y = 0.f;
-	}*/
 
 	bossAttackTime -= dt;
 	position += direction * speed * dt;
-	hitboxShape.setPosition(position);
 	SetPosition(position);
+
+
+	if (GetPosition().x - sprite.getGlobalBounds().width * 0.5f < WallBounds.x)
+	{
+		SetPosition(WallBounds.x + bgWidth - sprite.getGlobalBounds().width * 0.5f, GetPosition().y);
+	}
+	else if (GetPosition().x + sprite.getGlobalBounds().width * 0.5f > WallBounds.x + bgWidth)
+	{
+		SetPosition(WallBounds.x + sprite.getGlobalBounds().width * 0.5f, GetPosition().y);
+	}
+	else if (GetPosition().y + sprite.getGlobalBounds().height * 0.5f > WallBounds.y + bgHeight)
+	{
+		SetPosition(GetPosition().x, WallBounds.y + bgHeight - sprite.getGlobalBounds().height * 0.5f);
+	}
+	else if (GetPosition().y - sprite.getGlobalBounds().height * 0.5f < WallBounds.y)
+	{
+		SetPosition(GetPosition().x, WallBounds.y + sprite.getGlobalBounds().height * 0.5f);
+	}
+
+
+	/*if (bossHp > 750 && !onePage)
+	{
+		onePage = true;
+		rand1 = Utils::RandomRange(0, 6);
+		rand2 = Utils::RandomRange(0, 6);
+	}
+	if (onePage && bossAttackTime < 0.2f)
+	{
+		bossAttackTime = 0.3f;
+
+		shootPatternMgr.ChangePattern(rand1);
+		shootPatternMgr.SetCharacterAll(player, this);
+		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
+		shootPatternMgr.ShootBullets();
+
+		shootPatternMgr.ChangePattern(rand2);
+		shootPatternMgr.SetCharacterAll(player, this);
+		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
+		shootPatternMgr.ShootBullets();
+	}
+	if (onePageCk.getElapsedTime().asSeconds() > 20.f)
+	{
+		onePage = false;
+		onePageCk.restart();
+	}*/
 
 	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad0) && bossAttackTime < 0.2f)
 	{
 		bossAttackTime = 0.3f;
 		shootPatternMgr.ChangePattern(0);
 		shootPatternMgr.SetCharacterAll(player, this);
+		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.ShootBullets();
+		
 	}
 
 	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad1) && bossAttackTime < 0.2f)
@@ -112,8 +158,10 @@ void Boss::BossMove(float dt)
 		bossAttackTime = 0.3f;
 		bossAttackTime = 0.3f;
 		shootPatternMgr.ChangePattern(1);
+		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
+		
 	}
 
 	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad2) && bossAttackTime < 0.2f)
@@ -121,6 +169,7 @@ void Boss::BossMove(float dt)
 		bossAttackTime = 0.3f;
 		bossAttackTime = 0.3f;
 		shootPatternMgr.ChangePattern(2);
+		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
 	}
@@ -129,6 +178,7 @@ void Boss::BossMove(float dt)
 		bossAttackTime = 0.3f;
 		bossAttackTime = 0.3f;
 		shootPatternMgr.ChangePattern(3);
+		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
 	}
@@ -137,19 +187,23 @@ void Boss::BossMove(float dt)
 		bossAttackTime = 0.3f;
 		bossAttackTime = 0.3f;
 		shootPatternMgr.ChangePattern(4);
+		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
+		
 	}
 	if (INPUT_MGR.GetKey(sf::Keyboard::Num2) && bossAttackTime < 0.2f)
 	{
 		bossAttackTime = 0.3f;
 		bossAttackTime = 0.3f;
 		shootPatternMgr.ChangePattern(5);
+		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
+	
 	}
 	//
-	if (INPUT_MGR.GetKey(sf::Keyboard::Num3) && bossAttackTime < 0.2f)
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num3))
 	{
 		bossAttackTime = 0.3f;
 		Scene* scene = SCENE_MGR.GetCurrScene();
@@ -158,6 +212,7 @@ void Boss::BossMove(float dt)
 		Shoot* shoot = bossShootPool.Get();
 		shoot->SetPlayer(player);
 		shoot->SetPositionTest(position, { 0.f,1.f });
+		shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
 		if (sceneGame != nullptr)
 		{
 			sceneGame->AddGo(shoot); //
@@ -165,12 +220,11 @@ void Boss::BossMove(float dt)
 	}
 	if (testShootBullet)
 	{
-		shootPatternMgr.ChangePattern(6);
-		shootPatternMgr.SetCharacterAll(player, this);
+		//shootPatternMgr.ChangePattern(6);
+		//shootPatternMgr.SetCharacterAll(player, this);
 
 		if (bossAtk < 0.f && count != maxCount)
 		{
-
 			//shootPatternMgr.Update(dt);
 
 			Scene* scene = SCENE_MGR.GetCurrScene();
@@ -181,7 +235,7 @@ void Boss::BossMove(float dt)
 			shoot->SetPlayer(player);
 			float angle = angleInterval * count;
 			shoot->SetPattenInfo(Shoot::NoramalPatten::AngleDirectionType, poolShootPos, angle, "BossNormalShooting1");
-
+			shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
 			shoot->sortLayer = -1;
 			if (sceneGame != nullptr)
 			{
@@ -192,7 +246,7 @@ void Boss::BossMove(float dt)
 		}
 
 	}
-	if (count == maxCount)
+	if (count == maxCount && testShootBullet)
 	{
 		testShootBullet = false;
 		count = 0;
@@ -209,6 +263,32 @@ bool Boss::CheckCollisionWithBullet(const Shoot& bullet)
 	}
 	return false;
 }
+
+void Boss::SetWallBounds(sf::Vector2f boundf, float widthX, float widthY)
+{
+	bgWidth = widthX;
+	bgHeight = widthY;
+	WallBounds = boundf;
+}
+
+sf::Vector2f Boss::CalculateBezierPoint(const sf::Vector2f& p0, const sf::Vector2f& p1, const sf::Vector2f& p2, const sf::Vector2f& p3, float t)
+{
+		float u = 1.0f - t;
+		float tt = t * t;
+		float uu = u * u;
+		float uuu = uu * u;
+		float ttt = tt * t;
+
+		sf::Vector2f p = uuu * p0; // (1-t)^3 * P0
+		p += 3 * uu * t * p1;      // 3 * (1-t)^2 * t * P1
+		p += 3 * u * tt * p2;      // 3 * (1-t) * t^2 * P2
+		p += ttt * p3;             // t^3 * P3
+
+		return p;
+}
+
+
+
 
 // 폐기 탄막 -> 목적은 토네이도식이지만 1번과 별차이를 모르겠음 
 //if (INPUT_MGR.GetKey(sf::Keyboard::Numpad2) && testTime < 0.8f)

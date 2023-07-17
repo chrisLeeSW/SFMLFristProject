@@ -93,6 +93,8 @@ public:
 		animation.Play(clipId);
 	}
 
+
+	void SetWallBounds(sf::Vector2f boundf, float widthX, float widthY);
 protected:
 	UniqueType uniqueType = UniqueType::None;
 	NormalPattenInfo pattenInfo;
@@ -114,6 +116,9 @@ protected:
 	CharceterType type = CharceterType::None;
 	Player* player;
 	Boss* boss;
+	sf::Vector2f WallBounds;
+	float bgWidth;
+	float bgHeight;
 };
 
 /*

@@ -16,6 +16,6 @@ public:
 	void ShootBullets() override;
 	void SetCharceterAll(Player* player, Boss* boss) { this->player = player; this->boss = boss; }
 	void Update(float dt)override;
-	void SetShootPos(sf::Vector2f pos) { shootPos = pos; }
+	void SetWallBounds(sf::Vector2f pos, float width, float height);
 };
 

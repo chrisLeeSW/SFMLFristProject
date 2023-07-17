@@ -1,5 +1,5 @@
 ID,FPS,LOOPTYPE,,
-Move,10,1,,
+Move,10,0,,
 ,,,,
 TEXTURE ID,LEFT,TOP,WIDTH,HEIGHT
 graphics/Boss.png,242,42,44,51

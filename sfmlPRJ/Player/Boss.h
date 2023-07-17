@@ -16,24 +16,24 @@ public:
 		float maxSpeed;
 	};
 protected:
-	sf::RectangleShape hitboxShape;
-	bool hitboxDraw = false;
 	AnimationController animation;
 	sf::Vector2f direction;
-	float speed = 300.f;
 	bool moveBoss = false;
-	bool filpX = false;
+	float bossAttackTime = 0.8f;
+	float speed = 300.f;
 	ObjectPool<Shoot> bossShootPool;
 	Player* player;
+	sf::Vector2f WallBounds;
+	float bgWidth;
+	float bgHeight;
 
+	int bossHp = 1000; //
+	sf::Clock onePageCk;
+	bool onePage = false;
+	int rand1;
+	int rand2 ;
 
-	sf::Clock clock;
-	float timer;
-
-
-	float bossAttackTime = 0.8f;
-
-	std::vector < NormalAttackInfo> attackInfo;
+	std::vector < NormalAttackInfo> attackInfo; // test º¯¼ö 
 	//
 	float bossAtk=0.05f;
 	float delay=0.05f;
@@ -50,11 +50,11 @@ public:
 	virtual void Reset() override;
 	virtual void Update(float dt) override;
 	virtual void Draw(sf::RenderWindow& window) override;
-
 	void BossMove(float dt);
-
 	void SetPlayer(Player* player){ this->player = player; }
 	bool CheckCollisionWithBullet(const Shoot& bullet);
+	void SetWallBounds(sf::Vector2f boundf, float widthX, float widthY);
+
 
 	bool testShootBullet;
 	void GetShootBulletTestCode(bool ty) { testShootBullet = ty; }
@@ -63,6 +63,7 @@ public:
 	bool GetShootBullet2TestCode(){ return testShootBullet2; }
 	void SetShootBullet2TestCode(bool type) { testShootBullet2 = type; }
 	void SetPoolPos(sf::Vector2f pos) { poolShootPos = pos; }
+	sf::Vector2f CalculateBezierPoint(const sf::Vector2f& p0, const sf::Vector2f& p1, const sf::Vector2f& p2, const sf::Vector2f& p3, float t);
 private:
 	ShootMGR shootPatternMgr;
 };

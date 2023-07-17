@@ -2,12 +2,22 @@
 #include "Scene.h"
 class Player;
 class Boss;
+class SpriteGo;
+
 class SceneGame : public Scene
 {
 protected:
 	Player* player;
 	Boss* bossCirno;
+	SpriteGo* background;
+	SpriteGo* gameBackground;
+	SpriteGo* miniUi;
+	SpriteGo* titleNameHong;
+	sf::Vector2f gameWallSize;
 
+	sf::Clock clock;
+	sf::Time frameTime;
+	int frames = 0;
 public:
 	SceneGame();
 	virtual ~SceneGame() override = default;
