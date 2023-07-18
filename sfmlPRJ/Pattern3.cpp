@@ -18,7 +18,7 @@ void Pattern3::ShootBullets()
 	Scene* scene = SCENE_MGR.GetCurrScene();
 	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
 	float minFrequency = 2.f;
-	float maxFrequency = 200.f;
+	float maxFrequency = 50.f;
 	float amplitude = 100.f;
 	Shoot* shoot = bossShootPool.Get();
 	shoot->SetPlayer(player);

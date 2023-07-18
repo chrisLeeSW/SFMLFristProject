@@ -26,6 +26,8 @@ protected:
 	int frames = 0;
 
 	SoundGo* music1;
+
+	float musicVolum = 25.f;
 public:
 	SceneGame();
 	virtual ~SceneGame() override = default;

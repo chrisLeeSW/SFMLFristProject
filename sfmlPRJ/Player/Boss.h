@@ -19,7 +19,7 @@ protected:
 	AnimationController animation;
 	sf::Vector2f direction;
 	bool moveBoss = false;
-	float bossAttackTime = 0.8f;
+	float bossAttackTimeOne = 0.8f;
 	float speed = 300.f;
 	ObjectPool<Shoot> bossShootPool;
 	Player* player;
@@ -32,6 +32,9 @@ protected:
 	bool onePage = false;
 	int rand1;
 	int rand2 ;
+
+	float moveTime;
+	int moveRand;
 
 	std::vector < NormalAttackInfo> attackInfo; // test º¯¼ö 
 	//
@@ -64,8 +67,9 @@ public:
 	bool GetShootBullet2TestCode(){ return testShootBullet2; }
 	void SetShootBullet2TestCode(bool type) { testShootBullet2 = type; }
 	void SetPoolPos(sf::Vector2f pos) { poolShootPos = pos; }
-	sf::Vector2f CalculateBezierPoint(const sf::Vector2f& p0, const sf::Vector2f& p1, const sf::Vector2f& p2, const sf::Vector2f& p3, float t);
+	sf::Vector2f CalculateBezierPoint(const sf::Vector2f& p0, const sf::Vector2f& p1, const sf::Vector2f& p3, float t);
 private:
 	ShootMGR shootPatternMgr;
+	sf::Vector2f p2;
 };
 

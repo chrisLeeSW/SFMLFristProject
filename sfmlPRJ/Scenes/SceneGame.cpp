@@ -85,7 +85,7 @@ void SceneGame::Enter()
 	uiView.setSize(size);
 	uiView.setCenter(size * 0.5f);
 
-	isTalking = true;
+	isTalking = true; //
 	cirnoTalking = (SpriteGo*)AddGo(new SpriteGo("graphics/cirnoFace.png"));
 	cirnoTalking->sprite.setTextureRect({ 130,14,126,242 });
 	cirnoTalking->SetPosition(gameWallSize.x, FRAMEWORK.GetWindowSize().y * 0.2f);
@@ -116,6 +116,22 @@ void SceneGame::Update(float dt)
 		std::cout << "FPS :" << fps << std::endl; - > Á×¿©¹ö¸² ;;
 	}*/
 
+
+	if (music1->sound.getStatus() != sf::Sound::Playing)
+	{
+		//music1->SoundPlayer();
+	}
+
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::F1))
+	{
+		musicVolum += 2.5f;
+	}
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::F2))
+	{
+		musicVolum -= 2.5f;
+	}
+	music1->sound.setVolume(musicVolum);
+
 	if (isTalking)
 	{
 		if (INPUT_MGR.GetKeyDown(sf::Keyboard::Space))
@@ -126,11 +142,6 @@ void SceneGame::Update(float dt)
 		Scene::Update(dt);
 		cirnoTalking->SetActive(isTalking);
 		talk->SetActive(isTalking);
-	}
-
-	if (music1->sound.getStatus() != sf::Sound::Playing)
-	{
-		std::cout << "isEnd Sound" << std::endl;
 	}
 }
 

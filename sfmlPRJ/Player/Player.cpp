@@ -160,7 +160,7 @@ void Player::PlayerShoot(float dt)
 				else if (count % 2 == 0)
 					shoot->PlayerFire(GetPosition()  + sf::Vector2f{ -20.f  * (count/2) ,0.f * count });
 			}
-			shoot->sortLayer = -1;
+			shoot->sortLayer = 2;
 			shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
 			if (sceneGame != nullptr)
 			{

@@ -28,6 +28,12 @@ void Boss::Init()
 
 		attackInfo.push_back(info);
 	}
+
+	moveRand = -1;
+	moveTime = 0.f;
+
+
+	p2 = sf::Vector2f({ 0.f, -50.f }); // 끝점
 }
 
 void Boss::Release()
@@ -41,6 +47,8 @@ void Boss::Reset()
 	animation.Play("Idle");
 	SetOrigin(Origins::MC);
 	SetPosition(-270.f, -250.f);
+	moveRand = -1;
+	moveTime = 0.f;
 }
 
 void Boss::Update(float dt)
@@ -59,9 +67,110 @@ void Boss::Draw(sf::RenderWindow& window)
 void Boss::BossMove(float dt)
 {
 	bossAtk -= dt;
+	moveTime += dt;
+	bossAttackTimeOne -= dt;
+	
+	//sf::Vector2f p0(-300.f, -50.f); // 시작점
+	//
+	//sf::Vector2f p1(-200.f, 0.f); // 거치는 지점 1
+
+	//float moveDuration = 1.f; // 이동 시간
+	//float t = moveTime / moveDuration;
+
+	//if (t >= 1.f)
+	//{
+	//	t = 1.f;
+	//}
+
+	//	sf::Vector2f p = CalculateBezierPoint(p0, p1, p2, t);
+	//	position = p;
+	//if (position == p2)
+	//{
+	//	moveTime = 0.f;
+	//	p2 = sf::Vector2f({ -100.f, -150.f });
+	//}
+	//
+	/*if (p.x - sprite.getGlobalBounds().width * 0.5f < WallBounds.x)
+	{
+		p.x = WallBounds.x + sprite.getGlobalBounds().width * 0.5f;
+	}
+	else if (p.x + sprite.getGlobalBounds().width * 0.5f > WallBounds.x + bgWidth)
+	{
+		p.x = WallBounds.x + bgWidth - sprite.getGlobalBounds().width * 0.5f;
+	}
+
+	if (p.y + sprite.getGlobalBounds().height * 0.5f > WallBounds.y + bgHeight)
+	{
+		p.y = WallBounds.y + bgHeight - sprite.getGlobalBounds().height * 0.5f;
+	}
+	else if (p.y - sprite.getGlobalBounds().height * 0.5f < WallBounds.y)
+	{
+		p.y = WallBounds.y + sprite.getGlobalBounds().height * 0.5f;
+	}*/
+	//std::cout << "POS X :" << position.x << "\t POS Y:" << position.y << std::endl;
+	//if (moveTime >= 10.0f || moveRand == -1)
+	//{
+	//	moveRand = Utils::RandomRange(0, 5);
+	//	moveTime = 0.f;
+	//	std::cout << "Boss Rand : " << moveBoss << std::endl;
+	//}
+	//switch (moveRand)
+	//{
+	//case 0:
+	//	direction.x = -0.3f;
+	//	break;
+	//case 1:
+	//	direction.x = 0.13f;
+	//	break;
+	//default :
+	//	direction.x = 0.f;
+	//	break;
+	//}
+	//if (direction.x < 0.f)
+	//{
+	//	SetScale(1.f, 1.f);
+	//	if (!moveBoss)
+	//	{
+	//		animation.Play("Move");
+	//		moveBoss = true;
+	//	}
+	//}
+	//else if (direction.x > 0.f)
+	//{
+	//	SetScale(-1.f, 1.f);
+	//	if (!moveBoss)
+	//	{
+	//		animation.Play("Move");
+	//		moveBoss = true;
+	//	}
+	//}
+	//else if (direction.x == 0.f)
+	//{
+	//	animation.Play("Idle");
+	//	moveBoss = false;
+	//}
+	//if (direction.x == 0.f && bossAttackTimeOne < 0.2f)
+	//{
+	//	bossAttackTimeOne = 0.4f;
+	//	shootPatternMgr.ChangePattern(0);
+	//	shootPatternMgr.SetCharacterAll(player, this);
+	//	shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
+	//	shootPatternMgr.ShootBullets();
+	//}
+	//if (direction.x != 0.f && bossAttackTimeOne < 0.2f)
+	//{
+	//	bossAttackTimeOne = 0.3f;
+	//	shootPatternMgr.ChangePattern(2);
+	//	shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
+	//	shootPatternMgr.SetCharacterAll(player, this);
+	//	shootPatternMgr.ShootBullets();
+	//}
+
+
+
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad4))
 	{
-		direction.x = -1.f;
+		direction.x = -0.1f;
 		SetScale(1.f, 1.f);
 		if (!moveBoss)
 		{
@@ -71,13 +180,14 @@ void Boss::BossMove(float dt)
 	}
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad6))
 	{
-		direction.x = 1.f;
+		direction.x = 0.1f;
 		SetScale(-1.f, 1.f);
 		if (!moveBoss)
 		{
 			animation.Play("Move");
 			moveBoss = true;
 		}
+
 	}
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Numpad8))
 	{
@@ -87,14 +197,15 @@ void Boss::BossMove(float dt)
 	{
 		direction.y = 1.f;
 	}
-	if (INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad4) || INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad5) || INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad6) || INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad8))
+	if (INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad4) || INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad5) || 
+		INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad6) || INPUT_MGR.GetKeyUp(sf::Keyboard::Numpad8))
 	{
 		direction = { 0.f,0.f };
 		animation.Play("Idle");
 		moveBoss = false;
 	}
 
-	bossAttackTime -= dt;
+	
 	position += direction * speed * dt;
 	SetPosition(position);
 
@@ -117,7 +228,17 @@ void Boss::BossMove(float dt)
 	}
 
 
-	/*if (bossHp > 750 && !onePage)
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Z))
+	{
+		std::cout<<" -x :"<< WallBounds.x<<std::endl;
+		std::cout << " x :" << WallBounds.x + bgWidth << std::endl;
+		std::cout << " -y :" << WallBounds.y << std::endl;
+		std::cout << " -x :" << WallBounds.y + bgHeight << std::endl;
+	}
+
+	/*
+	
+	if (bossHp > 750 && !onePage)
 	{
 		onePage = true;
 		rand1 = Utils::RandomRange(0, 6);
@@ -128,9 +249,9 @@ void Boss::BossMove(float dt)
 			rand2 = Utils::RandomRange(0, 6);
 		}
 	}
-	if (onePage && bossAttackTime < 0.3f)
+	if (onePage && bossAttackTimeOne < 0.3f)
 	{
-		bossAttackTime = 0.5f;
+		bossAttackTimeOne = 0.5f;
 
 		shootPatternMgr.ChangePattern(rand1);
 		shootPatternMgr.SetCharacterAll(player, this);
@@ -147,11 +268,13 @@ void Boss::BossMove(float dt)
 		onePageCk.restart();
 		rand1 = -1;
 		rand2 = -1;
-	}*/
+	}
+	
+	*/
 
-	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad0) && bossAttackTime < 0.2f)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad0) && bossAttackTimeOne < 0.2f)
 	{
-		bossAttackTime = 0.3f;
+		bossAttackTimeOne = 0.3f;
 		shootPatternMgr.ChangePattern(0);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
@@ -159,10 +282,10 @@ void Boss::BossMove(float dt)
 
 	}
 
-	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad1) && bossAttackTime < 0.2f)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad1) && bossAttackTimeOne < 0.2f)
 	{
-		bossAttackTime = 0.3f;
-		bossAttackTime = 0.3f;
+		bossAttackTimeOne = 0.3f;
+		bossAttackTimeOne = 0.3f;
 		shootPatternMgr.ChangePattern(1);
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
@@ -170,38 +293,38 @@ void Boss::BossMove(float dt)
 
 	}
 
-	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad2) && bossAttackTime < 0.2f)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad2) && bossAttackTimeOne < 0.2f)
 	{
-		bossAttackTime = 0.3f;
-		bossAttackTime = 0.3f;
+		bossAttackTimeOne = 0.3f;
+		bossAttackTimeOne = 0.3f;
 		shootPatternMgr.ChangePattern(2);
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
 	}
-	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad3) && bossAttackTime < 0.2f)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad3) && bossAttackTimeOne < 0.2f)
 	{
-		bossAttackTime = 0.3f;
-		bossAttackTime = 0.3f;
+		bossAttackTimeOne = 0.3f;
+		bossAttackTimeOne = 0.3f;
 		shootPatternMgr.ChangePattern(3);
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
 	}
-	if (INPUT_MGR.GetKey(sf::Keyboard::Num1) && bossAttackTime < 0.2f)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Num1) && bossAttackTimeOne < 0.2f)
 	{
-		bossAttackTime = 0.3f;
-		bossAttackTime = 0.3f;
+		bossAttackTimeOne = 0.3f;
+		bossAttackTimeOne = 0.3f;
 		shootPatternMgr.ChangePattern(4);
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
 
 	}
-	if (INPUT_MGR.GetKey(sf::Keyboard::Num2) && bossAttackTime < 0.2f)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Num2) && bossAttackTimeOne < 0.2f)
 	{
-		bossAttackTime = 0.3f;
-		bossAttackTime = 0.3f;
+		bossAttackTimeOne = 0.3f;
+		bossAttackTimeOne = 0.3f;
 		shootPatternMgr.ChangePattern(5);
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
@@ -211,7 +334,7 @@ void Boss::BossMove(float dt)
 	//
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num3))
 	{
-		bossAttackTime = 0.3f;
+		bossAttackTimeOne = 0.3f;
 		Scene* scene = SCENE_MGR.GetCurrScene();
 		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
 
@@ -396,7 +519,7 @@ void Boss::SetWallBounds(sf::Vector2f boundf, float widthX, float widthY)
 	WallBounds = boundf;
 }
 
-sf::Vector2f Boss::CalculateBezierPoint(const sf::Vector2f& p0, const sf::Vector2f& p1, const sf::Vector2f& p2, const sf::Vector2f& p3, float t)
+sf::Vector2f Boss::CalculateBezierPoint(const sf::Vector2f& p0, const sf::Vector2f& p1, const sf::Vector2f& p2, float t)
 {
 	// p0 현재 시작점
 	// p1 거치는 지점 ?1
@@ -410,9 +533,9 @@ sf::Vector2f Boss::CalculateBezierPoint(const sf::Vector2f& p0, const sf::Vector
 	float ttt = tt * t;
 
 	sf::Vector2f p = uuu * p0;
-	p += 3 * uu * t * p1;     
-	p += 3 * u * tt * p2;     
-	p += ttt * p3;    
+	p += 3 * uu * t * p1;
+	p += 3 * u * tt * p2;
+	p += ttt * p2;
 
 	return p;
 }

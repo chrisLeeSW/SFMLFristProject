@@ -26,7 +26,6 @@ void Pattern2::ShootBullets()
 		shoot->SetPlayer(player);
 
 		float additionalAngle = pattenAngle * count;
-		//shoot->BossNormalFirePatten1(boss->GetPosition(), additionalAngle, "BossNormalShooting2");
 		shoot->SetPattenInfo(Shoot::NoramalPatten::AngleDirectionType, boss->GetPosition(), additionalAngle, str);
 		shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
 		shoot->sortLayer = -1;
