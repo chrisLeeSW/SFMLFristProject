@@ -3,6 +3,7 @@
 #include "SceneGame.h"
 
 #include "Boss.h"
+#include "SoundGo.h"
 void Player::Init()
 {
 
@@ -20,6 +21,8 @@ void Player::Init()
 	hitboxCircle.setRadius(2.5f);
 	hitboxCircle.setFillColor(sf::Color::Yellow);
 	Utils::SetOrigin(hitboxCircle, Origins::MC);
+
+	playerShoot = new SoundGo("Sounds/playerTan.wav");
 }
 
 void Player::Release()
@@ -35,6 +38,7 @@ void Player::Reset()
 	SetPosition(-340.f, 260.f);
 	hitboxCircle.setPosition(position);
 	Utils::SetOrigin(hitboxCircle, Origins::MC);
+	soundVolum = 50.f;
 }
 
 void Player::Update(float dt)
@@ -62,11 +66,11 @@ void Player::PlayerMove(float dt)
 	}
 	if (INPUT_MGR.GetKey(sf::Keyboard::LShift) || INPUT_MGR.GetKey(sf::Keyboard::RShift))
 	{
-		speed = 50.f;
+		speed = 200.f;
 	}
 	else
 	{
-		speed = 150.f;
+		speed = 500.f;
 	}
 	position += direction * speed * dt;
 	hitboxCircle.setPosition(position);
@@ -117,15 +121,25 @@ void Player::PlayerShoot(float dt)
 
 	Scene* scene = SCENE_MGR.GetCurrScene();
 	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::PageUp))
+	{
+		soundVolum += 5.f;
+	}
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::PageDown))
+	{
+		soundVolum -= 5.f;
+	}
 	if ((INPUT_MGR.GetKey(sf::Keyboard::X) || autoShot) && attackTime < 0.8f)
 	{
+		playerShoot->SoundPlayer();
+		playerShoot->sound.setVolume(soundVolum);
 		attackTime = 1.0f;
 		int count = 0;
-		while (count < 5)
+		while (count < 3)
 		{
 			Shoot* shoot = playerShootPool.Get();
-			std::string str = "Shooting"; //
-			shoot->SetAnimationId(str); //
+			std::string str = "Shooting"; 
+			shoot->SetAnimationId(str); 
 			shoot->SetBoss(boss);
 			if (count == 0)
 				shoot->PlayerFire(GetPosition() );
@@ -154,8 +168,8 @@ void Player::PlayerShoot(float dt)
 			}
 			count++;
 		}
+		
 	}
-
 
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num1) && hitboxDraw)
 	{
@@ -181,15 +195,24 @@ void Player::ChangeFlip(float x)
 
 bool Player::CheckCollisionWithBullet(const Shoot& bullet)
 {
-	if (sprite.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
+	float playerRadius = hitboxCircle.getGlobalBounds().width;
+	float bulletRadius = bullet.sprite.getGlobalBounds().width * 0.25f; 
+	float distance = Utils::Distance(GetPosition(), bullet.sprite.getPosition());
+	//if (sprite.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
+	//{		std::cout << "disatnce :" << distance << "/// player :" << playerRadius << "/// bullet :" << bulletRadius << std::endl;}
+	if (distance < playerRadius + bulletRadius)
 	{
-		
-		if (hitboxCircle.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
-		{
-			std::cout << "isCollied Player" << std::endl;
-			return true;
-		}
+		std::cout << "isCollied Player" << std::endl;
+		return true;
 	}
+	//if (sprite.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
+	//{
+	//	/*if (hitboxCircle.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
+	//	{
+	//		std::cout << "isCollied Player" << std::endl;
+	//		return true;
+	//	}*/
+	//}
 	return false;
 }
 

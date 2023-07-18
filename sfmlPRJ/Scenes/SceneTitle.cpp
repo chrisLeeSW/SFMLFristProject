@@ -1,27 +1,22 @@
 #include "stdafx.h"
 #include "SceneTitle.h"
+#include "Framework/Framework.h"
 #include "SpriteGo.h"
 #include "TextGo.h"
+#include "SoundGo.h"
 SceneTitle::SceneTitle() : Scene(SceneId::Title)
 {
-	
+	resourceListPath = "graphicsTable/GameTitleResource.csv";
 }
 
 void SceneTitle::Init()
 {
 	Release();
+	
+	backGroundGame = (SpriteGo*)AddGo(new SpriteGo("graphics/MainTitleGame.png"));
+	backGroundGame->SetPosition(-FRAMEWORK.GetWindowSize() * 0.5f);
 
-	backGroundGame = (SpriteGo*)AddGo(new SpriteGo("graphics/GameBackGround.png"));
-	backGroundGame->SetPosition(0.f,0.f);
-	backGroundGame->SetScale(1.f, 1.5f);
-	backGroundGame->sortLayer = -1;
-
-	gameStartText = (TextGo*)AddGo(new TextGo("fonts/THE Nakseo.ttf","GameStart"));
-	gameStartText->text.setString("GameStart");
-	gameStartText->text.setCharacterSize(40);
-	gameStartText->SetPosition(FRAMEWORK.GetWindowSize().x *0.4f, FRAMEWORK.GetWindowSize().y * 0.8f);
-	gameStartText->SetOrigin(Origins::MC);
-
+	titleSound = new SoundGo("Sounds/TitleGameSound.wav");
 	for (auto go : gameObjects)	
 	{
 		go->Init();
@@ -39,6 +34,13 @@ void SceneTitle::Release()
 
 void SceneTitle::Enter()
 {
+	auto size = FRAMEWORK.GetWindowSize();
+	worldView.setSize(size);
+	worldView.setCenter({ 0,0 });
+
+	uiView.setSize(size);
+
+	titleSound->SoundPlayer();
 	Scene::Enter();
 }
 
@@ -50,14 +52,12 @@ void SceneTitle::Exit()
 void SceneTitle::Update(float dt)
 {
 	Scene::Update(dt);
-	//std::cout << gameStartText->text.getGlobalBounds().height << std::endl;
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num1))
-	{
-		SCENE_MGR.ChangeScene(SceneId::Game);
-	}
+	
+	
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Space))
 	{
 		SCENE_MGR.ChangeScene(SceneId::Game);
+		titleSound->SoundStop();
 	}
 }
 

@@ -91,7 +91,7 @@ void Boss::BossMove(float dt)
 	{
 		direction = { 0.f,0.f };
 		animation.Play("Idle");
-		moveBoss=false;
+		moveBoss = false;
 	}
 
 	bossAttackTime -= dt;
@@ -122,16 +122,20 @@ void Boss::BossMove(float dt)
 		onePage = true;
 		rand1 = Utils::RandomRange(0, 6);
 		rand2 = Utils::RandomRange(0, 6);
+		std::cout << "rand 1 : " << rand1 << '\t' << "rand2 : " << rand2 << std::endl;
+		if (rand1 == rand2)
+		{
+			rand2 = Utils::RandomRange(0, 6);
+		}
 	}
-	if (onePage && bossAttackTime < 0.2f)
+	if (onePage && bossAttackTime < 0.3f)
 	{
-		bossAttackTime = 0.3f;
+		bossAttackTime = 0.5f;
 
 		shootPatternMgr.ChangePattern(rand1);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.ShootBullets();
-
 		shootPatternMgr.ChangePattern(rand2);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
@@ -141,6 +145,8 @@ void Boss::BossMove(float dt)
 	{
 		onePage = false;
 		onePageCk.restart();
+		rand1 = -1;
+		rand2 = -1;
 	}*/
 
 	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad0) && bossAttackTime < 0.2f)
@@ -150,7 +156,7 @@ void Boss::BossMove(float dt)
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.ShootBullets();
-		
+
 	}
 
 	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad1) && bossAttackTime < 0.2f)
@@ -161,7 +167,7 @@ void Boss::BossMove(float dt)
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
-		
+
 	}
 
 	if (INPUT_MGR.GetKey(sf::Keyboard::Numpad2) && bossAttackTime < 0.2f)
@@ -190,7 +196,7 @@ void Boss::BossMove(float dt)
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
-		
+
 	}
 	if (INPUT_MGR.GetKey(sf::Keyboard::Num2) && bossAttackTime < 0.2f)
 	{
@@ -200,7 +206,7 @@ void Boss::BossMove(float dt)
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.ShootBullets();
-	
+
 	}
 	//
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num3))
@@ -220,13 +226,8 @@ void Boss::BossMove(float dt)
 	}
 	if (testShootBullet)
 	{
-		//shootPatternMgr.ChangePattern(6);
-		//shootPatternMgr.SetCharacterAll(player, this);
-
 		if (bossAtk < 0.f && count != maxCount)
 		{
-			//shootPatternMgr.Update(dt);
-
 			Scene* scene = SCENE_MGR.GetCurrScene();
 			SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
 			float angleInterval = 360.f / maxCount;
@@ -244,21 +245,145 @@ void Boss::BossMove(float dt)
 			++count;
 			bossAtk = delay;
 		}
-
 	}
-	if (count == maxCount && testShootBullet)
+	if ((count == maxCount) && testShootBullet)
 	{
 		testShootBullet = false;
 		count = 0;
 	}
 
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num4))
+	{
+		int i, j;
+
+		for (i = 1;i <= 3;i++) {			//행 지정
+			for (j = 2;j >= i;j--) {		//공백 출력
+				printf(" ");
+			}
+			for (j = 1;j <= i * 2 - 1;j++) {		//별 출력
+				printf("*");
+			}
+			printf("\n");
+		}
+	}
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num5)) // 원형으로 내려감
+	{
+		Scene* scene = SCENE_MGR.GetCurrScene();
+		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
+		int bulletCount = 50;
+		float triangleWidth = 50.f;
+		float triangleHeight = 50.f;
+		float angleInterval = 360.f / bulletCount;
+		for (int i = 0; i < bulletCount; i++)
+		{
+			float angle = angleInterval * i;
+			float xOffset = std::cos(Utils::DegreesToRadians(angle)) * triangleWidth;
+			float yOffset = std::sin(Utils::DegreesToRadians(angle)) * triangleHeight;
+			Shoot* shoot = bossShootPool.Get();
+			shoot->SetPlayer(player);
+			shoot->SetPattenInfo(Shoot::NoramalPatten::SectorType, position + sf::Vector2f(xOffset, yOffset),angle,  "BossNormalShooting1"); // angle 값 가능
+			shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
+			if (sceneGame != nullptr)
+			{
+				sceneGame->AddGo(shoot);
+			}
+		}
+	}
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num6))
+	{
+		Scene* scene = SCENE_MGR.GetCurrScene();
+		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
+		int bulletCount = 3; 
+		float triangleHeight = 100.f; 
+		float startingYPos = 0.f; 
+		float angleInterval = 360.f / bulletCount;
+		for (int i = 0; i < bulletCount; i++)
+		{
+			float angle = angleInterval * i;
+			Shoot* shoot = bossShootPool.Get();
+			shoot->SetPlayer(player);
+			shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
+			sf::Vector2f vertex1 = position;
+			sf::Vector2f vertex2 = position + sf::Vector2f(triangleHeight * 0.5f, triangleHeight);
+			sf::Vector2f vertex3 = position + sf::Vector2f(-triangleHeight * 0.5f, triangleHeight);
+			sf::Vector2f bulletPos = vertex1 + ((vertex2 - vertex1) * (static_cast<float>(i) / (bulletCount - 1)));
+			shoot->SetPattenInfo(Shoot::NoramalPatten::ColumnType, bulletPos,  "BossNormalShooting1");
+
+
+			Shoot* shoot2 = bossShootPool.Get();
+			shoot2->SetPlayer(player);
+			shoot2->SetWallBounds(WallBounds, bgWidth, bgHeight);
+			sf::Vector2f vertex1Left = position;
+			sf::Vector2f vertex2Left = position + sf::Vector2f(-triangleHeight * 0.5f, triangleHeight);
+			sf::Vector2f vertex3Left = position + sf::Vector2f(triangleHeight * 0.5f, triangleHeight);
+			sf::Vector2f bulletPosLeft = vertex1Left + ((vertex2Left - vertex1Left) * (static_cast<float>(i) / (bulletCount - 1)));
+			shoot2->SetPattenInfo(Shoot::NoramalPatten::ColumnType, bulletPosLeft,  "BossNormalShooting1");
+			if (sceneGame != nullptr)
+			{
+				sceneGame->AddGo(shoot);
+				sceneGame->AddGo(shoot2);
+			}
+			int totalLineBullets = bulletCount * 2 - 1;
+			startingYPos = bulletPosLeft.y;
+			if (i == bulletCount - 1)
+			{
+
+				for (int j = 1; j < totalLineBullets;++j)
+				{
+					Shoot* line = bossShootPool.Get();
+					line->SetPlayer(player);
+					line->SetWallBounds(WallBounds, bgWidth, bgHeight);
+					sf::Vector2f vertex1Left1 = bulletPosLeft;
+					sf::Vector2f vertex2Left2 = bulletPosLeft + sf::Vector2f(-triangleHeight, triangleHeight);
+					sf::Vector2f vertex3Left3 = bulletPosLeft + sf::Vector2f(triangleHeight, triangleHeight);
+					sf::Vector2f bulletPosLine = vertex1Left1 + ((vertex3Left3 - vertex1Left1) * (static_cast<float>(j) / (totalLineBullets - 1)));
+					bulletPosLine.y = startingYPos;
+					line->SetPattenInfo(Shoot::NoramalPatten::ColumnType, bulletPosLine,  "BossNormalShooting1");
+					if (sceneGame != nullptr)
+					{
+						sceneGame->AddGo(line);
+					}
+				}
+			}
+		}
+	}
+
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num7))
+	{
+		std::string str = "BossNormalShooting1";
+		Scene* scene = SCENE_MGR.GetCurrScene();
+		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
+		Shoot* shoot = bossShootPool.Get();
+		shoot->SetPlayer(player);
+		sf::Vector2f playerPosition = player->GetPosition();
+		sf::Vector2f shootDirection = playerPosition - GetPosition();
+		float angle = Utils::Angle(shootDirection.y, playerPosition.x);
+		if (count >= 1)
+		{
+			if (count % 2 == 1)
+				angle += Utils::DegreesToRadians(10.0f * (count / 2 + 1)); // 1 2 
+			else if (count % 2 == 0)
+				angle += Utils::DegreesToRadians(-10.0f * (count / 2)); // 1 2
+		}
+		shoot->SetPattenInfo(Shoot::NoramalPatten::SectorType, GetPosition(), angle, str);
+		shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
+		shoot->sortLayer = -1;
+		if (sceneGame != nullptr)
+		{
+			sceneGame->AddGo(shoot);
+		}
+	}
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Space))
+	{
+		std::cout << bossHp << std::endl;
+	}
 }
 
 bool Boss::CheckCollisionWithBullet(const Shoot& bullet)
 {
 	if (sprite.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
 	{
-		std::cout << "isCollied Boss" << std::endl;
+		bossHp--;
 		return true;
 	}
 	return false;
@@ -273,18 +398,23 @@ void Boss::SetWallBounds(sf::Vector2f boundf, float widthX, float widthY)
 
 sf::Vector2f Boss::CalculateBezierPoint(const sf::Vector2f& p0, const sf::Vector2f& p1, const sf::Vector2f& p2, const sf::Vector2f& p3, float t)
 {
-		float u = 1.0f - t;
-		float tt = t * t;
-		float uu = u * u;
-		float uuu = uu * u;
-		float ttt = tt * t;
+	// p0 현재 시작점
+	// p1 거치는 지점 ?1
+	// p2  거치는 지점 2
+	// p3 도착지점
+	// t 시간 ?
+	float u = 1.0f - t;
+	float tt = t * t;
+	float uu = u * u;
+	float uuu = uu * u;
+	float ttt = tt * t;
 
-		sf::Vector2f p = uuu * p0; // (1-t)^3 * P0
-		p += 3 * uu * t * p1;      // 3 * (1-t)^2 * t * P1
-		p += 3 * u * tt * p2;      // 3 * (1-t) * t^2 * P2
-		p += ttt * p3;             // t^3 * P3
+	sf::Vector2f p = uuu * p0;
+	p += 3 * uu * t * p1;     
+	p += 3 * u * tt * p2;     
+	p += ttt * p3;    
 
-		return p;
+	return p;
 }
 
 

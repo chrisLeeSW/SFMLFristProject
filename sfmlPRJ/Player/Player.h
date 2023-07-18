@@ -4,6 +4,7 @@
 #include "Shoot.h"
 
 class Boss;
+class SoundGo;
 class Player :public SpriteGo
 {
 
@@ -23,10 +24,12 @@ protected:
 
 	Boss* boss;
 
-
 	sf::Vector2f WallBounds;
 	float bgWidth;
 	float bgHeight;
+
+	SoundGo* playerShoot;
+	float soundVolum;
 public:
 	Player(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId, n) {}
 	virtual ~Player() override { Release(); }

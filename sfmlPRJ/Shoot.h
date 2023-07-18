@@ -26,6 +26,7 @@ public:
 		ColumnType,
 		RowRightType,
 		RowLeftType,
+		testcode,
 	};
 	enum class UniqueType
 	{
@@ -57,6 +58,7 @@ public:
 	void PlayerFire(sf::Vector2f pos); //CharceterType type,float angle
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId);
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float freq, float amp);
+	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId);
 
 	void BossNormalFire(sf::Vector2f pos,float angle,std::string clipName);
 	void BossNormalFirePatten1(sf::Vector2f pos, float angle, std::string clipName);
@@ -99,7 +101,7 @@ protected:
 	UniqueType uniqueType = UniqueType::None;
 	NormalPattenInfo pattenInfo;
 	
-	bool testCode = false;
+	bool checkFireType = false;
 
 	float frequency;
 	float amplitude;

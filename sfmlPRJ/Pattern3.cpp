@@ -7,43 +7,35 @@
 Pattern3::Pattern3()
 {
 	bossShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->SetBoss(boss);
+		//bullet->SetBoss(boss);
 		bullet->pool = &bossShootPool;
 	};
+	bossShootPool.Init();
 }
 
 void Pattern3::ShootBullets()
 {
-    Scene* scene = SCENE_MGR.GetCurrScene();
-    SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-    int shootCount = 1;
-    float minFrequency = 2.f;  // 최소 주파수
-    float maxFrequency = 50.f;  // 최대 주파수
-    float amplitude = 100.f;   // 진폭
+	Scene* scene = SCENE_MGR.GetCurrScene();
+	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
+	float minFrequency = 2.f;
+	float maxFrequency = 200.f;
+	float amplitude = 100.f;
+	Shoot* shoot = bossShootPool.Get();
+	shoot->SetPlayer(player);
 
-    for (int count = 0; count < shootCount; ++count)
-    {
-        Shoot* shoot = bossShootPool.Get();
-        shoot->SetPlayer(player);
+	sf::Vector2f playerPosition = player->GetPosition();
+	sf::Vector2f shootDirection = playerPosition - boss->GetPosition();
+	float angle = Utils::Angle(shootDirection.y, playerPosition.x);
+	float frequency = minFrequency + static_cast<float>(1) / (maxFrequency - minFrequency);
 
-        sf::Vector2f playerPosition = player->GetPosition();
-        sf::Vector2f shootDirection = playerPosition - boss->GetPosition();
-        float angle = Utils::Angle(shootDirection.y, playerPosition.x);
-        float frequency = minFrequency + static_cast<float>(count) / shootCount * (maxFrequency - minFrequency);
-       
-      
-        angle += Utils::DegreesToRadians(10.f * (count));
-       // angle += std::sin(frequency * count) * amplitude;
 
-        shoot->SetPattenInfo(Shoot::NoramalPatten::FrequencyType, boss->GetPosition(), angle, "BossNormalShooting1", minFrequency, maxFrequency);
-        shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
-        shoot->sortLayer = -1;
-        if (sceneGame != nullptr)
-        {
-            sceneGame->AddGo(shoot);
-        }
-    }
-
+	shoot->SetPattenInfo(Shoot::NoramalPatten::FrequencyType, boss->GetPosition(), angle, "BossNormalShooting1", minFrequency, maxFrequency);
+	shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
+	shoot->sortLayer = -1;
+	if (sceneGame != nullptr)
+	{
+		sceneGame->AddGo(shoot);
+	}
 }
 
 void Pattern3::Update(float dt)
@@ -52,7 +44,7 @@ void Pattern3::Update(float dt)
 
 void Pattern3::SetWallBounds(sf::Vector2f pos, float width, float height)
 {
-    wallBounds = pos;
-    imgWidth = width;
-    imgHeight = height;
+	wallBounds = pos;
+	imgWidth = width;
+	imgHeight = height;
 }

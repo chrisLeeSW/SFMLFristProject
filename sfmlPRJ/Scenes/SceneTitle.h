@@ -2,13 +2,14 @@
 #include "Scene.h"
 class SpriteGo;
 class TextGo;
+class SoundGo;
 class SceneTitle :public Scene
 {
 protected:
-	sf::Vector2f mousePos;
 	SpriteGo* backGroundGame;
-	TextGo* gameStartText;
+	SoundGo* titleSound;
 
+	
 public:
 	SceneTitle();
 	virtual ~SceneTitle() override = default;

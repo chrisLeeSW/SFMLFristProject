@@ -10,6 +10,7 @@ Pattern6::Pattern6()
 		bullet->SetBoss(boss);
 		bullet->pool = &bossShootPool;
 	};
+    bossShootPool.Init();
 }
 
 void Pattern6::ShootBullets()

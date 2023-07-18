@@ -33,7 +33,6 @@ void Pattern1::ShootBullets()
 			else if (count % 2 == 0)
 				angle += Utils::DegreesToRadians(-10.0f * (count / 2)); // 1 2
 		}
-		//shoot->BossNormalFire(boss->GetPosition(), angle, "BossNormalShooting1");
 		shoot->SetPattenInfo(Shoot::NoramalPatten::SectorType, boss->GetPosition(), angle, str);
 		shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
 		shoot->sortLayer = -1;

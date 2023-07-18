@@ -27,7 +27,7 @@ void Shoot::Release()
 void Shoot::Reset()
 {
 	animation.Play("Shooting");
-	testCode = false;
+	checkFireType = false;
 
 	testUnique = false;
 	SpriteGo::Reset();
@@ -81,14 +81,11 @@ void Shoot::Update(float dt)
 	if (pattenInfo.pattenType == NoramalPatten::FrequencyType)
 	{
 		pattenInfo.speed = 1000.f;
-	}
+	} // 옮길 예정
 	if (pattenInfo.pattenType == NoramalPatten::FrequencyType)
 	{
 		position.x = pattenInfo.pos.x + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude;
 		position.y += direction.y * pattenInfo.speed * dt;
-		//position.x += direction.x * speed * dt; 
-		 //position.y = pattenInfo.pos.y + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude; 
-		//position.y += direction.y * speed * dt;
 	}
 	else
 	{
@@ -119,7 +116,10 @@ void Shoot::Update(float dt)
 		pool->Return(this);
 	}
 	
-
+	if (INPUT_MGR.GetKey(sf::Keyboard::Tab))
+	{
+		pool->Clear();
+	}
 	SpriteGo::Update(dt);
 }
 
@@ -130,7 +130,7 @@ void Shoot::Draw(sf::RenderWindow& window)
 
 void Shoot::BossFire(float dt)
 {
-	if (!testCode)
+	if (!checkFireType)
 	{
 		switch (pattenInfo.pattenType)
 		{
@@ -152,7 +152,6 @@ void Shoot::BossFire(float dt)
 		case NoramalPatten::FrequencyType:
 		{
 			SetPosition(pattenInfo.pos);
-			//direction = sf::Vector2f(std::cos(pattenInfo.angle), std::sin(pattenInfo.angle));
 			direction = { 1.f,0.1f };
 			animation.Play(pattenInfo.animationClipId);
 		}
@@ -178,8 +177,15 @@ void Shoot::BossFire(float dt)
 			animation.Play(pattenInfo.animationClipId);
 		}
 		break;
+		case NoramalPatten::testcode:
+		{
+			SetPosition(pattenInfo.pos);
+			direction = { 0.f,1.f };
+			animation.Play(pattenInfo.animationClipId);
 		}
-		testCode = true;
+		break;
+		}
+		checkFireType = true;
 	}
 	if (player->CheckCollisionWithBullet(*this))
 	{
@@ -239,6 +245,14 @@ void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angl
 	pattenInfo.animationClipId = clipId;
 	pattenInfo.frequency = freq;
 	pattenInfo.amplitude = ampl;
+}
+
+void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId)
+{
+	type = CharceterType::Boss;
+	pattenInfo.pattenType = pattenType;
+	pattenInfo.pos = pos;
+	pattenInfo.animationClipId = clipId;
 }
 
 /*

@@ -39,6 +39,7 @@ protected:
 	float delay=0.05f;
 	int count;
 	int maxCount = 30;
+	int maxCount2 = 3;
 	sf::Vector2f poolShootPos;
 	//
 public:

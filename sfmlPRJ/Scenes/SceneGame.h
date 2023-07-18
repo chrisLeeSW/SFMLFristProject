@@ -3,7 +3,8 @@
 class Player;
 class Boss;
 class SpriteGo;
-
+class TextGo;
+class SoundGo;
 class SceneGame : public Scene
 {
 protected:
@@ -15,9 +16,16 @@ protected:
 	SpriteGo* titleNameHong;
 	sf::Vector2f gameWallSize;
 
+	bool isTalking;
+	SpriteGo* cirnoTalking;
+	sf::RectangleShape shape;
+	TextGo* talk;
+
 	sf::Clock clock;
 	sf::Time frameTime;
 	int frames = 0;
+
+	SoundGo* music1;
 public:
 	SceneGame();
 	virtual ~SceneGame() override = default;
