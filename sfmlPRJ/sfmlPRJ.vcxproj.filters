@@ -102,7 +102,7 @@
     <ClCompile Include="ShootPattern\Pattern2.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Pattern3.cpp">
+    <ClCompile Include="ShootPattern\Pattern3.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ShootPattern\Pattern4.cpp">
@@ -117,7 +117,16 @@
     <ClCompile Include="Pattern7.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="UniqueShootMGR.cpp">
+    <ClCompile Include="UniqueType\UniqueShootMGR.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UniqueType\UniquPattern1.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteFont\SpriteFont.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteFontController.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -221,7 +230,7 @@
     <ClInclude Include="ShootPattern\Pattern2.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Pattern3.h">
+    <ClInclude Include="ShootPattern\Pattern3.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ShootPattern\Pattern4.h">
@@ -236,7 +245,16 @@
     <ClInclude Include="Pattern7.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="UniqueShootMGR.h">
+    <ClInclude Include="UniqueType\UniqueShootMGR.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UniqueType\UniquPattern1.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteFont\SpriteFont.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteFontController.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

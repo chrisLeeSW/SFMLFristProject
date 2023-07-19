@@ -3,10 +3,10 @@
 #include "Player.h"
 #include "Boss.h"
 
-#include "Pattern7.h"
+#include "UniquPattern1.h"
 UniqueShootMGR::UniqueShootMGR()
 {
-	//patterns.push_back(new Pattern7());
+	patterns.push_back(new UniquPattern1());
 }
 
 UniqueShootMGR::~UniqueShootMGR()
@@ -33,15 +33,19 @@ void UniqueShootMGR::ChangePattern(int patternIndex)
 
 void UniqueShootMGR::Update(float dt)
 {
-    patterns[currentPatternIndex]->ShootBullets();
+    patterns[currentPatternIndex]->Update(dt);
 }
 
 void UniqueShootMGR::ShootBullets()
 {
-    patterns[currentPatternIndex]->SetCharceterAll(player, boss);
+    patterns[currentPatternIndex]->ShootBullets();
 }
 
 void UniqueShootMGR::SetCharacterAll(Player* player, Boss* boss)
 {
     patterns[currentPatternIndex]->SetCharceterAll(player, boss);
+}
+void UniqueShootMGR::SetWallBounds(sf::Vector2f pos, float width, float height)
+{
+    patterns[currentPatternIndex]->SetWallBounds(pos, width, height);
 }

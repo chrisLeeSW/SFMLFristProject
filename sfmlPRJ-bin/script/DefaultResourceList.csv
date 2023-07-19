@@ -1,4 +1,4 @@
-"RESOURCE_TYPE(0: 텍스처 , 1: 폰트,2: 사운드 클립 3: 애니메이션 클립",RESOURCE_PATH
+"RESOURCE_TYPE(0: 텍스처 , 1: 폰트,2: 사운드 클립 3: 애니메이션 클립, 4:Sprite Font",RESOURCE_PATH
 0,graphics/TouhouPlayer.png
 3,Animations/Player_Ani_Idel.csv
 3,Animations/Player_Ani_Move.csv
@@ -20,3 +20,6 @@
 1,fonts/neodgm.ttf
 2,Sounds/playerTan.wav
 2,Sounds/1Page.wav
+0,graphics/touhou_font.png
+4,script/SpriteFont.csv
+2,Sounds/치르노의-퍼펙트-산수-교실-풀버전.wav

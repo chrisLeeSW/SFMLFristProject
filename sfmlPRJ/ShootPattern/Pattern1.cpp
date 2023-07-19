@@ -23,9 +23,7 @@ void Pattern1::ShootBullets()
 	{
 		Shoot* shoot = bossShootPool.Get();
 		shoot->SetPlayer(player);
-		sf::Vector2f playerPosition = player->GetPosition();
-		sf::Vector2f shootDirection = playerPosition - boss->GetPosition();
-		float angle = Utils::Angle(shootDirection.y, playerPosition.x);
+		float angle = Utils::DegreesToRadians(90.f);
 		if (count >= 1)
 		{
 			if (count % 2 == 1)
@@ -33,7 +31,7 @@ void Pattern1::ShootBullets()
 			else if (count % 2 == 0)
 				angle += Utils::DegreesToRadians(-10.0f * (count / 2)); // 1 2
 		}
-		shoot->SetPattenInfo(Shoot::NoramalPatten::SectorType, boss->GetPosition(), angle, str);
+		shoot->SetPattenInfo(Shoot::NoramalPatten::SectorType, boss->GetPosition(), angle, str,250.f);
 		shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
 		shoot->sortLayer = -1;
 		if (sceneGame != nullptr)

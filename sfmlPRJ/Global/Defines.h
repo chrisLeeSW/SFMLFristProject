@@ -30,6 +30,7 @@ enum class ResourceTypes
 	Font,
 	SoundBuffer,
 	AimationClip,
+	SpriteFont,
 };
 
 enum class SceneId

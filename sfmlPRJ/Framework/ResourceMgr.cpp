@@ -141,18 +141,21 @@ void ResourceMgr::Load(ResourceTypes t, const std::string path, bool isDefault)
 		}
 	}
 	break;
+	case ResourceTypes::SpriteFont:
+	{
+		auto it = mapSpriteFont.find(path);
+		if (mapSpriteFont.end() == it)
+		{
+			auto clip = new SpriteFont();
+			bool check = clip->LoadFromFile(path);
+			mapSpriteFont.insert({ path,{clip,isDefault} });
+		}
+	}
+	break;
 	}
 
 
 }
-
-//void ResourceMgr::Load(const std::vector<std::tuple<ResourceTypes, std::string>>& array)
-//{
-//	for (const auto& tuple : array)
-//	{
-//		Load(std::get<0>(tuple), std::get<1>(tuple));
-//	}
-//}
 
 void ResourceMgr::Unload(ResourceTypes t, const std::string id)
 {
@@ -227,6 +230,23 @@ void ResourceMgr::Unload(ResourceTypes t, const std::string id)
 		}
 	}
 	break;
+	case ResourceTypes::SpriteFont:
+	{
+		auto it = mapSpriteFont.find(id);
+		if (it != mapSpriteFont.end())
+		{
+			if (!std::get<1>(it->second))
+			{
+				delete std::get<0>(it->second);
+				mapSpriteFont.erase(it);
+			}
+			else
+			{
+				std::cout << "ERR : Default Resource" << std::endl;
+			}
+		}
+	}
+	break;
 	}
 }
 //
@@ -272,6 +292,17 @@ AnimationClip* ResourceMgr::GetAnimationClip(const std::string& id)
 {
 	auto it = mapAnimationClip.find(id);
 	if (it != mapAnimationClip.end())
+	{
+
+		return  std::get<0>(it->second);
+	}
+	return nullptr;
+}
+
+SpriteFont* ResourceMgr::GetSpriteFontClip(const std::string& id)
+{
+	auto it = mapSpriteFont.find(id);
+	if (it != mapSpriteFont.end())
 	{
 
 		return  std::get<0>(it->second);

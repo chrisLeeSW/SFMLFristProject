@@ -18,7 +18,7 @@ void Player::Init()
 		bullet->pool = &playerShootPool;
 	};
 	playerShootPool.Init();
-	hitboxCircle.setRadius(2.5f);
+	hitboxCircle.setRadius(1.5f);
 	hitboxCircle.setFillColor(sf::Color::Yellow);
 	Utils::SetOrigin(hitboxCircle, Origins::MC);
 
@@ -39,6 +39,7 @@ void Player::Reset()
 	hitboxCircle.setPosition(position);
 	Utils::SetOrigin(hitboxCircle, Origins::MC);
 	soundVolum = 50.f;
+	damage = 0.5f;
 }
 
 void Player::Update(float dt)
@@ -66,7 +67,7 @@ void Player::PlayerMove(float dt)
 	}
 	if (INPUT_MGR.GetKey(sf::Keyboard::LShift) || INPUT_MGR.GetKey(sf::Keyboard::RShift))
 	{
-		speed = 200.f;
+		speed = 100.f;
 	}
 	else
 	{
@@ -137,28 +138,30 @@ void Player::PlayerShoot(float dt)
 		int count = 0;
 		while (count < 3)
 		{
+
 			Shoot* shoot = playerShootPool.Get();
 			std::string str = "Shooting"; 
 			shoot->SetAnimationId(str); 
 			shoot->SetBoss(boss);
+			sf::Vector2f dir = Utils::Normalize(boss->GetPosition()- GetPosition());
 			if (count == 0)
-				shoot->PlayerFire(GetPosition() );
+				shoot->PlayerFire(GetPosition(), dir);
 			else if (count == 1)
 			{
-				shoot->PlayerFire(GetPosition() + sf::Vector2f{ 20.f * count ,0.f * count });
+				shoot->PlayerFire(GetPosition() + sf::Vector2f{ 20.f * count ,0.f * count }, dir);
 			}
 			else if (count == 2)
 			{
-				shoot->PlayerFire(GetPosition()  + sf::Vector2f{ -20.f * 0.5f *  count ,0.f * count });
+				shoot->PlayerFire(GetPosition()  + sf::Vector2f{ -20.f * 0.5f *  count ,0.f * count }, dir);
 			}
 			else if (count>=3)
 			{
 				if (count % 2 == 1)
 				{
-					shoot->PlayerFire(GetPosition()  + sf::Vector2f{20.f * (count/2+1) ,0.f * count });
+					shoot->PlayerFire(GetPosition()  + sf::Vector2f{20.f * (count/2+1) ,0.f * count }, dir);
 				}
 				else if (count % 2 == 0)
-					shoot->PlayerFire(GetPosition()  + sf::Vector2f{ -20.f  * (count/2) ,0.f * count });
+					shoot->PlayerFire(GetPosition()  + sf::Vector2f{ -20.f  * (count/2) ,0.f * count }, dir);
 			}
 			shoot->sortLayer = 2;
 			shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
@@ -168,7 +171,6 @@ void Player::PlayerShoot(float dt)
 			}
 			count++;
 		}
-		
 	}
 
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num1) && hitboxDraw)

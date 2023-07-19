@@ -1,6 +1,6 @@
 #pragma once
 #include "Singleton.h"
-
+#include "SpriteFont.h"
 class ResourceMgr : public Singleton<ResourceMgr>
 {
 	friend Singleton<ResourceMgr>;
@@ -13,7 +13,7 @@ protected:
 	std::map<std::string, std::tuple<sf::Font*,bool>> mapFont;
 	std::map<std::string, std::tuple<sf::SoundBuffer*,bool>> mapSoundBuffer;
 	std::map<std::string, std::tuple<AnimationClip*,bool>> mapAnimationClip;
-
+	std::map<std::string, std::tuple<SpriteFont*, bool>> mapSpriteFont;
 
 
 public:
@@ -32,6 +32,7 @@ public:
 	sf::Font* GetFont(const std::string& id);
 	sf::SoundBuffer* GetSoundBuffer(const std::string& id);
 	AnimationClip* GetAnimationClip(const std::string& id);
+	SpriteFont* GetSpriteFontClip(const std::string& id);
 };
 
 #define RESOURCE_MGR (ResourceMgr::Instance())

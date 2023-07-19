@@ -36,7 +36,7 @@ void ShootMGR::ChangePattern(int patternIndex)
     }
     else
     {
-        std::cout << "ERR: Do not use pattern" << std::endl;
+        std::cout << "ERR: isNot pattern" << std::endl;
         return;
     }
 }

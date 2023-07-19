@@ -1,15 +1,18 @@
 #pragma once
 #include "Scene.h"
+#include "SpriteFontController.h"
 class Player;
 class Boss;
 class SpriteGo;
 class TextGo;
 class SoundGo;
+
 class SceneGame : public Scene
 {
 protected:
 	Player* player;
 	Boss* bossCirno;
+	TextGo* bossName;
 	SpriteGo* background;
 	SpriteGo* gameBackground;
 	SpriteGo* miniUi;
@@ -20,14 +23,20 @@ protected:
 	SpriteGo* cirnoTalking;
 	sf::RectangleShape shape;
 	TextGo* talk;
+	sf::RectangleShape hpBar;
+	float hpBarbyX = 0.f;
 
 	sf::Clock clock;
 	sf::Time frameTime;
 	int frames = 0;
 
 	SoundGo* music1;
-
 	float musicVolum = 25.f;
+
+	SpriteFontController spriteFont;
+
+	float soundTime;
+	bool soundPlay;
 public:
 	SceneGame();
 	virtual ~SceneGame() override = default;

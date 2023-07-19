@@ -43,7 +43,8 @@ public:
 		float amplitude=1.f;
 		float speed = 500.f;
 	};
-	Shoot(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId,n){}
+
+	Shoot(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId,n){		}
 	virtual ~Shoot() override { Release();}
 
 	virtual void Init() override;
@@ -55,8 +56,8 @@ public:
 	void BossFire(float dt);
 	void PlayerFire(float dt);
 
-	void PlayerFire(sf::Vector2f pos); //CharceterType type,float angle
-	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId);
+	void PlayerFire(sf::Vector2f pos, sf::Vector2f dir); //CharceterType type,float angle
+	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float speed =500.f);
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float freq, float amp);
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId);
 

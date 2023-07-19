@@ -2,6 +2,7 @@
 class SoundGo
 {
 protected:
+	float soundVolume = 50.f;
 public:
 	sf::String soundbufferfile;
 	sf::SoundBuffer soundbuffer;

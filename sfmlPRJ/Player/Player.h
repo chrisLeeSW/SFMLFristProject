@@ -17,11 +17,11 @@ protected:
 	float speed = 500.f;
 	bool movePlayer = false;
 	bool filpX = false;
-	
+	float damage = 0.5f;
+
 	ObjectPool<Shoot> playerShootPool;
 	float attackTime = 0.8f;
 	bool autoShot = false;
-
 	Boss* boss;
 
 	sf::Vector2f WallBounds;
@@ -48,5 +48,6 @@ public:
 	bool CheckCollisionWithBullet(const Shoot& bullet);
 	
 	void SetWallBounds(sf::Vector2f boundf, float widthX, float widthY);
+	float GetGetPlayerDamage() { return damage; }
 };
 

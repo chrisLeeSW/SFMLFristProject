@@ -18,19 +18,18 @@ void Pattern4::ShootBullets()
 {
     Scene* scene = SCENE_MGR.GetCurrScene();
     SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-    int shootCount = 20;
+    int shootCount = 7;
     // 게임 벽 만든후 하나 추가할 예정  ↓
     float minXWall = wallBounds.x;
-    float maxXWall = imgWidth;
+    float maxXWall = imgWidth*0.5f;
     if (minXWall < 0.f)     minXWall = -minXWall;
     float distanceWall = minXWall + maxXWall;
     float space = distanceWall / shootCount;
-    float start = wallBounds.x + space;
     for (int count = 0; count < shootCount; ++count)
     {
         Shoot* shoot = bossShootPool.Get();
         shoot->SetPlayer(player);
-        shoot->SetPattenInfo(Shoot::NoramalPatten::ColumnType, sf::Vector2f{ wallBounds.x+space+(space/2 *count),boss->GetPosition().y}, 0.f, "BossNormalShooting1");
+        shoot->SetPattenInfo(Shoot::NoramalPatten::ColumnType, sf::Vector2f{ wallBounds.x+20.f +(space *count),boss->GetPosition().y}, 0.f, "BossNormalShooting1");
         shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
         shoot->sortLayer = -1;
 

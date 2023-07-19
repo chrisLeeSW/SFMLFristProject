@@ -19,6 +19,6 @@ public:
     void Update(float dt);
     void ShootBullets();
     void SetCharacterAll(Player* player, Boss* boss);
-  
+    void SetWallBounds(sf::Vector2f pos, float width, float height);
 };
 

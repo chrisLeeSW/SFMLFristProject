@@ -39,30 +39,11 @@ void Shoot::Update(float dt)
 	if (type == CharceterType::Player)
 	{
 		PlayerFire(dt);
-		/*if (position.y <= -600.f)
-		{
-			pool->Return(this);
-			std::cout << "Realse" << std::endl;
-		}
-		if (boss->CheckCollisionWithBullet(*this))
-		{
-			pool->Return(this);
-		}*/
 	}
 	if (type == CharceterType::Boss)
 	{
-		/*if (position.y >= 600.f)
-		{
-			pool->Return(this);
-		}
-		if (player->CheckCollisionWithBullet(*this))
-		{
-			pool->Return(this);
-		}*/
 		BossFire(dt);
 	}
-	//velocity += acceleration * dt;
-//
 	if (uniqueType == UniqueType::TornadoType && position.y >= 0.f)
 	{
 		testUnique = true;
@@ -75,13 +56,7 @@ void Shoot::Update(float dt)
 		uniqueType = UniqueType::None;
 		pool->Return(this);
 	}
-//
-
-
-	if (pattenInfo.pattenType == NoramalPatten::FrequencyType)
-	{
-		pattenInfo.speed = 1000.f;
-	} // 옮길 예정
+ 
 	if (pattenInfo.pattenType == NoramalPatten::FrequencyType)
 	{
 		position.x = pattenInfo.pos.x + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude;
@@ -90,7 +65,6 @@ void Shoot::Update(float dt)
 	else
 	{
 		position += direction * pattenInfo.speed * dt;
-		position += velocity * dt;
 	}
 
 
@@ -98,22 +72,29 @@ void Shoot::Update(float dt)
 	sprite.setPosition(position);
 	animation.Update(dt);
 
-	if (position.y - sprite.getGlobalBounds().height * 0.5f < WallBounds.y - sprite.getGlobalBounds().height * 0.5) //(position.y <= -600.f)
+	if (position.y - sprite.getGlobalBounds().height * 0.5f < WallBounds.y - sprite.getGlobalBounds().height * 0.5)
 	{
 		pool->Return(this);
-	
+		Scene* scene = SCENE_MGR.GetCurrScene();
+		scene->RemoveGo(this);
 	}
 	else if (position.y + sprite.getGlobalBounds().height * 0.5f > WallBounds.y + bgHeight)
 	{
 		pool->Return(this);
+		Scene* scene = SCENE_MGR.GetCurrScene();
+		scene->RemoveGo(this);
 	}
 	else if (position.x - sprite.getGlobalBounds().width * 0.5f < WallBounds.x-20.f)
 	{
 		pool->Return(this);
+		Scene* scene = SCENE_MGR.GetCurrScene();
+		scene->RemoveGo(this);
 	}
 	else if (position.x + sprite.getGlobalBounds().width * 0.5f > WallBounds.x + bgWidth +20.f)
 	{
 		pool->Return(this);
+		Scene* scene = SCENE_MGR.GetCurrScene();
+		scene->RemoveGo(this);
 	}
 	
 	if (INPUT_MGR.GetKey(sf::Keyboard::Tab))
@@ -190,50 +171,41 @@ void Shoot::BossFire(float dt)
 	if (player->CheckCollisionWithBullet(*this))
 	{
 		pool->Return(this);
+		Scene* scene = SCENE_MGR.GetCurrScene();
+		scene->RemoveGo(this);
 	}
 }
 
 void Shoot::PlayerFire(float dt)
 {
-	if(position.y-sprite.getGlobalBounds().height*0.5f < WallBounds.y - sprite.getGlobalBounds().height*0.5) //(position.y <= -600.f)
-	{
-		pool->Return(this);
-		std::cout << "Realse y" << std::endl;
-	}
-	else if (position.x - sprite.getGlobalBounds().width * 0.5f < WallBounds.x)
-	{
-		pool->Return(this);
-		std::cout << "Realse X" << std::endl;
-	}
-	else if (position.x + sprite.getGlobalBounds().width * 0.5f > WallBounds.x + bgWidth)
-	{
-		pool->Return(this);
-		std::cout << "Realse d" << std::endl;
-	}
 	if (boss->CheckCollisionWithBullet(*this))
 	{
 		pool->Return(this);
+		Scene* scene = SCENE_MGR.GetCurrScene();
+		scene->RemoveGo(this);
 	}
-	//position += direction * speed * dt;
+	
 }
 
-void Shoot::PlayerFire(sf::Vector2f pos)
+void Shoot::PlayerFire(sf::Vector2f pos , sf::Vector2f dir)
 {
 
 	type = CharceterType::Player;
 	SetPosition(pos);
-	direction = sf::Vector2f{ 0.f,-1.f };
+	//direction = sf::Vector2f{ 0.f,-1.f };
+	direction = dir;
 	animation.Play(animationId);
 
 }
 
-void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId)
+void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId,float speed)
 {
 	type = CharceterType::Boss;
 	pattenInfo.pattenType = pattenType;
 	pattenInfo.pos = pos;
 	pattenInfo.angle = angle;
 	pattenInfo.animationClipId = clipId;
+	pattenInfo.speed = speed;
 }
 
 void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float freq, float ampl)
