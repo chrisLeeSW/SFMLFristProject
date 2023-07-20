@@ -37,6 +37,7 @@ void Boss::Init()
 	secondPos = sf::Vector2f(-200.f, 0.f);
 
 	attackRand1 =Utils::RandomRange(0, 6);
+
 }
 
 void Boss::Release()
@@ -161,8 +162,6 @@ void Boss::BossFireUcnique(float dt)
 		uniqueshootPatternMgr.SetCharacterAll(player, this);
 		uniqueshootPatternMgr.ShootBullets();
 	}
-
-	
 }
 
 void Boss::BossFireNormal(float dt)
@@ -198,9 +197,11 @@ void Boss::BossFireNormal(float dt)
 
 bool Boss::CheckCollisionWithBullet(const Shoot& bullet)
 {
+
 	if (sprite.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
 	{
 		bossHp -= player->GetGetPlayerDamage();
+		
 		return true;
 	}
 	return false;

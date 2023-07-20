@@ -52,14 +52,14 @@ void SceneGame::Init()
 
 	talk = (TextGo*)AddGo(new TextGo("fonts/neodgm.ttf"));
 	talk->text.setCharacterSize(30);
-	std::wstring tex = L"바보가 아니다"; //
+	std::wstring tex = L"바보가 아니다"; // que로 대화 하게 해볼 예정..
 	talk->text.setString(tex);
 	talk->SetOrigin(Origins::ML);
 	talk->text.setFillColor(sf::Color::Blue);
 	talk->SetPosition(-450.f, 200.f);
 
 	hpBar.setFillColor(sf::Color::Yellow);
-	hpBar.setPosition({gameWallSize.x,gameWallSize.y -10.f });
+	hpBar.setPosition({ gameWallSize.x,gameWallSize.y - 10.f });
 	Utils::SetOrigin(hpBar, Origins::ML);
 	hpBarbyX = gameWallSize.x;
 
@@ -71,12 +71,35 @@ void SceneGame::Init()
 	bossName->text.setFillColor(sf::Color::Blue);
 	bossName->SetOrigin(Origins::ML);
 	bossName->SetPosition(gameWallSize.x, gameWallSize.y - 30.f);
-	
+
 
 	//music1 = new SoundGo("Sounds/치르노의-퍼펙트-산수-교실-풀버전.wav");
-	
-	
-	//spriteFont.AddFont(*RESOURCE_MGR.GetSpriteFontClip("script/SpriteFont.csv"));
+
+	{
+
+		numberFont.push_back({ 231,5,10,10 });
+		numberFont.push_back({ 246,5,8,10 });
+		numberFont.push_back({ 7,19,10,10 });
+		numberFont.push_back({ 22,19,9,10 });
+		numberFont.push_back({ 35,19,10,10 });
+		numberFont.push_back({ 49,19,10,10 });
+		numberFont.push_back({ 63,19,10,10 });
+		numberFont.push_back({ 77,19,10,10 });
+		numberFont.push_back({ 92,19,9,10 });
+		numberFont.push_back({ 106,19,9,10 });
+	}
+
+	numberX1Sprite = (SpriteGo*)AddGo(new SpriteGo("graphics/touhou_font.png"));
+	numberX1Sprite->sprite.setTextureRect(numberFont[numberX1Current]);
+	numberX1Sprite->SetPosition(320, -180);
+	numberX2Sprite = (SpriteGo*)AddGo(new SpriteGo("graphics/touhou_font.png"));
+	numberX2Sprite->sprite.setTextureRect(numberFont[numberX2Current]);
+	numberX2Sprite->SetPosition(300, -180);
+
+
+
+
+
 
 	for (auto go : gameObjects)
 	{
@@ -101,13 +124,12 @@ void SceneGame::Enter()
 	uiView.setSize(size);
 	uiView.setCenter(size * 0.5f);
 
-	isTalking = false; 
+	isTalking = true;
 	cirnoTalking = (SpriteGo*)AddGo(new SpriteGo("graphics/cirnoFace.png"));
 	cirnoTalking->sprite.setTextureRect({ 130,14,126,242 });
 	cirnoTalking->SetPosition(gameWallSize.x, FRAMEWORK.GetWindowSize().y * 0.2f);
 	cirnoTalking->SetOrigin(Origins::ML);
 
-	//spriteFont.FindFont("A");
 	//music1->SoundPlayer();
 	Scene::Enter();
 }
@@ -133,6 +155,7 @@ void SceneGame::Update(float dt)
 		std::cout << "FPS :" << fps << std::endl; - > 죽여버림 ;;
 	}*/
 
+
 	if (bossCirno->GetBossDie())
 	{
 		std::cout << "Change Scene Ending creadit" << std::endl;
@@ -141,11 +164,12 @@ void SceneGame::Update(float dt)
 	else
 		hpBar.setSize({ bossCirno->GetBossHp(), 5.f });
 
+
 	/*if (music1->sound.getStatus() != sf::Sound::Playing)
 	{
 		music1->SoundPlayer();
-	}*/
-	/*if (music1->sound.getStatus() != sf::Sound::Playing)
+	}
+	if (music1->sound.getStatus() != sf::Sound::Playing)
 	{
 		soundTime += dt;
 	}
@@ -154,6 +178,7 @@ void SceneGame::Update(float dt)
 		soundTime = 0.f;
 		music1->SoundPlayer();
 	}*/
+
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::F1))
 	{
 		musicVolum += 2.5f;
@@ -162,10 +187,20 @@ void SceneGame::Update(float dt)
 	{
 		musicVolum -= 2.5f;
 	}
-	music1->sound.setVolume(musicVolum);
+	//music1->sound.setVolume(musicVolum);
 
 
-	spriteFont.Update(dt);
+	if (numberX1Current == 10) 
+	{
+		numberX1Current = 0;
+		numberX2Current++;
+	}
+	if (numberX2Current == 10)
+	{
+		numberX2Current = 0;
+	}
+	numberX1Sprite->sprite.setTextureRect(numberFont[numberX1Current]);
+	numberX2Sprite->sprite.setTextureRect(numberFont[numberX2Current]);
 
 	if (isTalking)
 	{

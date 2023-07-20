@@ -91,5 +91,8 @@ private:
 	float bossAttackNoramalPatternChangeTime =0.f;
 
 	bool bossDie = false;
+
+
+	
 };
 

@@ -33,10 +33,18 @@ protected:
 	SoundGo* music1;
 	float musicVolum = 25.f;
 
-	SpriteFontController spriteFont;
-
 	float soundTime;
 	bool soundPlay;
+
+	std::vector<sf::IntRect> numberFont;
+
+	SpriteGo* numberX1Sprite;
+	int numberX1Current=0;
+	SpriteGo* numberX2Sprite;
+	int numberX2Current=0;
+
+	
+
 public:
 	SceneGame();
 	virtual ~SceneGame() override = default;
@@ -49,5 +57,6 @@ public:
 
 	virtual void Update(float dt) override;
 	virtual void Draw(sf::RenderWindow& window) override;
+	void increaseScore() { numberX1Current++; }
 };
 
