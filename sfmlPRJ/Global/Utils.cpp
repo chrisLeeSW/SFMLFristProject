@@ -140,7 +140,7 @@ float Utils::Angle(float a, float b)
 
 float Utils::DegreesToRadians(float angle)
 {
-	return angle * (M_PI / 180.0f);
+	return angle * static_cast<float>(M_PI / 180.0f);
 }
 
 sf::Vector2f Utils::DirectionFromAngle(float angle)

@@ -52,7 +52,7 @@ void Shoot::Update(float dt)
 	}
 	if (testUnique)
 	{
-		testUnique = -testUnique;
+		testUnique = !testUnique;
 		uniqueType = UniqueType::None;
 		pool->Return(this);
 	}
@@ -161,7 +161,6 @@ void Shoot::BossFire(float dt)
 		case NoramalPatten::testcode:
 		{
 			SetPosition(pattenInfo.pos);
-			direction = { 0.f,1.f };
 			animation.Play(pattenInfo.animationClipId);
 		}
 		break;
@@ -224,6 +223,15 @@ void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::strin
 	type = CharceterType::Boss;
 	pattenInfo.pattenType = pattenType;
 	pattenInfo.pos = pos;
+	pattenInfo.animationClipId = clipId;
+}
+
+void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, sf::Vector2f dir, std::string clipId)
+{
+	type = CharceterType::Boss;
+	pattenInfo.pattenType = pattenType;
+	pattenInfo.pos = pos;
+	direction = dir;
 	pattenInfo.animationClipId = clipId;
 }
 

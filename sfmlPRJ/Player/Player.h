@@ -30,6 +30,13 @@ protected:
 
 	SoundGo* playerShoot;
 	float soundVolum;
+
+	int playerLife = 2;
+	bool playerLifeDown = false;
+	float invincibilityTime=0;
+	bool playerDie = false;
+
+
 public:
 	Player(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId, n) {}
 	virtual ~Player() override { Release(); }
@@ -49,5 +56,6 @@ public:
 	
 	void SetWallBounds(sf::Vector2f boundf, float widthX, float widthY);
 	float GetGetPlayerDamage() { return damage; }
+	bool GetPlayerDie() { return playerDie; }
 };
 

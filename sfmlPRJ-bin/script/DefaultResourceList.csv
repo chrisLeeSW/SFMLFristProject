@@ -19,7 +19,21 @@
 1,fonts/THE Nakseo.ttf
 1,fonts/neodgm.ttf
 2,Sounds/playerTan.wav
-2,Sounds/1Page.wav
 0,graphics/touhou_font.png
-4,script/SpriteFont.csv
 2,Sounds/치르노의-퍼펙트-산수-교실-풀버전.wav
+0,graphics/MainTitleGame.png
+2,Sounds/TitleGameSound.wav
+0,graphics/PlaterFace.png
+0,graphics/Ending01.jpg
+0,graphics/Ending02.jpg
+0,graphics/Ending03.jpg
+0,graphics/Ending04.jpg
+0,graphics/Ending05.jpg
+0,graphics/Ending06.jpg
+0,graphics/Ending07.jpg
+0,graphics/Ending08.jpg
+0,graphics/Ending09.jpg
+0,graphics/Ending10.jpg
+0,graphics/Ending11.jpg
+0,graphics/Ending12.jpg
+0,graphics/Ending13.jpg

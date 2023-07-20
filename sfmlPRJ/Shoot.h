@@ -60,6 +60,19 @@ public:
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float speed =500.f);
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float freq, float amp);
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId);
+	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, sf::Vector2f dir,std::string clipId);
+
+	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, sf::Vector2f dir, std::string clipId, float freq, float ampl, float spd)
+	{
+		type = CharceterType::Boss;
+		pattenInfo.pattenType = pattenType;
+		pattenInfo.pos = pos;
+		direction = dir;
+		pattenInfo.animationClipId = clipId;
+		pattenInfo.frequency = freq;
+		pattenInfo.amplitude = ampl;
+		pattenInfo.speed = spd;
+	}
 
 	void BossNormalFire(sf::Vector2f pos,float angle,std::string clipName);
 	void BossNormalFirePatten1(sf::Vector2f pos, float angle, std::string clipName);

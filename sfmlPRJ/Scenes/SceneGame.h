@@ -1,6 +1,5 @@
 #pragma once
 #include "Scene.h"
-#include "SpriteFontController.h"
 class Player;
 class Boss;
 class SpriteGo;
@@ -20,9 +19,14 @@ protected:
 	sf::Vector2f gameWallSize;
 
 	bool isTalking;
+	bool bossAngry;
+	int talkCount = 0;
 	SpriteGo* cirnoTalking;
+	SpriteGo* playerTalking;
+
 	sf::RectangleShape shape;
 	TextGo* talk;
+
 	sf::RectangleShape hpBar;
 	float hpBarbyX = 0.f;
 
@@ -31,20 +35,37 @@ protected:
 	int frames = 0;
 
 	SoundGo* music1;
-	float musicVolum = 25.f;
+	float musicVolum = 5.f;
 
 	float soundTime;
 	bool soundPlay;
 
-	std::vector<sf::IntRect> numberFont;
+	SpriteGo* scoreBys;
+	SpriteGo* scoreByc;
+	SpriteGo* scoreByo;
+	SpriteGo* scoreByr;
+	SpriteGo* scoreBye;
+	SpriteGo* scoreByClone;
+	TextGo* scoreNumber;
 
-	SpriteGo* numberX1Sprite;
-	int numberX1Current=0;
-	SpriteGo* numberX2Sprite;
-	int numberX2Current=0;
+	TextGo* playerLife;
+	SpriteGo* playerLifeSprite[2];
+	int playerLifeSpriteCurrent = 2;
 
-	
+	TextGo* boombCount;
+	SpriteGo* boombCountSprite[5];
+	int boombCountSpriteCurrent = 0;
+	int maxBoombCountSpritecurretn =5;
 
+	TextGo* gameTimeText;
+	float gameTimer = 90.f;
+
+	std::queue<std::wstring> talking;
+
+	void textSetting();
+
+	SpriteGo* gameOver;
+	bool timeOut = false;
 public:
 	SceneGame();
 	virtual ~SceneGame() override = default;
@@ -57,6 +78,6 @@ public:
 
 	virtual void Update(float dt) override;
 	virtual void Draw(sf::RenderWindow& window) override;
-	void increaseScore() { numberX1Current++; }
+	void isCollied();
 };
 

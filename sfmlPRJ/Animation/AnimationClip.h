@@ -2,8 +2,8 @@
 
 enum class AnimationLoopTypes
 {
-	Single,  // 한번 동작
-	Loop,   // 계속 동작 시키기
+	Single, // 한번 동작
+	Loop,  // 계속 동작 시키기
 };
 struct AnimationFrame
 {

@@ -20,23 +20,15 @@ void Boss::Init()
 	};
 	bossShootPool.Init();
 
-	/*{
-		NormalAttackInfo info;
-		info.animationClipId = "BossNormalShooting1";
-		info.bulletCount = 5;
-		info.maxSpeed = 500.f;
-
-		attackInfo.push_back(info);
-	}*/
-
 
 	moveTime = 0.f;
 	moveTimerDuration = 0.f;
 	startPos = sf::Vector2f{ -270.f, -250.f };
 	endPos = sf::Vector2f({ 0.f, -50.f });
 	secondPos = sf::Vector2f(-200.f, 0.f);
+	attackRand1 = Utils::RandomRange(0, 6);
 
-	attackRand1 =Utils::RandomRange(0, 6);
+
 
 }
 
@@ -48,6 +40,7 @@ void Boss::Release()
 
 void Boss::Reset()
 {
+	bossShootPool.Clear();
 	animation.Play("Idle");
 	SetOrigin(Origins::MC);
 	SetPosition(-270.f, -250.f);
@@ -62,22 +55,23 @@ void Boss::Reset()
 	stopAttackTime = 0.f;
 	bossDie = false;
 	startGame = 0.f;
+	score = 0;
+	count = 0;
 }
 
 void Boss::Update(float dt)
 {
-	startGame += dt;
-
 	if (bossHp == 0.f)
 		bossDie = true;
-	if (!bossDie&& startGame >5.f)
+	if (!bossDie && !player->GetPlayerDie())
 	{
 		BossMove(dt);
 		BossFireUcnique(dt);
 		BossFireNormal(dt);
+
+		animation.Update(dt);
+		SpriteGo::Update(dt);
 	}
-	animation.Update(dt);
-	SpriteGo::Update(dt);
 }
 
 void Boss::Draw(sf::RenderWindow& window)
@@ -146,8 +140,8 @@ void Boss::BossMove(float dt)
 	}
 	position += direction * speed * dt;
 	SetPosition(position);
-	
-	
+
+
 }
 
 void Boss::BossFireUcnique(float dt)
@@ -166,7 +160,7 @@ void Boss::BossFireUcnique(float dt)
 
 void Boss::BossFireNormal(float dt)
 {
-	bossAttackNoramalPatternChangeTime += dt;
+	/*bossAttackNoramalPatternChangeTime += dt;
 	bossAttackTimeOne -= dt;
 
 	if (attackRand1 == 2)
@@ -187,12 +181,19 @@ void Boss::BossFireNormal(float dt)
 	}
 	if (bossHp > 750 && bossAttackTimeOne < bossAttackTimeOneLimit)
 	{
-		bossAttackTimeOne = bossAttackTimeOneLimit+0.3f;
+		bossAttackTimeOne = bossAttackTimeOneLimit + 0.3f;
 		shootPatternMgr.ChangePattern(attackRand1);
 		shootPatternMgr.SetCharacterAll(player, this);
 		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		shootPatternMgr.ShootBullets();
+	}*/
+
+
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num1))
+	{
+		
 	}
+
 }
 
 bool Boss::CheckCollisionWithBullet(const Shoot& bullet)
@@ -201,9 +202,10 @@ bool Boss::CheckCollisionWithBullet(const Shoot& bullet)
 	if (sprite.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
 	{
 		bossHp -= player->GetGetPlayerDamage();
-		
+		score++;
 		return true;
 	}
+
 	return false;
 }
 
@@ -231,36 +233,46 @@ sf::Vector2f Boss::CalculateBezierPoint(const sf::Vector2f& p0, const sf::Vector
 	return p;
 }
 
+sf::Vector2f Boss::RotateVector(const sf::Vector2f& vector, float angleDegrees) {
+	float angleRadians = angleDegrees * (3.14159265359f / 180.0f); // Convert degrees to radians
+	float cosAngle = std::cos(angleRadians);
+	float sinAngle = std::sin(angleRadians);
+
+	float rotatedX = vector.x * cosAngle - vector.y * sinAngle;
+	float rotatedY = vector.x * sinAngle + vector.y * cosAngle;
+
+	return sf::Vector2f(rotatedX, rotatedY);
+}
 
 //if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num7))
-	//{
-	//	std::string str = "BossNormalShooting1";
-	//	Scene* scene = SCENE_MGR.GetCurrScene();
-	//	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-	//	Shoot* shoot = bossShootPool.Get();
-	//	shoot->SetPlayer(player);
-	//	sf::Vector2f playerPosition = player->GetPosition();
-	//	sf::Vector2f shootDirection = playerPosition - GetPosition();
-	//	float angle = Utils::Angle(shootDirection.y, playerPosition.x);
-	//	if (count >= 1)
-	//	{
-	//		if (count % 2 == 1)
-	//			angle += Utils::DegreesToRadians(10.0f * (count / 2 + 1)); // 1 2 
-	//		else if (count % 2 == 0)
-	//			angle += Utils::DegreesToRadians(-10.0f * (count / 2)); // 1 2
-	//	}
-	//	shoot->SetPattenInfo(Shoot::NoramalPatten::SectorType, GetPosition(), angle, str);
-	//	shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
-	//	shoot->sortLayer = -1;
-	//	if (sceneGame != nullptr)
-	//	{
-	//		sceneGame->AddGo(shoot);
-	//	}
-	//}
-	//if (INPUT_MGR.GetKeyDown(sf::Keyboard::Space))
-	//{
-	//	std::cout << bossHp << std::endl;
-	//}
+//	{
+//		std::string str = "BossNormalShooting1";
+//		Scene* scene = SCENE_MGR.GetCurrScene();
+//		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
+//		Shoot* shoot = bossShootPool.Get();
+//		shoot->SetPlayer(player);
+//		sf::Vector2f playerPosition = player->GetPosition();
+//		sf::Vector2f shootDirection = playerPosition - GetPosition();
+//		float angle = Utils::Angle(shootDirection.y, playerPosition.x);
+//		if (count >= 1)
+//		{
+//			if (count % 2 == 1)
+//				angle += Utils::DegreesToRadians(10.0f * (count / 2 + 1)); // 1 2 
+//			else if (count % 2 == 0)
+//				angle += Utils::DegreesToRadians(-10.0f * (count / 2)); // 1 2
+//		}
+//		shoot->SetPattenInfo(Shoot::NoramalPatten::SectorType, GetPosition(), angle, str);
+//		shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
+//		shoot->sortLayer = -1;
+//		if (sceneGame != nullptr)
+//		{
+//			sceneGame->AddGo(shoot);
+//		}
+//	}
+//	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Space))
+//	{
+//		std::cout << bossHp << std::endl;
+//	}
 
 //if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num5)) // 원형으로 내려감
 	//{

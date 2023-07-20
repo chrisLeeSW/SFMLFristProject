@@ -38,16 +38,42 @@ void Player::Reset()
 	SetPosition(-340.f, 260.f);
 	hitboxCircle.setPosition(position);
 	Utils::SetOrigin(hitboxCircle, Origins::MC);
-	soundVolum = 50.f;
+	soundVolum = 10.f;
 	damage = 0.5f;
+	invincibilityTime = 0.f;
+	playerLife = 2;
+	playerLifeDown = false;
+	playerDie = false;
 }
 
 void Player::Update(float dt)
 {
-	PlayerMove(dt);
-	PlayerShoot(dt);
-	SpriteGo::Update(dt);
-	animation.Update(dt);
+	if (playerLifeDown)
+	{
+		invincibilityTime += dt;
+	}
+	if (invincibilityTime >= 10.f)
+	{
+		playerLifeDown = false;
+		invincibilityTime = 0.f;
+	}
+	//
+	//if (playerLife == 0) playerLife = 500;
+	//
+	/*
+	if (playerLife == 0)
+	{
+		playerDie = true;
+	}
+	*/
+	if(!playerDie)
+	{
+		PlayerMove(dt);
+		PlayerShoot(dt);
+		SpriteGo::Update(dt);
+		animation.Update(dt);
+	}
+
 }
 
 void Player::Draw(sf::RenderWindow& window)
@@ -60,6 +86,7 @@ void Player::PlayerMove(float dt)
 {
 	direction.x = INPUT_MGR.GetAxisRaw(Axis::Horizontal);
 	direction.y = INPUT_MGR.GetAxisRaw(Axis::Vertical);
+
 	float magnitude = Utils::Magnitude(direction);
 	if (magnitude > 1.f)
 	{
@@ -200,21 +227,19 @@ bool Player::CheckCollisionWithBullet(const Shoot& bullet)
 	float playerRadius = hitboxCircle.getGlobalBounds().width;
 	float bulletRadius = bullet.sprite.getGlobalBounds().width * 0.25f; 
 	float distance = Utils::Distance(GetPosition(), bullet.sprite.getPosition());
-	//if (sprite.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
-	//{		std::cout << "disatnce :" << distance << "/// player :" << playerRadius << "/// bullet :" << bulletRadius << std::endl;}
-	if (distance < playerRadius + bulletRadius)
+	Scene* scene = SCENE_MGR.GetCurrScene();
+	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
+	if (distance < playerRadius + bulletRadius && !playerLifeDown )
 	{
 		std::cout << "isCollied Player" << std::endl;
+		playerLifeDown = true;
+		playerLife--;
+		if (sceneGame != nullptr)
+		{
+			sceneGame->isCollied();
+		}	
 		return true;
 	}
-	//if (sprite.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
-	//{
-	//	/*if (hitboxCircle.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
-	//	{
-	//		std::cout << "isCollied Player" << std::endl;
-	//		return true;
-	//	}*/
-	//}
 	return false;
 }
 

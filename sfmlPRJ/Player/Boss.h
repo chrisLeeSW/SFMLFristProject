@@ -4,17 +4,10 @@
 #include "AnimationController.h"
 #include "Shoot.h"
 #include "ShootMGR.h"
-#include "UniqueShootMGR.h";
+#include "UniqueShootMGR.h"
 class Player;
 class Boss :public SpriteGo
 {
-public:
-	struct NormalAttackInfo
-	{
-		std::string animationClipId;
-		int bulletCount;
-		float maxSpeed;
-	}; //  지울수도 있음
 protected:
 
 	AnimationController animation;
@@ -22,7 +15,7 @@ protected:
 	bool moveBoss = false;
 	float speed = 300.f;
 	ObjectPool<Shoot> bossShootPool ;
-	Player* player;
+	Player* player=nullptr;
 	sf::Vector2f WallBounds;
 	float bgWidth=0.f;
 	float bgHeight=0.f;
@@ -32,13 +25,10 @@ protected:
 
 
 	
-
-
-	std::vector < NormalAttackInfo> attackInfo; // test 변수 
 	//
 	float bossAtk = 0.05f;
 	float delay = 0.05f;
-	int count;
+	int count=0;
 	int maxCount = 30;
 	int maxCount2 = 3;
 	sf::Vector2f poolShootPos;
@@ -68,6 +58,8 @@ public:
 	sf::Vector2f CalculateBezierPoint(const sf::Vector2f& p0, const sf::Vector2f& p1, const sf::Vector2f& p3, float t);
 	float GetBossHp() { return bossHp; }
 	bool GetBossDie(){ return bossDie; }
+	int GetScore() { return score; }
+	sf::Vector2f  RotateVector(const sf::Vector2f& vector, float angleDegrees);
 private:
 	ShootMGR shootPatternMgr;
 	UniqueShootMGR uniqueshootPatternMgr;
@@ -76,11 +68,11 @@ private:
 	sf::Vector2f endPos;
 	sf::Vector2f startPos;
 	sf::Vector2f secondPos;
-	float stopAttackTime;
+	float stopAttackTime=0.f;
 	float stopAttackTimeLimit = 2.0f;
-	bool stopBoss;
-	float moveTimerDuration;
-	float moveTime;
+	bool stopBoss=false;
+	float moveTimerDuration=0.f;
+	float moveTime=0.f;
 	float moveDuration = 3.f; 
 	float stopLimit = 5.f;
 
@@ -91,7 +83,7 @@ private:
 	float bossAttackNoramalPatternChangeTime =0.f;
 
 	bool bossDie = false;
-
+	int score = 0 ;
 
 	
 };

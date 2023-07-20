@@ -13,7 +13,7 @@
 #include <random>
 #include <tuple>
 #include <functional>
-
+#include <sstream>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>

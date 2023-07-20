@@ -4,6 +4,7 @@
 #include "DataTableMgr.h"
 #include "StringTable.h"
 #include "SceneTitle.h"
+#include "SceneEnding.h"
 void SceneMgr::Init()
 {
 	if (!scenes.empty())
@@ -12,7 +13,7 @@ void SceneMgr::Init()
 	}
 	scenes.push_back(new SceneTitle());
 	scenes.push_back(new SceneGame());
-
+	scenes.push_back(new SceneEnding());
 	for (auto scene : scenes)
 	{
 		scene->Init();

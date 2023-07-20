@@ -9,7 +9,9 @@ protected:
 	SpriteGo* backGroundGame;
 	SoundGo* titleSound;
 
-	
+	TextGo* gameSceneText;
+	TextGo* rankSceneText;
+	TextGo* exitText;
 public:
 	SceneTitle();
 	virtual ~SceneTitle() override = default;

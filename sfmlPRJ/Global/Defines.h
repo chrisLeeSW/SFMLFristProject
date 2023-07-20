@@ -38,6 +38,7 @@ enum class SceneId
 	None = -1,
 	Title,
 	Game,
+	Ending,
 	RankTitle,
 	Count,
 };

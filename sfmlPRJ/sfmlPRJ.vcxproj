@@ -173,7 +173,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Framework\ResourceMgr.cpp" />
-    <ClCompile Include="Pattern7.cpp" />
+    <ClCompile Include="Pattern7.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="SceneEnding.cpp" />
     <ClCompile Include="ShootPattern\Pattern4.cpp" />
     <ClCompile Include="ShootPattern\Pattern6.cpp" />
     <ClCompile Include="ShootPattern\Pattern5.cpp" />
@@ -196,7 +200,6 @@
     <ClCompile Include="ShootPattern\ShootMGR.cpp" />
     <ClCompile Include="ShootPattern\ShootPattern.cpp" />
     <ClCompile Include="Framework\UiButton.cpp" />
-    <ClCompile Include="SpriteFontController.cpp" />
     <ClCompile Include="SpriteFont\SpriteFont.cpp" />
     <ClCompile Include="UniqueType\UniqueShootMGR.cpp" />
     <ClCompile Include="UniqueType\UniquPattern1.cpp" />
@@ -218,7 +221,11 @@
     <ClInclude Include="Framework\InputMgr.h" />
     <ClInclude Include="Framework\ResourceMgr.h" />
     <ClInclude Include="Global\Utils.h" />
-    <ClInclude Include="Pattern7.h" />
+    <ClInclude Include="Pattern7.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="SceneEnding.h" />
     <ClInclude Include="ShootPattern\Pattern4.h" />
     <ClInclude Include="ShootPattern\Pattern6.h" />
     <ClInclude Include="ShootPattern\Pattern5.h" />
@@ -236,7 +243,6 @@
     <ClInclude Include="Shoot.h" />
     <ClInclude Include="ShootPattern\ShootMGR.h" />
     <ClInclude Include="ShootPattern\ShootPattern.h" />
-    <ClInclude Include="SpriteFontController.h" />
     <ClInclude Include="SpriteFont\SpriteFont.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Global\Variables.h" />
