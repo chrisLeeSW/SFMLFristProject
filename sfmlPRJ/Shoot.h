@@ -27,6 +27,9 @@ public:
 		RowRightType,
 		RowLeftType,
 		testcode,
+		DelayTimeAttackOneType,
+		testcode3,
+		DelayType,
 	};
 	enum class UniqueType
 	{
@@ -42,6 +45,7 @@ public:
 		float frequency=1.f;
 		float amplitude=1.f;
 		float speed = 500.f;
+		float delayTime = 3.0f;
 	};
 
 	Shoot(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId,n){		}
@@ -58,21 +62,10 @@ public:
 
 	void PlayerFire(sf::Vector2f pos, sf::Vector2f dir); //CharceterType type,float angle
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float speed =500.f);
-	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float freq, float amp);
-	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId);
+	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float freq, float amp,float speed=500.f);
+	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId, float speed = 500.f);
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, sf::Vector2f dir,std::string clipId);
-
-	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, sf::Vector2f dir, std::string clipId, float freq, float ampl, float spd)
-	{
-		type = CharceterType::Boss;
-		pattenInfo.pattenType = pattenType;
-		pattenInfo.pos = pos;
-		direction = dir;
-		pattenInfo.animationClipId = clipId;
-		pattenInfo.frequency = freq;
-		pattenInfo.amplitude = ampl;
-		pattenInfo.speed = spd;
-	}
+	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId,float angle,float delay, float speed = 500.f);
 
 	void BossNormalFire(sf::Vector2f pos,float angle,std::string clipName);
 	void BossNormalFirePatten1(sf::Vector2f pos, float angle, std::string clipName);
@@ -86,7 +79,7 @@ public:
 
 	void SetDirection(sf::Vector2f);
 
-	bool test = false;
+
 	float accumulatedTime = 0.f;
 	void frequencyMovement(float dt);
 
@@ -97,10 +90,10 @@ public:
 		position = test1pos;
 		direction = test2dir;
 	}
-	bool testUnique = false;
+	
 	bool GetTestUnique()const
 	{
-		return testUnique;
+		return isUniqueAttack;
 	}
 	void ShootBulletWithAngle(float angle, const std::string& clipId)
 	{
@@ -113,7 +106,7 @@ public:
 	void SetWallBounds(sf::Vector2f boundf, float widthX, float widthY);
 protected:
 	UniqueType uniqueType = UniqueType::None;
-	NormalPattenInfo pattenInfo;
+	NormalPattenInfo patternInfo;
 	
 	bool checkFireType = false;
 
@@ -135,6 +128,17 @@ protected:
 	sf::Vector2f WallBounds;
 	float bgWidth;
 	float bgHeight;
+	bool isUniqueAttack = false;
+	float delayTime;
+	bool delayOnAttackOneType = false;
+	bool delayOnAttackingOne = false;
+
+	bool testing2 = false;
+	bool testing3 = false;
+
+
+	float testing1DirSet = 0.f;
+	
 };
 
 /*

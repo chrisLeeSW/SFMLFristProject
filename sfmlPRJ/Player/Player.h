@@ -36,7 +36,11 @@ protected:
 	float invincibilityTime=0;
 	bool playerDie = false;
 
-
+	sf::Sprite effectBoomb;
+	sf::Texture texid;
+	float effectRoate = 0.f;
+	float effecTime = 0.f;
+	bool effectDraw = false;
 public:
 	Player(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId, n) {}
 	virtual ~Player() override { Release(); }
@@ -57,5 +61,6 @@ public:
 	void SetWallBounds(sf::Vector2f boundf, float widthX, float widthY);
 	float GetGetPlayerDamage() { return damage; }
 	bool GetPlayerDie() { return playerDie; }
+	bool GetEffectDraw() { return effectDraw; }
 };
 

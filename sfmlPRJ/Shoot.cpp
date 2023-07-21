@@ -28,8 +28,8 @@ void Shoot::Reset()
 {
 	animation.Play("Shooting");
 	checkFireType = false;
-
-	testUnique = false;
+	delayOnAttackOneType = false;
+	isUniqueAttack = false;
 	SpriteGo::Reset();
 }
 
@@ -46,29 +46,73 @@ void Shoot::Update(float dt)
 	}
 	if (uniqueType == UniqueType::TornadoType && position.y >= 0.f)
 	{
-		testUnique = true;
-		boss->GetShootBulletTestCode(testUnique);
+		isUniqueAttack = true;
+		boss->GetShootBulletTestCode(isUniqueAttack);
 		boss->SetPoolPos(position);
 	}
-	if (testUnique)
+	if (isUniqueAttack)	
 	{
-		testUnique = !testUnique;
+		isUniqueAttack = !isUniqueAttack;
 		uniqueType = UniqueType::None;
 		pool->Return(this);
 	}
- 
-	if (pattenInfo.pattenType == NoramalPatten::FrequencyType)
+
+	if (patternInfo.pattenType == NoramalPatten::testcode  &&!testing2)
 	{
-		position.x = pattenInfo.pos.x + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude;
-		position.y += direction.y * pattenInfo.speed * dt;
+		direction = { 0.f,0.f };
+		testing2 = true;
 	}
+	if (patternInfo.pattenType == NoramalPatten::testcode && accuTime > 0.5f && !testing3)
+	{
+		
+		direction = sf::Vector2f(std::cos(patternInfo.angle), std::sin(patternInfo.angle));
+		testing3 = true;
+
+	}
+
+
+
+	if (patternInfo.pattenType == NoramalPatten::DelayTimeAttackOneType && accuTime > 0.5f && !delayOnAttackOneType && !delayOnAttackingOne)
+	{
+		direction = { 0.f, 0.f };
+		accuTime = 0.f;
+		delayOnAttackOneType = true;
+
+	}
+	else if (patternInfo.delayTime <= accuTime && delayOnAttackOneType)
+	{
+		direction = Utils::Normalize(player->GetPosition() - GetPosition());
+		accuTime = 0.f;
+		delayOnAttackOneType = false;
+		delayOnAttackingOne = true;
+	}
+	/*if (patternInfo.pattenType == NoramalPatten::testcode3 && accuTime > 0.5f && !delayOnAttackOneType)
+	{
+		direction = { 0.f,0.f };
+
+		accuTime = 0.f;
+		delayOnAttackOneType = true;
+	}
+	if (patternInfo.pattenType == NoramalPatten::testcode3 && delayOnAttackOneType && accuTime > 3.0f &&!testing2)
+	{
+		direction = Utils::Normalize(player->GetPosition() - GetPosition());
+		testing2 = true;
+	}*/
+
+	if (patternInfo.pattenType == NoramalPatten::FrequencyType )
+	{
+		position.x = patternInfo.pos.x + std::sin(accuTime * patternInfo.frequency) * patternInfo.amplitude;
+		position.y += direction.y * patternInfo.speed * dt;
+	}
+
 	else
 	{
-		position += direction * pattenInfo.speed * dt;
+		position += direction * patternInfo.speed * dt;
 	}
 
 
-	
+
+
 	sprite.setPosition(position);
 	animation.Update(dt);
 
@@ -84,23 +128,23 @@ void Shoot::Update(float dt)
 		Scene* scene = SCENE_MGR.GetCurrScene();
 		scene->RemoveGo(this);
 	}
-	else if (position.x - sprite.getGlobalBounds().width * 0.5f < WallBounds.x-20.f)
+	else if (position.x - sprite.getGlobalBounds().width * 0.5f < WallBounds.x - 20.f)
 	{
 		pool->Return(this);
 		Scene* scene = SCENE_MGR.GetCurrScene();
 		scene->RemoveGo(this);
 	}
-	else if (position.x + sprite.getGlobalBounds().width * 0.5f > WallBounds.x + bgWidth +20.f)
+	else if (position.x + sprite.getGlobalBounds().width * 0.5f > WallBounds.x + bgWidth + 20.f)
 	{
 		pool->Return(this);
 		Scene* scene = SCENE_MGR.GetCurrScene();
 		scene->RemoveGo(this);
 	}
-	
-	if (INPUT_MGR.GetKey(sf::Keyboard::Tab))
+
+	/*if (INPUT_MGR.GetKey(sf::Keyboard::Tab))
 	{
 		pool->Clear();
-	}
+	}*/
 	SpriteGo::Update(dt);
 }
 
@@ -113,55 +157,79 @@ void Shoot::BossFire(float dt)
 {
 	if (!checkFireType)
 	{
-		switch (pattenInfo.pattenType)
+		switch (patternInfo.pattenType)
 		{
 		case NoramalPatten::SectorType:
 		{
-			SetPosition(pattenInfo.pos);
-			direction = sf::Vector2f(std::cos(pattenInfo.angle), std::sin(pattenInfo.angle));
-			animation.Play(pattenInfo.animationClipId);
+			SetPosition(patternInfo.pos);
+			direction = sf::Vector2f(std::cos(patternInfo.angle), std::sin(patternInfo.angle));
+			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::AngleDirectionType:
 		{
-			SetPosition(pattenInfo.pos);
-			float radian = Utils::DegreesToRadians(pattenInfo.angle);
+			SetPosition(patternInfo.pos);
+			float radian = Utils::DegreesToRadians(patternInfo.angle);
 			direction = sf::Vector2f(std::cos(radian), std::sin(radian));
-			animation.Play(pattenInfo.animationClipId);
+			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::FrequencyType:
 		{
-			SetPosition(pattenInfo.pos);
+			SetPosition(patternInfo.pos);
 			direction = { 1.f,0.1f };
-			animation.Play(pattenInfo.animationClipId);
+			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::ColumnType:
 		{
-			SetPosition(pattenInfo.pos);
+			SetPosition(patternInfo.pos);
 			direction = { 0.f,1.f };
-			animation.Play(pattenInfo.animationClipId);
+			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::RowRightType:
 		{
-			SetPosition(pattenInfo.pos);
+			SetPosition(patternInfo.pos);
 			direction = { 1.f,0.f };
-			animation.Play(pattenInfo.animationClipId);
+			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::RowLeftType:
 		{
-			SetPosition(pattenInfo.pos);
+			SetPosition(patternInfo.pos);
 			direction = { -1.f,0.f };
-			animation.Play(pattenInfo.animationClipId);
+			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::testcode:
 		{
-			SetPosition(pattenInfo.pos);
-			animation.Play(pattenInfo.animationClipId);
+			SetPosition(patternInfo.pos);
+			animation.Play(patternInfo.animationClipId);
+		}
+		break;
+		case NoramalPatten::DelayTimeAttackOneType:
+		{
+			SetPosition(patternInfo.pos);
+			float radian = Utils::DegreesToRadians(patternInfo.angle);
+			direction = sf::Vector2f(std::cos(radian), std::sin(radian));
+			animation.Play(patternInfo.animationClipId);
+		}
+		break;
+		case NoramalPatten::testcode3:
+		{
+			SetPosition(patternInfo.pos);
+			float radian = Utils::DegreesToRadians(patternInfo.angle);
+			direction = sf::Vector2f(std::cos(radian), std::sin(radian));
+			animation.Play(patternInfo.animationClipId);
+		}
+		break;
+		case NoramalPatten::DelayType:
+		{
+			SetPosition(patternInfo.pos);
+			float radian = Utils::DegreesToRadians(patternInfo.angle);
+			direction = sf::Vector2f(std::cos(radian), std::sin(radian));
+			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		}
@@ -183,10 +251,10 @@ void Shoot::PlayerFire(float dt)
 		Scene* scene = SCENE_MGR.GetCurrScene();
 		scene->RemoveGo(this);
 	}
-	
+
 }
 
-void Shoot::PlayerFire(sf::Vector2f pos , sf::Vector2f dir)
+void Shoot::PlayerFire(sf::Vector2f pos, sf::Vector2f dir)
 {
 
 	type = CharceterType::Player;
@@ -197,49 +265,64 @@ void Shoot::PlayerFire(sf::Vector2f pos , sf::Vector2f dir)
 
 }
 
-void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId,float speed)
+void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float speed)
 {
 	type = CharceterType::Boss;
-	pattenInfo.pattenType = pattenType;
-	pattenInfo.pos = pos;
-	pattenInfo.angle = angle;
-	pattenInfo.animationClipId = clipId;
-	pattenInfo.speed = speed;
+	patternInfo.pattenType = pattenType;
+	patternInfo.pos = pos;
+	patternInfo.angle = angle;
+	patternInfo.animationClipId = clipId;
+	patternInfo.speed = speed;
 }
 
-void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float freq, float ampl)
+void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float freq, float ampl, float speed)
 {
 	type = CharceterType::Boss;
-	pattenInfo.pattenType = pattenType;
-	pattenInfo.pos = pos;
-	pattenInfo.angle = angle;
-	pattenInfo.animationClipId = clipId;
-	pattenInfo.frequency = freq;
-	pattenInfo.amplitude = ampl;
+	patternInfo.pattenType = pattenType;
+	patternInfo.pos = pos;
+	patternInfo.angle = angle;
+	patternInfo.animationClipId = clipId;
+	patternInfo.frequency = freq;
+	patternInfo.amplitude = ampl;
+	patternInfo.speed = speed;
 }
 
-void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId)
+void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId, float speed)
 {
 	type = CharceterType::Boss;
-	pattenInfo.pattenType = pattenType;
-	pattenInfo.pos = pos;
-	pattenInfo.animationClipId = clipId;
+	patternInfo.pattenType = pattenType;
+	patternInfo.pos = pos;
+	patternInfo.animationClipId = clipId;
+	patternInfo.speed = speed;
 }
 
 void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, sf::Vector2f dir, std::string clipId)
 {
 	type = CharceterType::Boss;
-	pattenInfo.pattenType = pattenType;
-	pattenInfo.pos = pos;
+	patternInfo.pattenType = pattenType;
+	patternInfo.pos = pos;
 	direction = dir;
-	pattenInfo.animationClipId = clipId;
+	patternInfo.animationClipId = clipId;
 }
+
+void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos,  std::string clipId, float angle, float delay, float speed)
+{
+	type = CharceterType::Boss;
+	patternInfo.pattenType = pattenType;
+	patternInfo.pos = pos;
+	patternInfo.angle = angle;
+	patternInfo.animationClipId = clipId;
+	patternInfo.speed = speed;
+	patternInfo.delayTime = delay;
+}
+
+
 
 /*
 
-	if (pattenInfo.pattenType == NoramalPatten::FrequencyType)
+	if (patternInfo.pattenType == NoramalPatten::FrequencyType)
 	{
-		position.y = position.y + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude;
+		position.y = position.y + std::sin(accuTime * patternInfo.frequency) * patternInfo.amplitude;
 	}
 
 */
@@ -341,7 +424,7 @@ if (INPUT_MGR.GetKey(sf::Keyboard::Numpad2) && testTime < 0.8f)
 			shoot->sortLayer = -1;
 
 			// 주파수 움직임을 적용합니다.
-			shoot->test = true;
+			shoot->delayOnAttackOneType = true;
 
 			Scene* scene = SCENE_MGR.GetCurrScene();
 			SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
@@ -387,20 +470,20 @@ else
 /*
 * case NoramalPatten::FrequencyType:
 		{
-			SetPosition(pattenInfo.pos);
-			direction = sf::Vector2f(std::cos(pattenInfo.angle), std::sin(pattenInfo.angle));
-			animation.Play(pattenInfo.animationClipId);
+			SetPosition(patternInfo.pos);
+			direction = sf::Vector2f(std::cos(patternInfo.angle), std::sin(patternInfo.angle));
+			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 
-if (pattenInfo.pattenType == NoramalPatten::FrequencyType)
+if (patternInfo.pattenType == NoramalPatten::FrequencyType)
 	{
 		position.x += direction.x * speed * dt;
-		position.y = pattenInfo.pos.y + std::sin(accuTime * pattenInfo.frequency) * pattenInfo.amplitude; // 주파수 진폭
+		position.y = patternInfo.pos.y + std::sin(accuTime * patternInfo.frequency) * patternInfo.amplitude; // 주파수 진폭
 	}
-	제자리 진폭만하는 코드 발생 -> ;;시간초 줘서 없애면서 위치 값을 좀더 주면 어떨지 생각해보자 
+	제자리 진폭만하는 코드 발생 -> ;;시간초 줘서 없애면서 위치 값을 좀더 주면 어떨지 생각해보자
 
-	shoopattern 은 
+	shoopattern 은
 	Scene* scene = SCENE_MGR.GetCurrScene();
 	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
 	int shootCount = 1;

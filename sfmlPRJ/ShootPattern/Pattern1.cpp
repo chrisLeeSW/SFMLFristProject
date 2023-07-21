@@ -18,6 +18,7 @@ void Pattern1::ShootBullets()
 	std::string str ="BossNormalShooting1";
 	Scene* scene = SCENE_MGR.GetCurrScene();
 	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
+	sf::Vector2f bossPos = boss->GetPosition();
 	int shootCount = 5; //
 	for (int count = 0;count < shootCount;++count)
 	{
@@ -39,6 +40,17 @@ void Pattern1::ShootBullets()
 			sceneGame->AddGo(shoot); //
 		}
 		
+	}
+	for (int i = 0; i < shootCount; i++)
+	{
+		Shoot* shoot = bossShootPool.Get();
+		shoot->SetPlayer(player);
+		shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
+		shoot->SetPattenInfo(Shoot::NoramalPatten::ColumnType, bossPos + sf::Vector2f(0.f, 20.f * i), "BossNormalShooting1",150.f);
+		if (sceneGame != nullptr)
+		{
+			sceneGame->AddGo(shoot);
+		}
 	}
 }
 

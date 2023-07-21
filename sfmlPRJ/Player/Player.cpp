@@ -23,6 +23,12 @@ void Player::Init()
 	Utils::SetOrigin(hitboxCircle, Origins::MC);
 
 	playerShoot = new SoundGo("Sounds/playerTan.wav");
+
+	texid.loadFromFile("graphics/EffectSprite.png");
+	effectBoomb.setTexture(texid);
+	effectBoomb.setTextureRect({ 258,746,256,256 });
+	effectBoomb.setScale(0.5f, 0.5f);
+	Utils::SetOrigin(effectBoomb, Origins::MC);
 }
 
 void Player::Release()
@@ -44,6 +50,8 @@ void Player::Reset()
 	playerLife = 2;
 	playerLifeDown = false;
 	playerDie = false;
+	effectDraw = false;
+	effecTime = 0.f;
 }
 
 void Player::Update(float dt)
@@ -66,20 +74,25 @@ void Player::Update(float dt)
 		playerDie = true;
 	}
 	*/
+	effectRoate += speed*dt;
 	if(!playerDie)
 	{
 		PlayerMove(dt);
 		PlayerShoot(dt);
-		SpriteGo::Update(dt);
+		effectBoomb.setPosition(GetPosition());
+		effectBoomb.setRotation(effectRoate);
 		animation.Update(dt);
+		SpriteGo::Update(dt);
 	}
 
 }
 
 void Player::Draw(sf::RenderWindow& window)
 {
+	
 	SpriteGo::Draw(window);
 	window.draw(hitboxCircle);
+	if(effectDraw)window.draw(effectBoomb,sf::BlendAdd);
 }
 
 void Player::PlayerMove(float dt)
@@ -142,11 +155,11 @@ void Player::PlayerMove(float dt)
 void Player::PlayerShoot(float dt)
 {
 	attackTime -= dt;
+	if (effectDraw) effecTime += dt;
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::F2))
 	{
 		autoShot = !autoShot;
 	}
-
 	Scene* scene = SCENE_MGR.GetCurrScene();
 	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::PageUp))
@@ -209,6 +222,17 @@ void Player::PlayerShoot(float dt)
 	{
 		hitboxCircle.setFillColor(sf::Color::Yellow);
 		hitboxDraw = true;
+	}
+
+	if (INPUT_MGR.GetKey(sf::Keyboard::Tab) &&!effectDraw)
+	{
+		effectDraw = true;
+	}
+	if (effecTime >= 8.f)
+	{
+		effecTime = 0.f;
+		effectDraw = false;
+		boss->SetUseBoomb(effectDraw);
 	}
 }
 

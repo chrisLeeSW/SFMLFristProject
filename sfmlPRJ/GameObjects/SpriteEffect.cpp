@@ -25,8 +25,7 @@ void SpriteEffect::Reset()
 void SpriteEffect::Update(float dt)
 {
 	timer += dt;
-	//UINT8 a = Utils::Lerp(255, 0, (timer / duration));
-	//sprite.setColor({ 255, 255, 255, a });
+	
 
 	if (timer > duration)
 	{

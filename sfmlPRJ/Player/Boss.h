@@ -6,6 +6,8 @@
 #include "ShootMGR.h"
 #include "UniqueShootMGR.h"
 class Player;
+class Scene;
+class SceneGame;
 class Boss :public SpriteGo
 {
 protected:
@@ -60,6 +62,8 @@ public:
 	bool GetBossDie(){ return bossDie; }
 	int GetScore() { return score; }
 	sf::Vector2f  RotateVector(const sf::Vector2f& vector, float angleDegrees);
+
+	void SetUseBoomb(bool t) { useBoomb = t; }
 private:
 	ShootMGR shootPatternMgr;
 	UniqueShootMGR uniqueshootPatternMgr;
@@ -84,7 +88,9 @@ private:
 
 	bool bossDie = false;
 	int score = 0 ;
+	bool useBoomb = false;
 
-	
+	sf::Vector2f testpos;
+
 };
 

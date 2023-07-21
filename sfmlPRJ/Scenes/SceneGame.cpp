@@ -170,7 +170,8 @@ void SceneGame::Update(float dt)
 		std::stringstream frameS;
 		std::cout << "FPS :" << fps << std::endl; - > Á×¿©¹ö¸² ;;
 	}*/
-	
+
+
 	if (bossCirno->GetBossDie())
 	{
 		std::cout << "Change Scene Ending creadit" << std::endl;
@@ -274,6 +275,12 @@ void SceneGame::isCollied()
 	if (playerLifeSpriteCurrent <0) playerLifeSpriteCurrent = 0;
 	this->playerLifeSprite[playerLifeSpriteCurrent]->SetActive(false);
 	
+}
+
+void SceneGame::UseBoomb()
+{
+	boombCountSprite[boombCountSpriteCurrent--]->SetActive(false);
+	if (boombCountSpriteCurrent < 0) boombCountSpriteCurrent = 0.f;
 }
 
 void SceneGame::textSetting()

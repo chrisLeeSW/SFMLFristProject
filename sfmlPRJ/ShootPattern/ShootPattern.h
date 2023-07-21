@@ -14,4 +14,3 @@ public:
     virtual void SetCharceterAll(Player* player,Boss* boss) = 0; 
     virtual void SetWallBounds(sf::Vector2f pos, float width, float height) = 0;
 };
-
