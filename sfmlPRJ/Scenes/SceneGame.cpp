@@ -62,7 +62,7 @@ void SceneGame::Init()
 
 	talk = (TextGo*)AddGo(new TextGo("fonts/neodgm.ttf"));
 	talk->text.setCharacterSize(30);
-	std::wstring tex =talking.front(); // que로 대화 하게 해볼 예정..
+	std::wstring tex =talking.front();
 	talk->text.setString(tex);
 	talking.pop();
 	talk->SetOrigin(Origins::ML);
@@ -124,7 +124,7 @@ void SceneGame::Enter()
 
 	isTalking = false;
 	
-
+	boombCountSpriteCurrent = -1;
 	playerLifeSpriteCurrent = 2;
 	for (int i = 0;i < 2;++i)
 	{
@@ -194,11 +194,11 @@ void SceneGame::Update(float dt)
 		soundTime = 0.f;
 		music1->SoundPlayer();
 	}*/
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::F5))
+	/*if (INPUT_MGR.GetKeyDown(sf::Keyboard::F5))
 	{
 		music1->SoundStop();
 		SCENE_MGR.ChangeScene(SceneId::Ending);
-	}
+	}*/
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::F1))
 	{
 		musicVolum += 2.5f;
@@ -272,15 +272,16 @@ void SceneGame::isCollied()
 {
 	
 	playerLifeSpriteCurrent --;
-	if (playerLifeSpriteCurrent <0) playerLifeSpriteCurrent = 0;
+	if (playerLifeSpriteCurrent <0) playerLifeSpriteCurrent = 0; //
 	this->playerLifeSprite[playerLifeSpriteCurrent]->SetActive(false);
 	
 }
 
 void SceneGame::UseBoomb()
 {
+	if (boombCountSpriteCurrent < 0) return;
 	boombCountSprite[boombCountSpriteCurrent--]->SetActive(false);
-	if (boombCountSpriteCurrent < 0) boombCountSpriteCurrent = 0.f;
+	//if (boombCountSpriteCurrent < 0) boombCountSpriteCurrent = 0;
 }
 
 void SceneGame::textSetting()

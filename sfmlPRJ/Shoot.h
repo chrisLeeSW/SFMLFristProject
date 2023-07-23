@@ -28,13 +28,10 @@ public:
 		RowLeftType,
 		testcode,
 		DelayTimeAttackOneType,
+		DelayTimeAttackTwoType,
 		testcode3,
 		DelayType,
-	};
-	enum class UniqueType
-	{
-		None=-1,
-		TornadoType,
+		TornadoTypeLoof,
 	};
 	struct NormalPattenInfo
 	{
@@ -60,52 +57,22 @@ public:
 	void BossFire(float dt);
 	void PlayerFire(float dt);
 
-	void PlayerFire(sf::Vector2f pos, sf::Vector2f dir); //CharceterType type,float angle
+	void PlayerFire(sf::Vector2f pos, sf::Vector2f dir,std::string id); 
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float speed =500.f);
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, float angle, std::string clipId, float freq, float amp,float speed=500.f);
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId, float speed = 500.f);
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, sf::Vector2f dir,std::string clipId);
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId,float angle,float delay, float speed = 500.f);
 
-	void BossNormalFire(sf::Vector2f pos,float angle,std::string clipName);
-	void BossNormalFirePatten1(sf::Vector2f pos, float angle, std::string clipName);
-	void testFire(sf::Vector2f pos, float frequency, float amplitude, std::string clipName);
 
-	void SetAnimationId(const std::string& n);
 	ObjectPool<Shoot>* pool = nullptr;
 
 	void SetPlayer(Player* player);
 	void SetBoss(Boss* boss);
 
-	void SetDirection(sf::Vector2f);
-
-
-	float accumulatedTime = 0.f;
-	void frequencyMovement(float dt);
-
-
-	void SetPositionTest(sf::Vector2f test1pos, sf::Vector2f test2dir)
-	{
-		uniqueType = UniqueType::TornadoType;
-		position = test1pos;
-		direction = test2dir;
-	}
-	
-	bool GetTestUnique()const
-	{
-		return isUniqueAttack;
-	}
-	void ShootBulletWithAngle(float angle, const std::string& clipId)
-	{
-		type = CharceterType::Boss;
-		direction = sf::Vector2f(std::cos(angle), std::sin(angle));
-		animation.Play(clipId);
-	}
-
 
 	void SetWallBounds(sf::Vector2f boundf, float widthX, float widthY);
 protected:
-	UniqueType uniqueType = UniqueType::None;
 	NormalPattenInfo patternInfo;
 	
 	bool checkFireType = false;
@@ -115,8 +82,6 @@ protected:
 	float accuTime;
 
 	AnimationController animation;
-	std::string animationClipName;
-	std::string animationId ="";
 
 	sf::Vector2f direction ;
 	sf::Vector2f velocity = { 0.f,0.f };
@@ -128,9 +93,8 @@ protected:
 	sf::Vector2f WallBounds;
 	float bgWidth;
 	float bgHeight;
-	bool isUniqueAttack = false;
 	float delayTime;
-	bool delayOnAttackOneType = false;
+	bool delayOnAttackType = false;
 	bool delayOnAttackingOne = false;
 
 	bool testing2 = false;
@@ -138,21 +102,6 @@ protected:
 
 
 	float testing1DirSet = 0.f;
+	int tornadoCount = 0;
 	
 };
-
-/*
-void Shoot::Fire(sf::Vector2f pos, float angle, CharceterType types)
-{
-	type = types;
-	if (type == CharceterType::Player)
-	{
-		sprite.setScale(0.5f, 0.5f);
-	}
-	position = pos;
-	// 각도를 라디안으로 변환
-	float radians = angle * static_cast<float>(M_PI) / 180.f;
-	// 방향 벡터 계산
-	direction = sf::Vector2f(std::cos(radians), std::sin(radians));
-}
-*/

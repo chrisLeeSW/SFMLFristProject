@@ -203,6 +203,9 @@
     <ClCompile Include="SpriteFont\SpriteFont.cpp" />
     <ClCompile Include="UniqueType\UniqueShootMGR.cpp" />
     <ClCompile Include="UniqueType\UniquPattern1.cpp" />
+    <ClCompile Include="UniqueType\UniquPattern3.cpp" />
+    <ClCompile Include="UniqueType\UniquPattern2.cpp" />
+    <ClCompile Include="UniqueType\UniquPattern0.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rd\rapidcsv.h" />
@@ -250,6 +253,9 @@
     <ClInclude Include="Framework\UiButton.h" />
     <ClInclude Include="UniqueType\UniqueShootMGR.h" />
     <ClInclude Include="UniqueType\UniquPattern1.h" />
+    <ClInclude Include="UniqueType\UniquPattern3.h" />
+    <ClInclude Include="UniqueType\UniquPattern2.h" />
+    <ClInclude Include="UniqueType\UniquPattern0.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

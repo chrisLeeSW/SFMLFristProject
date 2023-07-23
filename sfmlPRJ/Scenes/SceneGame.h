@@ -54,7 +54,7 @@ protected:
 
 	TextGo* boombCount;
 	SpriteGo* boombCountSprite[5];
-	int boombCountSpriteCurrent = 0;
+	int boombCountSpriteCurrent = -1;
 	int maxBoombCountSpritecurretn =5;
 
 	TextGo* gameTimeText;

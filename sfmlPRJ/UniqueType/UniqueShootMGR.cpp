@@ -2,11 +2,16 @@
 #include "UniqueShootMGR.h"
 #include "Player.h"
 #include "Boss.h"
-
+#include "UniquPattern0.h"
 #include "UniquPattern1.h"
+#include "UniquPattern2.h"
+#include "UniquPattern3.h"
 UniqueShootMGR::UniqueShootMGR()
 {
+    patterns.push_back(new UniquPattern0());
 	patterns.push_back(new UniquPattern1());
+    patterns.push_back(new UniquPattern2());
+    patterns.push_back(new UniquPattern3());
 }
 
 UniqueShootMGR::~UniqueShootMGR()

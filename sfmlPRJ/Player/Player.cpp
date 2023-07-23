@@ -181,27 +181,26 @@ void Player::PlayerShoot(float dt)
 
 			Shoot* shoot = playerShootPool.Get();
 			std::string str = "Shooting"; 
-			shoot->SetAnimationId(str); 
 			shoot->SetBoss(boss);
 			sf::Vector2f dir = Utils::Normalize(boss->GetPosition()- GetPosition());
 			if (count == 0)
-				shoot->PlayerFire(GetPosition(), dir);
+				shoot->PlayerFire(GetPosition(), dir, str);
 			else if (count == 1)
 			{
-				shoot->PlayerFire(GetPosition() + sf::Vector2f{ 20.f * count ,0.f * count }, dir);
+				shoot->PlayerFire(GetPosition() + sf::Vector2f{ 20.f * count ,0.f * count }, dir, str);
 			}
 			else if (count == 2)
 			{
-				shoot->PlayerFire(GetPosition()  + sf::Vector2f{ -20.f * 0.5f *  count ,0.f * count }, dir);
+				shoot->PlayerFire(GetPosition()  + sf::Vector2f{ -20.f * 0.5f *  count ,0.f * count }, dir, str);
 			}
 			else if (count>=3)
 			{
 				if (count % 2 == 1)
 				{
-					shoot->PlayerFire(GetPosition()  + sf::Vector2f{20.f * (count/2+1) ,0.f * count }, dir);
+					shoot->PlayerFire(GetPosition()  + sf::Vector2f{20.f * (count/2+1) ,0.f * count }, dir, str);
 				}
 				else if (count % 2 == 0)
-					shoot->PlayerFire(GetPosition()  + sf::Vector2f{ -20.f  * (count/2) ,0.f * count }, dir);
+					shoot->PlayerFire(GetPosition()  + sf::Vector2f{ -20.f  * (count/2) ,0.f * count }, dir, str);
 			}
 			shoot->sortLayer = 2;
 			shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
@@ -223,8 +222,7 @@ void Player::PlayerShoot(float dt)
 		hitboxCircle.setFillColor(sf::Color::Yellow);
 		hitboxDraw = true;
 	}
-
-	if (INPUT_MGR.GetKey(sf::Keyboard::Tab) &&!effectDraw)
+	if (INPUT_MGR.GetKey(sf::Keyboard::Tab) &&!effectDraw && sceneGame->GetBoombCountSpriteCurrent() >= 0)
 	{
 		effectDraw = true;
 	}

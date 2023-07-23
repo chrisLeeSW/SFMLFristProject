@@ -41,8 +41,7 @@ void Boss::Reset()
 	bossShootPool.Clear();
 	animation.Play("Idle");
 	SetOrigin(Origins::MC);
-	SetPosition(-300.f,0.f);
-//	SetPosition(-270.f, -250.f);
+	SetPosition(-270.f, -250.f);
 	bossHp = 810;
 	startPos = sf::Vector2f{ -270.f, -250.f };
 	endPos = sf::Vector2f({ 0.f, -50.f });
@@ -53,13 +52,20 @@ void Boss::Reset()
 	bossAttackTimeOneLimit = 1.0f;
 	stopAttackTime = 0.f;
 	bossDie = false;
-	startGame = 0.f;
 	score = 0;
-	count = 0;
+	onePage = true;
+	twoPage = false;
+	threePage = false;
+	fourPage = false;
 }
 
 void Boss::Update(float dt)
 {
+	if(bossHp >750.f && !onePage)onePage = true;
+	else if(bossHp<750.f && bossHp>500.f && !twoPage)	twoPage = false;
+	else if(bossHp<500.f && bossHp>200.f && !threePage) threePage = false;
+	else if(bossHp<200.f && !fourPage)	fourPage = false;
+
 	if (bossHp == 0.f)
 		bossDie = true;
 	if (!bossDie && !player->GetPlayerDie())
@@ -90,13 +96,10 @@ void Boss::Draw(sf::RenderWindow& window)
 
 void Boss::BossMove(float dt)
 {
-	bossAtk -= dt;
-
-
 	moveTime += dt;
 	moveTimerDuration += dt;
 	float t = moveTime / moveDuration;
-	/*if (t >= 1.f)
+	if (t >= 1.f)
 	{
 		t = 1.f;
 	}
@@ -146,25 +149,31 @@ void Boss::BossMove(float dt)
 			animation.Play("Move");
 			moveBoss = true;
 		}
-	}*/
+	}
 	position += direction * speed * dt;
 	SetPosition(position);
-
-
 }
 
 void Boss::BossFireUcnique(float dt)
 {
 	stopAttackTime -= dt;
 
-	/*if (stopBoss && stopAttackTime < stopAttackTimeLimit)
+	if (stopBoss && stopAttackTime < stopAttackTimeLimit) // 2페이주부터 작동
 	{
 		stopAttackTime = 4.0f;
-		uniqueshootPatternMgr.ChangePattern(0);
+		uniqueshootPatternMgr.ChangePattern(1);
 		uniqueshootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		uniqueshootPatternMgr.SetCharacterAll(player, this);
 		uniqueshootPatternMgr.ShootBullets();
-	}*/
+	}
+
+	// 특수패턴 1일때는 타이머 적용 할것 예상시간은 0.5f?
+	// 특수패턴은 stopBoss일때 한번만 하게 작동 시킬 것 // 2
+	// 
+	// 750hp up 1
+	//  750hp down 2
+	// 400hp down 3
+	// 100hp down 4
 }
 
 void Boss::BossFireNormal(float dt)
@@ -188,7 +197,7 @@ void Boss::BossFireNormal(float dt)
 	//		attackRand1 = Utils::RandomRange(0, 6);
 	//	bossAttackNoramalPatternChangeTime = 0.f;
 	//}
-	//if (bossHp > 750 && bossAttackTimeOne < bossAttackTimeOneLimit)
+	//if (bossAttackTimeOne < bossAttackTimeOneLimit)
 	//{
 	//	bossAttackTimeOne = bossAttackTimeOneLimit + 0.3f;
 	//	shootPatternMgr.ChangePattern(attackRand1);
@@ -196,121 +205,7 @@ void Boss::BossFireNormal(float dt)
 	//	shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 	//	shootPatternMgr.ShootBullets();
 	//}
-
-
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num1))
-	{
-		Scene* scene = SCENE_MGR.GetCurrScene();
-		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-		float angleInterval = 360.f / maxCount;
-		for (int i = 0;i < 30;++i)
-		{
-			Shoot* shoot = bossShootPool.Get();
-			shoot->SetPlayer(player);
-			float angle = angleInterval * i;
-			shoot->SetPattenInfo(Shoot::NoramalPatten::DelayTimeAttackOneType, GetPosition(), "BossNormalShooting1", angle, 1.f +(i*.5f),250.f );
-			shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
-			shoot->sortLayer = -1;
-			if (sceneGame != nullptr)
-			{
-				sceneGame->AddGo(shoot);
-			}
-		}
-	}
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num2))
-	{
-		testShootBullet = true;
-		
-	}
-
-	if (testShootBullet && bossAtk < 0.f && count != maxCount)
-	{
-		Scene* scene = SCENE_MGR.GetCurrScene();
-		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-		float angleInterval = 360.f / maxCount;
-
-		Shoot* shoot = bossShootPool.Get();
-		shoot->SetPlayer(player);
-		float angle = angleInterval * count;
-		shoot->SetPattenInfo(Shoot::NoramalPatten::testcode3, GetPosition(), angle, "BossNormalShooting1", 250.f);
-		shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
-		shoot->sortLayer = -1;
-		if (sceneGame != nullptr)
-		{
-			sceneGame->AddGo(shoot);
-		}
-		++count;
-		bossAtk = delay;
-	}
-	if ((count == maxCount) && testShootBullet)
-	{
-		testShootBullet = false;
-		count = 0;
-	}
-
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num3))
-	{
-		Scene* scene = SCENE_MGR.GetCurrScene();
-		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-	
-		for (int i = 0;i < 30;++i)
-		{
-			Shoot* shoot = bossShootPool.Get();
-			shoot->SetPlayer(player);
-			sf::Vector2f pos = Utils::RandomOnCircle(10.f+i*10.f);
-			shoot->SetPattenInfo(Shoot::NoramalPatten::ColumnType, pos, "BossNormalShooting1");
-			shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
-			shoot->sortLayer = -1;
-			if (sceneGame != nullptr)
-			{
-				sceneGame->AddGo(shoot);
-			}
-		}
-	}
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num4))
-	{
-		Scene* scene = SCENE_MGR.GetCurrScene();
-		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-		for(int i=1;i<=5;++i)
-		{
-			
-			Shoot* shoot = bossShootPool.Get();
-			shoot->SetPlayer(player);
-			shoot->SetPattenInfo(Shoot::NoramalPatten::testcode,GetPosition() + sf::Vector2f(20.f*i, -20.f*i), 45.f, "BossNormalShooting1", 250.f);
-			std::cout << GetPosition().x << "\t" << GetPosition().y << std::endl;
-			shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
-			shoot->sortLayer = -1;
-			if (sceneGame != nullptr)
-			{
-				sceneGame->AddGo(shoot);
-			}
-		}
-	}
 }
-/*
-for (int count = 0;count < shootCount;++count)
-	{
-		Shoot* shoot = bossShootPool.Get();
-		shoot->SetPlayer(player);
-		float angle = Utils::DegreesToRadians(90.f);
-		if (count >= 1)
-		{
-			if (count % 2 == 1)
-				angle += Utils::DegreesToRadians(10.0f * (count / 2 + 1)); // 1 2
-			else if (count % 2 == 0)
-				angle += Utils::DegreesToRadians(-10.0f * (count / 2)); // 1 2
-		}
-		shoot->SetPattenInfo(Shoot::NoramalPatten::SectorType, boss->GetPosition(), angle, str,250.f);
-		shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
-		shoot->sortLayer = -1;
-		if (sceneGame != nullptr)
-		{
-			sceneGame->AddGo(shoot); //
-		}
-
-	}
-*/
-
 
 
 bool Boss::CheckCollisionWithBullet(const Shoot& bullet)
@@ -349,125 +244,3 @@ sf::Vector2f Boss::CalculateBezierPoint(const sf::Vector2f& p0, const sf::Vector
 
 	return p;
 }
-
-sf::Vector2f Boss::RotateVector(const sf::Vector2f& vector, float angleDegrees) {
-	float angleRadians = angleDegrees * (3.14159265359f / 180.0f); // Convert degrees to radians
-	float cosAngle = std::cos(angleRadians);
-	float sinAngle = std::sin(angleRadians);
-
-	float rotatedX = vector.x * cosAngle - vector.y * sinAngle;
-	float rotatedY = vector.x * sinAngle + vector.y * cosAngle;
-
-	return sf::Vector2f(rotatedX, rotatedY);
-}
-
-
-
-//if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num5)) // 원형으로 내려감
-	//{
-	//}
-	//if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num6))
-	//{
-	//	Scene* scene = SCENE_MGR.GetCurrScene();
-	//	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-	//	int bulletCount = 30;
-	//	float triangleHeight = 100.f;
-	//	float startingYPos = 0.f;
-	//	float angleInterval = 360.f / bulletCount;
-	//	for (int i = 0; i < bulletCount; i++)
-	//	{
-	//		float angle = angleInterval * i;
-	//		Shoot* shoot = bossShootPool.Get();
-	//		shoot->SetPlayer(player);
-	//		shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
-	//		sf::Vector2f vertex1 = position;
-	//		sf::Vector2f vertex2 = position + sf::Vector2f(triangleHeight * 0.5f, triangleHeight);
-	//		sf::Vector2f vertex3 = position + sf::Vector2f(-triangleHeight * 0.5f, triangleHeight);
-	//		sf::Vector2f bulletPos = vertex1 + ((vertex2 - vertex1) * (static_cast<float>(i) / (bulletCount - 1)));
-	//		float angle2 = Utils::RandomRange(0, 360);
-	//		shoot->SetPattenInfo(Shoot::NoramalPatten::SectorType, bulletPos, angle2, "BossNormalShooting1");
-	//		if (sceneGame != nullptr)
-	//		{
-	//			sceneGame->AddGo(shoot);
-	//		}
-	//		/*Shoot* shoot2 = bossShootPool.Get();
-	//		shoot2->SetPlayer(player);
-	//		shoot2->SetWallBounds(WallBounds, bgWidth, bgHeight);
-	//		sf::Vector2f vertex1Left = position;
-	//		sf::Vector2f vertex2Left = position + sf::Vector2f(-triangleHeight * 0.5f, triangleHeight);
-	//		sf::Vector2f vertex3Left = position + sf::Vector2f(triangleHeight * 0.5f, triangleHeight);
-	//		sf::Vector2f bulletPosLeft = vertex1Left + ((vertex2Left - vertex1Left) * (static_cast<float>(i) / (bulletCount - 1)));
-	//		shoot2->SetPattenInfo(Shoot::NoramalPatten::ColumnType, bulletPosLeft, "BossNormalShooting1");
-	//		if (sceneGame != nullptr)
-	//		{
-	//			sceneGame->AddGo(shoot);
-	//			sceneGame->AddGo(shoot2);
-	//		}
-	//		int totalLineBullets = bulletCount * 2 - 1;
-	//		startingYPos = bulletPosLeft.y;
-	//		if (i == bulletCount - 1)
-	//		{
-	//			for (int j = 1; j < totalLineBullets;++j)
-	//			{
-	//				Shoot* line = bossShootPool.Get();
-	//				line->SetPlayer(player);
-	//				line->SetWallBounds(WallBounds, bgWidth, bgHeight);
-	//				sf::Vector2f vertex1Left1 = bulletPosLeft;
-	//				sf::Vector2f vertex2Left2 = bulletPosLeft + sf::Vector2f(-triangleHeight, triangleHeight);
-	//				sf::Vector2f vertex3Left3 = bulletPosLeft + sf::Vector2f(triangleHeight, triangleHeight);
-	//				sf::Vector2f bulletPosLine = vertex1Left1 + ((vertex3Left3 - vertex1Left1) * (static_cast<float>(j) / (totalLineBullets - 1)));
-	//				bulletPosLine.y = startingYPos;
-	//				line->SetPattenInfo(Shoot::NoramalPatten::ColumnType, bulletPosLine, "BossNormalShooting1");
-	//				if (sceneGame != nullptr)
-	//				{
-	//					sceneGame->AddGo(line);
-	//				}
-	//			}
-	//		}
-	//	}*/
-	//	}
-	//}
-
-//if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num3))
-	//{
-	//	bossAttackTimeOne = 0.3f;
-	//	Scene* scene = SCENE_MGR.GetCurrScene();
-	//	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-	//	Shoot* shoot = bossShootPool.Get();
-	//	shoot->SetPlayer(player);
-	//	shoot->SetPositionTest(position, { 0.f,1.f });
-	//	shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
-	//	if (sceneGame != nullptr)
-	//	{
-	//		sceneGame->AddGo(shoot); //
-	//	}
-	//}
-	//if (testShootBullet)
-	//{
-	//	if (bossAtk < 0.f && count != maxCount)
-	//	{
-	//		Scene* scene = SCENE_MGR.GetCurrScene();
-	//		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-	//		float angleInterval = 360.f / maxCount;
-
-	//		Shoot* shoot = bossShootPool.Get();
-	//		shoot->SetPlayer(player);
-	//		float angle = angleInterval * count;
-	//		shoot->SetPattenInfo(Shoot::NoramalPatten::AngleDirectionType, poolShootPos, angle, "BossNormalShooting1");
-	//		shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
-	//		shoot->sortLayer = -1;
-	//		if (sceneGame != nullptr)
-	//		{
-	//			sceneGame->AddGo(shoot);
-	//		}
-	//		++count;
-	//		bossAtk = delay;
-	//	}
-	//}
-	//if ((count == maxCount) && testShootBullet)
-	//{
-	//	testShootBullet = false;
-	//	count = 0;
-	//}
-
-
