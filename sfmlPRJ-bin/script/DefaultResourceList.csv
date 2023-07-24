@@ -38,3 +38,7 @@
 0,graphics/Ending12.jpg
 0,graphics/Ending13.jpg
 0,graphics/EffectSprite.png
+2,Sounds/BossDie.wav
+2,Sounds/TitleGameSound.wav
+2,Sounds/timeout.wav
+2,Sounds/Boomb.wav

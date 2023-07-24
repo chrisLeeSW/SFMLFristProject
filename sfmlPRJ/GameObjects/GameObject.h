@@ -14,11 +14,11 @@ public:
 	GameObject(const GameObject& obj) = delete;
 	GameObject& operator=(const GameObject& obj) = delete;
 
-	int sortLayer = 0;
-	int sortOrder = 0;
-
 	GameObject(const std::string& n = "");
 	virtual ~GameObject();
+
+	int sortLayer = 0;
+	int sortOrder = 0;
 
 	bool GetActive() const;
 	void SetActive(bool active);

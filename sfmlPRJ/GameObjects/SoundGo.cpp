@@ -4,6 +4,7 @@
 SoundGo::SoundGo(std::string soundbufferfile)
 	: soundbufferfile(soundbufferfile)
 {
+	soundbuffer.loadFromFile(soundbufferfile);
 }
 
 SoundGo::~SoundGo()
@@ -12,18 +13,18 @@ SoundGo::~SoundGo()
 
 void SoundGo::SoundInBuffer()
 {
-	//soundbuffer.loadFromFile(soundbufferfile);
+	
 }
 
 void SoundGo::SetSound()
 {
-	//sound.setBuffer(soundbuffer);
+	sound.setBuffer(soundbuffer);
 }
 
-void SoundGo::SoundPlayer()
+void SoundGo::SoundPlay()
 {
-	//SoundInBuffer();
-	//SetSound();
-	//sound.play();
+	SetSound();
+	sound.play();
+	sound.setVolume(5.f);
 }
 

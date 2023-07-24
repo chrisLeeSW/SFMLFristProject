@@ -37,6 +37,8 @@ protected:
 	int frames = 0;
 
 	SoundGo* music1;
+	SoundGo* bossDie;
+	SoundGo* timeOutSound;
 	float musicVolum = 5.f;
 
 	float soundTime;

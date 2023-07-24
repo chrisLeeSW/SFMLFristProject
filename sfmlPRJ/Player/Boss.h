@@ -8,6 +8,7 @@
 class Player;
 class Scene;
 class SceneGame;
+class SoundGo;
 class Boss :public SpriteGo // æ‡ 900MB∏‘¿Ω
 {
 protected:
@@ -23,7 +24,7 @@ protected:
 	ObjectPool<Shoot> bossShootPool;
 	ShootMGR shootPatternMgr;
 	UniqueShootMGR uniqueshootPatternMgr;
-
+	SoundGo* bossTan;
 
 	sf::Vector2f endPos;
 	sf::Vector2f startPos;

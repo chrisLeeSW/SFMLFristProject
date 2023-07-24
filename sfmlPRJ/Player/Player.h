@@ -29,7 +29,7 @@ protected:
 	float bgHeight;
 
 	SoundGo* playerShoot;
-	float soundVolum;
+	SoundGo* playerBoomb;
 
 	int playerLife = 2;
 	bool playerLifeDown = false;
@@ -63,10 +63,12 @@ public:
 	void SetWallBounds(sf::Vector2f boundf, float widthX, float widthY);
 	float GetPlayerDamage() { return damage; }
 	bool GetPlayerDie() { return playerDie; }
+	void SetPlayerDie(bool tp) { playerDie = tp; }
 	bool GetEffectDraw() { return effectDraw; }
 	float GetDamage() { return damage; }
 	void IncreaseDamage();
 	void IncreasePlayerLife();
 	int GetPlayerLife() { return playerLife; }
+
 };
 

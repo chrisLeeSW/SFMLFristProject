@@ -76,6 +76,8 @@ void SceneGame::Init()
 
 
 	music1 = new SoundGo("Sounds/치르노의-퍼펙트-산수-교실-풀버전.wav");
+	bossDie = new SoundGo("Sounds/BossDie.wav");
+	timeOutSound = new SoundGo("Sounds/timeout.wav");
 
 	cirnoTalking = (SpriteGo*)AddGo(new SpriteGo("graphics/cirnoFace.png"));
 	cirnoTalking->sprite.setTextureRect({ 0,12,127,244 });
@@ -117,6 +119,8 @@ void SceneGame::Release()
 	}
 	if (music1 != nullptr)
 		delete music1;
+	if (bossDie != nullptr) delete bossDie;
+	if (timeOutSound != nullptr) delete timeOutSound;
 }
 
 void SceneGame::Enter()
@@ -144,8 +148,8 @@ void SceneGame::Enter()
 		boombCountSprite[i]->SetActive(false);
 	}
 
-
-	music1->SoundPlayer();
+	music1->sound.setVolume(15.f);
+	music1->SoundPlay();
 
 
 
@@ -166,7 +170,8 @@ void SceneGame::Update(float dt)
 	player->SetWallBounds(gameWallSize, gameBackground->sprite.getGlobalBounds().width, gameBackground->sprite.getGlobalBounds().height);
 	bossCirno->SetWallBounds(gameWallSize, gameBackground->sprite.getGlobalBounds().width, gameBackground->sprite.getGlobalBounds().height);
 	bossEffect->SetPosition(bossCirno->GetPosition());
-	/*frames++;
+
+	frames++;
 	frameTime += clock.restart();
 	if (frameTime >= sf::seconds(1.0f))
 	{
@@ -174,8 +179,8 @@ void SceneGame::Update(float dt)
 		frames = 0;
 		frameTime = sf::Time::Zero;
 		std::stringstream frameS;
-		std::cout << "FPS :" << fps << std::endl; - > 죽여버림 ;;
-	}*/
+		std::cout << "FPS :" << fps << std::endl; //- > 죽여버림 ;;
+	}
 
 
 	int hp = bossCirno->GetBossHp();
@@ -206,6 +211,7 @@ void SceneGame::Update(float dt)
 	
 	if (bossCirno->GetBossDie())
 	{
+		bossDie->SoundPlay();
 		SCENE_MGR.ChangeScene(SceneId::Ending);
 		hpBar.setSize({ 0.f, 5.f });
 	}
@@ -220,31 +226,14 @@ void SceneGame::Update(float dt)
 		bossEffect->SetActive(false);
 	}
 	bossEffect->SetActive(bossCirno->GetBossStop());
-	if (music1->sound.getStatus() != sf::Sound::Playing)
-	{
-		music1->SoundPlayer();
-	}
-	if (music1->sound.getStatus() != sf::Sound::Playing)
-	{
-		soundTime += dt;
-	}
-	if (soundTime > 5.f)
-	{
-		soundTime = 0.f;
-		music1->SoundPlayer();
-	}
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::F1))
-	{
-		musicVolum += 2.5f;
-	}
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::F2))
-	{
-		musicVolum -= 2.5f;
-	}
-	music1->sound.setVolume(musicVolum);
+
 
 	if (player->GetPlayerDie()) { gameOver->SetActive(player->GetPlayerDie()); }
-
+	if (gameTimer <= 0.f)
+	{
+		player->SetPlayerDie(true);
+		timeOutSound->SoundPlay();
+	}
 	if (player->GetPlayerDie() && INPUT_MGR.GetKeyDown(sf::Keyboard::Return))
 	{
 		player->Reset();

@@ -3,7 +3,7 @@
 #include "SceneGame.h"
 #include "Scene.h"
 #include "Player.h"
-
+#include "SoundGo.h"
 void Boss::Init()
 {
 	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Boss/Idle.csv"));
@@ -21,7 +21,7 @@ void Boss::Init()
 	secondPos = sf::Vector2f(-200.f, 0.f);
 	attackRand1 = Utils::RandomRange(0, 5);
 
-
+	bossTan = new SoundGo("Sounds/BossTan.wav");
 	bossShootPool.OnCreate = [this](Shoot* bullet) {
 		bullet->SetBoss(this);
 		bullet->pool = &bossShootPool;
@@ -34,6 +34,7 @@ void Boss::Release()
 {
 	SpriteGo::Release();
 	bossShootPool.Release();
+	if (bossTan != nullptr) delete bossTan;
 }
 
 void Boss::Reset()
@@ -184,6 +185,7 @@ void Boss::BossFireUcnique(float dt)
 	if (stopBoss && stopAttackTime < stopAttackTimeLimit && twoPage) 
 	{
 		stopAttackTime = 4.0f;
+		bossTan->SoundPlay();
 		uniqueshootPatternMgr.ChangePattern(1);
 		uniqueshootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		uniqueshootPatternMgr.SetCharacterAll(player, this);
@@ -193,6 +195,7 @@ void Boss::BossFireUcnique(float dt)
 	if (stopBoss && stopAttackTime < stopAttackTimeLimit && threePage)
 	{
 		stopAttackTime = 1.5f;
+		bossTan->SoundPlay();
 		uniqueshootPatternMgr.ChangePattern(2);
 		uniqueshootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		uniqueshootPatternMgr.SetCharacterAll(player, this);
@@ -201,6 +204,7 @@ void Boss::BossFireUcnique(float dt)
 	}
 	if (stopBoss && stopAttackTime < stopAttackTimeLimit && fourPage)
 	{
+		bossTan->SoundPlay();
 		stopAttackTime = 4.0f;
 		uniqueshootPatternMgr.ChangePattern(1);
 		uniqueshootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
@@ -247,6 +251,7 @@ void Boss::BossFireNormal(float dt)
 	if (onePage && bossAttackTimeOne < bossAttackTimeOneLimit)
 	{
 		bossAttackTimeOne = 3.f;
+		bossTan->SoundPlay();
 		uniqueshootPatternMgr.ChangePattern(0);
 		uniqueshootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
 		uniqueshootPatternMgr.SetCharacterAll(player, this);

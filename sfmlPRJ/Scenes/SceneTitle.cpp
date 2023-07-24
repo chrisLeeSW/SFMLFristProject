@@ -4,6 +4,7 @@
 #include "SpriteGo.h"
 #include "TextGo.h"
 #include "SoundGo.h"
+#include "AudiGo.h"
 SceneTitle::SceneTitle() : Scene(SceneId::Title)
 {
 	
@@ -17,6 +18,8 @@ void SceneTitle::Init() // 383 MB
 	backGroundGame->SetPosition(-FRAMEWORK.GetWindowSize() * 0.5f);
 
 	titleSound = new SoundGo("Sounds/TitleGameSound.wav");
+
+
 
 	gameSceneText=(TextGo*)AddGo(new TextGo("fonts/THE Nakseo.ttf"));
 	gameSceneText->text.setCharacterSize(50);
@@ -53,7 +56,7 @@ void SceneTitle::Enter()
 
 	uiView.setSize(size);
 
-	titleSound->SoundPlayer();
+	titleSound->SoundPlay();
 	Scene::Enter();
 }
 

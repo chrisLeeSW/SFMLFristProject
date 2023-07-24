@@ -23,6 +23,7 @@ void Player::Init()
 	Utils::SetOrigin(hitboxCircle, Origins::MC);
 
 	playerShoot = new SoundGo("Sounds/playerTan.wav");
+	playerBoomb = new SoundGo("Sounds/Boomb.wav");
 
 	texid.loadFromFile("graphics/EffectSprite.png");
 	effectBoomb.setTexture(texid);
@@ -35,6 +36,8 @@ void Player::Release()
 {
 	SpriteGo::Release();
 	playerShootPool.Release();
+	if (playerShoot != nullptr) delete playerShoot;
+	if (playerBoomb != nullptr) delete playerBoomb;
 }
 
 void Player::Reset()
@@ -44,7 +47,6 @@ void Player::Reset()
 	SetPosition(-340.f, 260.f);
 	hitboxCircle.setPosition(position);
 	Utils::SetOrigin(hitboxCircle, Origins::MC);
-	soundVolum = 10.f;
 	damage = 0.5f;
 	invincibilityTime = 0.f;
 	playerLife = 2;
@@ -77,9 +79,6 @@ void Player::Update(float dt)
 		timerBlink = 0.f;
 		sprite.setColor(sf::Color::Color(255, 255, 255, 255));
 	}
-	//
-	//if (playerLife == 0) playerLife = 500;
-	//
 	
 	if (playerLife == 0)
 	{
@@ -174,18 +173,10 @@ void Player::PlayerShoot(float dt)
 	}
 	Scene* scene = SCENE_MGR.GetCurrScene();
 	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::PageUp))
-	{
-		soundVolum += 5.f;
-	}
-	if (INPUT_MGR.GetKeyDown(sf::Keyboard::PageDown))
-	{
-		soundVolum -= 5.f;
-	}
 	if ((INPUT_MGR.GetKey(sf::Keyboard::X) || autoShot) && attackTime < 0.8f)
 	{
-		playerShoot->SoundPlayer();
-		playerShoot->sound.setVolume(soundVolum);
+		playerShoot->SoundPlay();
+		playerShoot->sound.setVolume(5.f);
 		attackTime = 1.0f;
 		int count = 0;
 		while (count < 3)
@@ -235,6 +226,7 @@ void Player::PlayerShoot(float dt)
 	}
 	if (INPUT_MGR.GetKey(sf::Keyboard::Tab) &&!effectDraw && sceneGame->GetBoombCountSpriteCurrent() >= 0)
 	{
+		playerBoomb->SoundPlay();
 		effectDraw = true;
 	}
 	if (effecTime >= 8.f)
@@ -264,7 +256,6 @@ bool Player::CheckCollisionWithBullet(const Shoot& bullet)
 	SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
 	if (distance < playerRadius + bulletRadius && !playerLifeDown )
 	{
-		std::cout << "isCollied Player" << std::endl;
 		playerLifeDown = true;
 		playerLife--;
 		if (sceneGame != nullptr)

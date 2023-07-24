@@ -12,7 +12,7 @@ public:
 
 	void SetSound();
 	void SoundInBuffer();
-	void SoundPlayer();
+	void SoundPlay();
 	void SoundStop() { sound.stop(); }
 };
 
