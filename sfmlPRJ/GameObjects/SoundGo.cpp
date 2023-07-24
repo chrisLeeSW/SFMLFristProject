@@ -12,18 +12,18 @@ SoundGo::~SoundGo()
 
 void SoundGo::SoundInBuffer()
 {
-	soundbuffer.loadFromFile(soundbufferfile);
+	//soundbuffer.loadFromFile(soundbufferfile);
 }
 
 void SoundGo::SetSound()
 {
-	sound.setBuffer(soundbuffer);
+	//sound.setBuffer(soundbuffer);
 }
 
 void SoundGo::SoundPlayer()
 {
-	SoundInBuffer();
-	SetSound();
-	sound.play();
+	//SoundInBuffer();
+	//SetSound();
+	//sound.play();
 }
 

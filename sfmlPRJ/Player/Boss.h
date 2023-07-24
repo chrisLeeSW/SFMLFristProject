@@ -8,20 +8,19 @@
 class Player;
 class Scene;
 class SceneGame;
-class Boss :public SpriteGo
+class Boss :public SpriteGo // æ‡ 900MB∏‘¿Ω
 {
 protected:
 	AnimationController animation;
 	sf::Vector2f direction;
 	bool moveBoss = false;
 	float speed = 300.f;
-	ObjectPool<Shoot> bossShootPool ;
 	Player* player=nullptr;
 	sf::Vector2f WallBounds;
 	float bgWidth=0.f;
 	float bgHeight=0.f;
 	float bossHp = 810.f; 
-	
+	ObjectPool<Shoot> bossShootPool;
 	ShootMGR shootPatternMgr;
 	UniqueShootMGR uniqueshootPatternMgr;
 
@@ -52,6 +51,7 @@ protected:
 	bool twoPage = false;
 	bool threePage = false;
 	bool fourPage = false;
+	bool effectUniqueAttack = false;
 public:
 	Boss(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId, n){}
 	virtual ~Boss() override { Release(); }
@@ -75,5 +75,6 @@ public:
 	bool GetBossDie(){ return bossDie; }
 	int GetScore() { return score; }
 	void SetUseBoomb(bool t) { useBoomb = t; }
+	bool GetBossStop() {return effectUniqueAttack;}
 };
 

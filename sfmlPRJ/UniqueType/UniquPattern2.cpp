@@ -7,7 +7,6 @@
 UniquPattern2::UniquPattern2()
 {
 	bossShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->SetBoss(boss);
 		bullet->pool = &bossShootPool;
 	};
 	bossShootPool.Init();

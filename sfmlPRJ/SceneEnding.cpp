@@ -5,7 +5,6 @@ void SceneEnding::LoadFromFile(const std::string& path)
 {
 	rapidcsv::Document doc(path, rapidcsv::LabelParams(-1, -1));
 	
-	//Loof
 	std::vector<std::string> paths = doc.GetColumn<std::string>(0);
 	for (int i = 1;i < paths.size();++i)
 	{
@@ -13,7 +12,7 @@ void SceneEnding::LoadFromFile(const std::string& path)
 	}
 	
 }
-//Ending01.jpg
+
 SceneEnding::SceneEnding() : Scene(SceneId::Ending)
 {
 }
@@ -32,7 +31,6 @@ void SceneEnding::Init()
 void SceneEnding::Release()
 {
 	textureId.clear();
-
 	for (auto go : gameObjects)
 	{
 		delete go;

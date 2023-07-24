@@ -26,10 +26,8 @@ public:
 		ColumnType,
 		RowRightType,
 		RowLeftType,
-		testcode,
 		DelayTimeAttackOneType,
 		DelayTimeAttackTwoType,
-		testcode3,
 		DelayType,
 		TornadoTypeLoof,
 	};
@@ -65,13 +63,12 @@ public:
 	void SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId,float angle,float delay, float speed = 500.f);
 
 
-	ObjectPool<Shoot>* pool = nullptr;
-
 	void SetPlayer(Player* player);
 	void SetBoss(Boss* boss);
-
-
 	void SetWallBounds(sf::Vector2f boundf, float widthX, float widthY);
+	void SetAngleDirection();
+
+	ObjectPool<Shoot>* pool = nullptr;
 protected:
 	NormalPattenInfo patternInfo;
 	
@@ -96,10 +93,6 @@ protected:
 	float delayTime;
 	bool delayOnAttackType = false;
 	bool delayOnAttackingOne = false;
-
-	bool testing2 = false;
-	bool testing3 = false;
-
 
 	float testing1DirSet = 0.f;
 	int tornadoCount = 0;

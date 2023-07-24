@@ -52,6 +52,8 @@ void Player::Reset()
 	playerDie = false;
 	effectDraw = false;
 	effecTime = 0.f;
+	timerBlink = 0.f;
+	timerBlinkDuration = 0.3f;
 }
 
 void Player::Update(float dt)
@@ -59,21 +61,31 @@ void Player::Update(float dt)
 	if (playerLifeDown)
 	{
 		invincibilityTime += dt;
+		timerBlink += dt;
+		if (timerBlink >= 0.f && timerBlink < timerBlinkDuration)
+			sprite.setColor(sf::Color::Color(255, 255, 255, 150));
+		else if (timerBlink > timerBlinkDuration && timerBlink < timerBlinkDuration * 2.f)
+		{
+			sprite.setColor(sf::Color::Color(255, 255, 255, 255));
+			timerBlink = 0.f;
+		}
 	}
 	if (invincibilityTime >= 10.f)
 	{
 		playerLifeDown = false;
 		invincibilityTime = 0.f;
+		timerBlink = 0.f;
+		sprite.setColor(sf::Color::Color(255, 255, 255, 255));
 	}
 	//
 	//if (playerLife == 0) playerLife = 500;
 	//
-	/*
+	
 	if (playerLife == 0)
 	{
 		playerDie = true;
+		return;
 	}
-	*/
 	effectRoate += speed*dt;
 	if(!playerDie)
 	{
@@ -178,7 +190,6 @@ void Player::PlayerShoot(float dt)
 		int count = 0;
 		while (count < 3)
 		{
-
 			Shoot* shoot = playerShootPool.Get();
 			std::string str = "Shooting"; 
 			shoot->SetBoss(boss);
@@ -258,7 +269,7 @@ bool Player::CheckCollisionWithBullet(const Shoot& bullet)
 		playerLife--;
 		if (sceneGame != nullptr)
 		{
-			sceneGame->isCollied();
+			sceneGame->DecreasePlayerLife();
 		}	
 		return true;
 	}
@@ -270,4 +281,14 @@ void Player::SetWallBounds(sf::Vector2f boundf,float widthX , float widthY)
 	bgWidth = widthX;
 	bgHeight = widthY;
 	WallBounds = boundf;
+}
+
+void Player::IncreaseDamage()
+{
+	damage += 0.5f;
+}
+
+void Player::IncreasePlayerLife()
+{
+	playerLife++;
 }

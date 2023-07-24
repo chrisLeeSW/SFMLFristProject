@@ -7,7 +7,6 @@
 Pattern5::Pattern5()
 {
 	bossShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->SetBoss(boss);
 		bullet->pool = &bossShootPool;
 	};
     bossShootPool.Init();

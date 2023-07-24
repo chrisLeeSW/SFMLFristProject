@@ -14,20 +14,20 @@ void Boss::Init()
 
 	SetOrigin(Origins::MC);
 
-	bossShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->SetBoss(this);
-		bullet->pool = &bossShootPool;
-	};
-	bossShootPool.Init();
-
-
 	moveTime = 0.f;
 	moveTimerDuration = 0.f;
 	startPos = sf::Vector2f{ -270.f, -250.f };
 	endPos = sf::Vector2f({ 0.f, -50.f });
 	secondPos = sf::Vector2f(-200.f, 0.f);
-	attackRand1 = Utils::RandomRange(0, 6);
+	attackRand1 = Utils::RandomRange(0, 5);
 
+
+	bossShootPool.OnCreate = [this](Shoot* bullet) {
+		bullet->SetBoss(this);
+		bullet->pool = &bossShootPool;
+	};
+	bossShootPool.Init();
+	bossAttackNoramalPatternChangeTimeLimit = 10.f;
 }
 
 void Boss::Release()
@@ -39,6 +39,8 @@ void Boss::Release()
 void Boss::Reset()
 {
 	bossShootPool.Clear();
+	shootPatternMgr.ClearBossShootPools();
+	uniqueshootPatternMgr.ClearBossShootPools();
 	animation.Play("Idle");
 	SetOrigin(Origins::MC);
 	SetPosition(-270.f, -250.f);
@@ -57,35 +59,52 @@ void Boss::Reset()
 	twoPage = false;
 	threePage = false;
 	fourPage = false;
+	stopAttackTimeLimit = 2.0f;
+	bossAttackNoramalPatternChangeTimeLimit = 10.f;
 }
 
 void Boss::Update(float dt)
 {
 	if(bossHp >750.f && !onePage)onePage = true;
-	else if(bossHp<750.f && bossHp>500.f && !twoPage)	twoPage = false;
-	else if(bossHp<500.f && bossHp>200.f && !threePage) threePage = false;
-	else if(bossHp<200.f && !fourPage)	fourPage = false;
+	else if (bossHp < 750.f && bossHp>500.f && !twoPage)
+	{
+		onePage = false;
+		twoPage = true;
+	}
+	else if (bossHp < 500.f && bossHp>200.f && !threePage)
+	{
+		twoPage = false;
+		threePage = true;
+	}
+	else if (bossHp < 200.f && !fourPage)
+	{
+		threePage = false;
+		fourPage = true;
+	}
 
 	if (bossHp == 0.f)
 		bossDie = true;
 	if (!bossDie && !player->GetPlayerDie())
 	{
-		direction.x = INPUT_MGR.GetAxisRaw(Axis::Horizontal);
-		direction.y = INPUT_MGR.GetAxisRaw(Axis::Vertical);
 		BossMove(dt);
 		BossFireUcnique(dt);
 		BossFireNormal(dt);
 		Scene* scene = SCENE_MGR.GetCurrScene();
 		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
-		if (INPUT_MGR.GetKey(sf::Keyboard::Tab) && sceneGame->GetBoombCountSpriteCurrent()>=0 && player->GetEffectDraw() && !useBoomb)
+		if (INPUT_MGR.GetKeyDown(sf::Keyboard::Tab) && sceneGame->GetBoombCountSpriteCurrent()> -1 && player->GetEffectDraw())
 		{
+			shootPatternMgr.ClearBossShootPools();
+			uniqueshootPatternMgr.ClearBossShootPools();
 			sceneGame->UseBoomb();
-			bossShootPool.Clear();
-			useBoomb = true;
 		}
-
+		
 		animation.Update(dt);
 		SpriteGo::Update(dt);
+	}
+	if (player->GetPlayerDie())
+	{
+		shootPatternMgr.ClearBossShootPools();
+		uniqueshootPatternMgr.ClearBossShootPools();
 	}
 }
 
@@ -103,6 +122,8 @@ void Boss::BossMove(float dt)
 	{
 		t = 1.f;
 	}
+	if (position == endPos) effectUniqueAttack = true;
+	else effectUniqueAttack = false;
 	if (position == endPos)
 	{
 		animation.Play("Idle");
@@ -157,8 +178,10 @@ void Boss::BossMove(float dt)
 void Boss::BossFireUcnique(float dt)
 {
 	stopAttackTime -= dt;
+	if (twoPage) stopAttackTimeLimit = 0.5f;
+	else stopAttackTimeLimit = 2.0f;
 
-	if (stopBoss && stopAttackTime < stopAttackTimeLimit) // 2페이주부터 작동
+	if (stopBoss && stopAttackTime < stopAttackTimeLimit && twoPage) 
 	{
 		stopAttackTime = 4.0f;
 		uniqueshootPatternMgr.ChangePattern(1);
@@ -166,14 +189,30 @@ void Boss::BossFireUcnique(float dt)
 		uniqueshootPatternMgr.SetCharacterAll(player, this);
 		uniqueshootPatternMgr.ShootBullets();
 	}
+	if (threePage) stopAttackTimeLimit = 1.0f;
+	if (stopBoss && stopAttackTime < stopAttackTimeLimit && threePage)
+	{
+		stopAttackTime = 1.5f;
+		uniqueshootPatternMgr.ChangePattern(2);
+		uniqueshootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
+		uniqueshootPatternMgr.SetCharacterAll(player, this);
+		uniqueshootPatternMgr.ShootBullets();
 
-	// 특수패턴 1일때는 타이머 적용 할것 예상시간은 0.5f?
-	// 특수패턴은 stopBoss일때 한번만 하게 작동 시킬 것 // 2
-	// 
-	// 750hp up 1
-	//  750hp down 2
-	// 400hp down 3
-	// 100hp down 4
+	}
+	if (stopBoss && stopAttackTime < stopAttackTimeLimit && fourPage)
+	{
+		stopAttackTime = 4.0f;
+		uniqueshootPatternMgr.ChangePattern(1);
+		uniqueshootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
+		uniqueshootPatternMgr.SetCharacterAll(player, this);
+		uniqueshootPatternMgr.ShootBullets();
+
+		uniqueshootPatternMgr.ChangePattern(3);
+		uniqueshootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
+		uniqueshootPatternMgr.SetCharacterAll(player, this);
+		uniqueshootPatternMgr.ShootBullets();
+	}
+	
 }
 
 void Boss::BossFireNormal(float dt)
@@ -181,30 +220,39 @@ void Boss::BossFireNormal(float dt)
 	bossAttackNoramalPatternChangeTime += dt;
 	bossAttackTimeOne -= dt;
 
-	//if (attackRand1 == 2)
-	//{
-	//	bossAttackTimeOneLimit = 0.2f;
-	//}
-	//else
-	//{
-	//	bossAttackTimeOneLimit = 1.0f;
-	//}
-	//if (bossAttackNoramalPatternChangeTime > bossAttackNoramalPatternChangeTimeLimit)
-	//{
-	//	int prevType = attackRand1;
-	//	attackRand1 = Utils::RandomRange(0, 6);
-	//	if (prevType == attackRand1)
-	//		attackRand1 = Utils::RandomRange(0, 6);
-	//	bossAttackNoramalPatternChangeTime = 0.f;
-	//}
-	//if (bossAttackTimeOne < bossAttackTimeOneLimit)
-	//{
-	//	bossAttackTimeOne = bossAttackTimeOneLimit + 0.3f;
-	//	shootPatternMgr.ChangePattern(attackRand1);
-	//	shootPatternMgr.SetCharacterAll(player, this);
-	//	shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
-	//	shootPatternMgr.ShootBullets();
-	//}
+	if (attackRand1 == 2 && twoPage)
+	{
+		bossAttackTimeOneLimit = 0.2f;
+	}
+	else
+	{
+		bossAttackTimeOneLimit = 1.0f;
+	}
+	if (bossAttackNoramalPatternChangeTime > bossAttackNoramalPatternChangeTimeLimit && (twoPage || threePage))
+	{
+		int prevType = attackRand1;
+		attackRand1 = Utils::RandomRange(0, 5);
+		if (prevType == attackRand1)
+			attackRand1 = Utils::RandomRange(0, 5);
+		bossAttackNoramalPatternChangeTime = 0.f;
+	}
+	if (bossAttackTimeOne < bossAttackTimeOneLimit && (twoPage || threePage))
+	{
+		bossAttackTimeOne = bossAttackTimeOneLimit + 0.3f;
+		shootPatternMgr.ChangePattern(attackRand1);
+		shootPatternMgr.SetCharacterAll(player, this);
+		shootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
+		shootPatternMgr.ShootBullets();
+	}
+	if (onePage && bossAttackTimeOne < bossAttackTimeOneLimit)
+	{
+		bossAttackTimeOne = 3.f;
+		uniqueshootPatternMgr.ChangePattern(0);
+		uniqueshootPatternMgr.SetWallBounds(WallBounds, bgWidth, bgHeight);
+		uniqueshootPatternMgr.SetCharacterAll(player, this);
+		uniqueshootPatternMgr.ShootBullets();
+	}
+	
 }
 
 
@@ -213,11 +261,10 @@ bool Boss::CheckCollisionWithBullet(const Shoot& bullet)
 
 	if (sprite.getGlobalBounds().intersects(bullet.sprite.getGlobalBounds()))
 	{
-		bossHp -= player->GetGetPlayerDamage();
+		bossHp -= player->GetPlayerDamage();
 		score++;
 		return true;
 	}
-
 	return false;
 }
 

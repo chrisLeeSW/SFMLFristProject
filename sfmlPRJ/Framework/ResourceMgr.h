@@ -1,6 +1,5 @@
 #pragma once
 #include "Singleton.h"
-#include "SpriteFont.h"
 class ResourceMgr : public Singleton<ResourceMgr>
 {
 	friend Singleton<ResourceMgr>;

@@ -41,6 +41,8 @@ protected:
 	float effectRoate = 0.f;
 	float effecTime = 0.f;
 	bool effectDraw = false;
+	float timerBlink=0.f;
+	float timerBlinkDuration = 0.3f;
 public:
 	Player(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId, n) {}
 	virtual ~Player() override { Release(); }
@@ -59,8 +61,12 @@ public:
 	bool CheckCollisionWithBullet(const Shoot& bullet);
 	
 	void SetWallBounds(sf::Vector2f boundf, float widthX, float widthY);
-	float GetGetPlayerDamage() { return damage; }
+	float GetPlayerDamage() { return damage; }
 	bool GetPlayerDie() { return playerDie; }
 	bool GetEffectDraw() { return effectDraw; }
+	float GetDamage() { return damage; }
+	void IncreaseDamage();
+	void IncreasePlayerLife();
+	int GetPlayerLife() { return playerLife; }
 };
 

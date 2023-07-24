@@ -9,7 +9,10 @@ protected:
 	bool isActive = true;
 	Origins origin = Origins::TL;
 
+
 public:
+	GameObject(const GameObject& obj) = delete;
+	GameObject& operator=(const GameObject& obj) = delete;
 
 	int sortLayer = 0;
 	int sortOrder = 0;

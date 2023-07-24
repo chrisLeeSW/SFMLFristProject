@@ -14,6 +14,7 @@ void Shoot::Init()
 	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Player_Ani_Shooting.csv"));
 	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Boss/BossNormalShooting1.csv"));
 	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Boss/BossNormalShooting2.csv"));
+
 	animation.SetTarget(&sprite);
 	SetOrigin(Origins::MC);
 }
@@ -52,26 +53,13 @@ void Shoot::Update(float dt)
 		direction = sf::Vector2f(newX, newY);
 		accuTime = 0.f;
 	}
-
-	if (patternInfo.pattenType == NoramalPatten::testcode  &&!testing2)
-	{
-		direction = { 0.f,0.f };
-		testing2 = true;
-	}
-	if (patternInfo.pattenType == NoramalPatten::testcode && accuTime > 0.5f && testing2 && !testing3)
-	{
-		direction = Utils::Normalize(player->GetPosition() - GetPosition());
-		testing3 = true;
-
-	}
 	if (patternInfo.pattenType == NoramalPatten::DelayTimeAttackOneType && accuTime > 0.5f && !delayOnAttackType && !delayOnAttackingOne)
 	{
 		direction = { 0.f, 0.f };
 		accuTime = 0.f;
 		delayOnAttackType = true;
-
 	}
-	if (patternInfo.pattenType == NoramalPatten::DelayTimeAttackTwoType && accuTime > 0.5f && !delayOnAttackType && !delayOnAttackingOne)
+	else if (patternInfo.pattenType == NoramalPatten::DelayTimeAttackTwoType && accuTime > 0.5f && !delayOnAttackType && !delayOnAttackingOne)
 	{
 		direction = { 0.f, 0.f };
 		accuTime = 0.f;
@@ -84,21 +72,6 @@ void Shoot::Update(float dt)
 		delayOnAttackType = false;
 		delayOnAttackingOne = true;
 	}
-
-
-	/*if (patternInfo.pattenType == NoramalPatten::testcode3 && accuTime > 0.5f && !delayOnAttackOneType)
-	{
-		direction = { 0.f,0.f };
-
-		accuTime = 0.f;
-		delayOnAttackOneType = true;
-	}
-	if (patternInfo.pattenType == NoramalPatten::testcode3 && delayOnAttackOneType && accuTime > 3.0f &&!testing2)
-	{
-		direction = Utils::Normalize(player->GetPosition() - GetPosition());
-		testing2 = true;
-	}*/
-
 	if (patternInfo.pattenType == NoramalPatten::FrequencyType )
 	{
 		position.x = patternInfo.pos.x + std::sin(accuTime * patternInfo.frequency) * patternInfo.amplitude;
@@ -135,6 +108,7 @@ void Shoot::Update(float dt)
 		Scene* scene = SCENE_MGR.GetCurrScene();
 		scene->RemoveGo(this);
 	}
+	if (player->GetPlayerDie()) pool->Clear();
 	SpriteGo::Update(dt);
 }
 
@@ -159,8 +133,7 @@ void Shoot::BossFire(float dt)
 		case NoramalPatten::AngleDirectionType:
 		{
 			SetPosition(patternInfo.pos);
-			float radian = Utils::DegreesToRadians(patternInfo.angle);
-			direction = sf::Vector2f(std::cos(radian), std::sin(radian));
+			SetAngleDirection();
 			animation.Play(patternInfo.animationClipId);
 		}
 		break;
@@ -192,17 +165,10 @@ void Shoot::BossFire(float dt)
 			animation.Play(patternInfo.animationClipId);
 		}
 		break;
-		case NoramalPatten::testcode:
-		{
-			SetPosition(patternInfo.pos);
-			animation.Play(patternInfo.animationClipId);
-		}
-		break;
 		case NoramalPatten::DelayTimeAttackOneType:
 		{
 			SetPosition(patternInfo.pos);
-			float radian = Utils::DegreesToRadians(patternInfo.angle);
-			direction = sf::Vector2f(std::cos(radian), std::sin(radian));
+			SetAngleDirection();
 			animation.Play(patternInfo.animationClipId);
 		}
 		break; case NoramalPatten::DelayTimeAttackTwoType:
@@ -211,27 +177,17 @@ void Shoot::BossFire(float dt)
 			animation.Play(patternInfo.animationClipId);
 		}
 		break;
-		case NoramalPatten::testcode3:
-		{
-			SetPosition(patternInfo.pos);
-			float radian = Utils::DegreesToRadians(patternInfo.angle);
-			direction = sf::Vector2f(std::cos(radian), std::sin(radian));
-			animation.Play(patternInfo.animationClipId);
-		}
-		break;
 		case NoramalPatten::DelayType:
 		{
 			SetPosition(patternInfo.pos);
-			float radian = Utils::DegreesToRadians(patternInfo.angle);
-			direction = sf::Vector2f(std::cos(radian), std::sin(radian));
+			SetAngleDirection();
 			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::TornadoTypeLoof:
 		{
 			SetPosition(patternInfo.pos);
-			float radian = Utils::DegreesToRadians(patternInfo.angle);
-			direction = sf::Vector2f(std::cos(radian), std::sin(radian));
+			SetAngleDirection();
 			animation.Play(patternInfo.animationClipId);
 		}
 		break;
@@ -333,4 +289,10 @@ void Shoot::SetWallBounds(sf::Vector2f boundf, float widthX, float heightY)
 	bgWidth = widthX;
 	bgHeight = heightY;
 	WallBounds = boundf;
+}
+
+void Shoot::SetAngleDirection()
+{
+	float radian = Utils::DegreesToRadians(patternInfo.angle);
+	direction = sf::Vector2f(std::cos(radian), std::sin(radian));
 }

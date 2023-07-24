@@ -1,13 +1,15 @@
 #include "stdafx.h"
 #include "AnimationController.h"
 #include "ResourceMgr.h" // sprite ¸¦ °ü¸®
-void AnimationController::AddClip(const AnimationClip& newClip)
+
+int AnimationController::clipSizeSum=0;
+void AnimationController::AddClip(AnimationClip& newClip)
 {
 	if (clips.find(newClip.id) == clips.end())
 	{
-		clips.insert({ newClip.id,newClip });
+		clips.insert({ newClip.id, &newClip });
 	}
-} // ?? clips
+}
 
 void AnimationController::Update(float dt)
 {
@@ -77,7 +79,7 @@ void AnimationController::Play(const std::string& clipid, bool clearQueue)
 
 	isPlaying = true;
 
-	currentClip = &id->second;
+	currentClip = id->second;
 	currentFrame = 0;
 	totalFrame = currentClip->frames.size();
 	clipDuration = 1.f / currentClip->fps;

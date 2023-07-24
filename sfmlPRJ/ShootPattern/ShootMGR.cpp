@@ -6,8 +6,6 @@
 #include "Pattern3.h"
 #include "Pattern4.h"
 #include "Pattern5.h"
-#include "Pattern6.h"
-#include "Pattern7.h"
 ShootMGR::ShootMGR() : currentPatternIndex(0)
 {
     patterns.push_back(new Pattern1());
@@ -15,8 +13,6 @@ ShootMGR::ShootMGR() : currentPatternIndex(0)
     patterns.push_back(new Pattern3());
     patterns.push_back(new Pattern4());
     patterns.push_back(new Pattern5());
-    patterns.push_back(new Pattern6());
-   // patterns.push_back(new Pattern7());
 }
 
 ShootMGR::~ShootMGR()
@@ -59,4 +55,20 @@ void ShootMGR::SetCharacterAll(Player* player, Boss* boss)
 void ShootMGR::SetWallBounds(sf::Vector2f pos, float width, float height)
 {
     patterns[currentPatternIndex]->SetWallBounds(pos, width, height);
+}
+
+void ShootMGR::ClearBossShootPools()
+{
+    for (auto pattern : patterns)
+    {
+        pattern->ClearBossShootPool();
+    }
+}
+
+void ShootMGR::ReleaseBossShootPool()
+{
+    for (auto pattern : patterns)
+    {
+        pattern->ReleaseBossShootPool();
+    }
 }

@@ -265,7 +265,6 @@ AnimationClip* ResourceMgr::GetAnimationClip(const std::string& id)
 	auto it = mapAnimationClip.find(id);
 	if (it != mapAnimationClip.end())
 	{
-
 		return  std::get<0>(it->second);
 	}
 	return nullptr;

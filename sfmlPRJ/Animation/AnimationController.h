@@ -6,7 +6,9 @@ class AnimationController
 private:
 
 protected:
-	std::unordered_map<std::string, AnimationClip> clips;
+	static int clipSizeSum ;
+
+	std::unordered_map<std::string, AnimationClip*> clips;
 	std::queue<std::string> queue;
 	float speed = 1.f; // aniation 동작시킬 속도
 	bool isPlaying = false;
@@ -23,7 +25,7 @@ protected:
 public:
 
 
-	void AddClip(const AnimationClip& newClip);
+	void AddClip(AnimationClip& newClip);
 	void SetTarget(sf::Sprite* sprite) { target = sprite; };
 	sf::Sprite* GetTarget()const { return target; };
 	bool IsPlaying() { return isPlaying; };

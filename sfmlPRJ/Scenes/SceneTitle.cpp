@@ -9,7 +9,7 @@ SceneTitle::SceneTitle() : Scene(SceneId::Title)
 	
 }
 
-void SceneTitle::Init()
+void SceneTitle::Init() // 383 MB
 {
 	Release();
 	
@@ -39,9 +39,10 @@ void SceneTitle::Release()
 {
 	for (auto go : gameObjects)
 	{
-
 		delete go;
 	}
+	if (titleSound != nullptr)
+		delete titleSound;
 }
 
 void SceneTitle::Enter()
@@ -65,22 +66,34 @@ void SceneTitle::Update(float dt)
 {
 	Scene::Update(dt);
 	sf::Vector2f mousePos = ScreenToWorldPos(INPUT_MGR.GetMousePos());
-	//FRAMEWORK.
-	//std::cout << "mouse X:"<< mousePos.x << std::endl;
-	//std::cout << "mouse Y:" << mousePos.y << std::endl;
-
-	if (gameSceneText->text.getGlobalBounds().contains(mousePos)&&INPUT_MGR.GetMouseButtonDown(sf::Mouse::Left))
-	{
-		titleSound->SoundStop();
-		SCENE_MGR.ChangeScene(SceneId::Game);
-	}
-	if (rankSceneText->text.getGlobalBounds().contains(mousePos) && INPUT_MGR.GetMouseButtonDown(sf::Mouse::Left))
-	{
-		std::cout << "rank로가야하지만 아직 구현이 안되어 있음" << std::endl;
-		titleSound->SoundStop();
-		SCENE_MGR.ChangeScene(SceneId::Game);
-	}
 	
+	if (gameSceneText->text.getGlobalBounds().contains(mousePos))
+	{
+		gameSceneText->text.setFillColor(sf::Color::Black);
+		if (INPUT_MGR.GetMouseButtonDown(sf::Mouse::Left))
+		{
+			titleSound->SoundStop();
+			SCENE_MGR.ChangeScene(SceneId::Game);
+		}
+	}
+	else
+	{
+		gameSceneText->text.setFillColor(sf::Color::White);
+	}
+	if (rankSceneText->text.getGlobalBounds().contains(mousePos))
+	{
+		rankSceneText->text.setFillColor(sf::Color::Black);
+		if (INPUT_MGR.GetMouseButtonDown(sf::Mouse::Left))
+		{
+			std::cout << "rank로가야하지만 아직 구현이 안되어 있음" << std::endl;
+			titleSound->SoundStop();
+			SCENE_MGR.ChangeScene(SceneId::Game);
+		}
+	}
+	else
+	{
+		rankSceneText->text.setFillColor(sf::Color::White);
+	}
 }
 
 void SceneTitle::Draw(sf::RenderWindow& window)

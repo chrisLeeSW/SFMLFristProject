@@ -54,3 +54,19 @@ void UniqueShootMGR::SetWallBounds(sf::Vector2f pos, float width, float height)
 {
     patterns[currentPatternIndex]->SetWallBounds(pos, width, height);
 }
+
+void UniqueShootMGR::ClearBossShootPools()
+{
+    for (auto pattern : patterns)
+    {
+        pattern->ClearBossShootPool();
+    }
+}
+
+void UniqueShootMGR::ReleaseBossShootPools()
+{
+    for (auto pattern : patterns)
+    {
+        pattern->ReleaseBossShootPool();
+    }
+}

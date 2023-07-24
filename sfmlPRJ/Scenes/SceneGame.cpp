@@ -53,7 +53,7 @@ void SceneGame::Init()
 
 	textSetting();
 
-	shape.setSize({650.f, 100.f });
+	shape.setSize({ 650.f, 100.f });
 	shape.setOutlineColor(sf::Color::Black);
 	shape.setFillColor(sf::Color::Color(255, 255, 255, 0));
 	shape.setOutlineThickness(5);
@@ -62,7 +62,7 @@ void SceneGame::Init()
 
 	talk = (TextGo*)AddGo(new TextGo("fonts/neodgm.ttf"));
 	talk->text.setCharacterSize(30);
-	std::wstring tex =talking.front();
+	std::wstring tex = talking.front();
 	talk->text.setString(tex);
 	talking.pop();
 	talk->SetOrigin(Origins::ML);
@@ -90,13 +90,17 @@ void SceneGame::Init()
 
 	gameOver = (SpriteGo*)AddGo(new SpriteGo("graphics/touhou_font.png"));
 	gameOver->sprite.setTextureRect({ 150,196,30,9 });
-	gameOver->SetPosition(-160.f,0);
+	gameOver->SetPosition(-160.f, 0);
 	gameOver->SetActive(false);
 	gameOver->SetOrigin(Origins::MC);
 	gameOver->SetScale(5.f, 5.f);
 	gameOver->sortLayer = 1;
 
-	
+	bossEffect = (SpriteGo*)AddGo(new SpriteGo("graphics/Boss.png"));
+	bossEffect->sprite.setTextureRect({609,1182,125,122});
+	bossEffect->sortLayer = -1;
+	bossEffect->SetOrigin(Origins::MC);
+	bossEffect->SetActive(false);
 	for (auto go : gameObjects)
 	{
 		go->Init();
@@ -111,6 +115,8 @@ void SceneGame::Release()
 	{
 		delete go;
 	}
+	if (music1 != nullptr)
+		delete music1;
 }
 
 void SceneGame::Enter()
@@ -123,7 +129,7 @@ void SceneGame::Enter()
 	uiView.setCenter(size * 0.5f);
 
 	isTalking = false;
-	
+
 	boombCountSpriteCurrent = -1;
 	playerLifeSpriteCurrent = 2;
 	for (int i = 0;i < 2;++i)
@@ -137,7 +143,7 @@ void SceneGame::Enter()
 	{
 		boombCountSprite[i]->SetActive(false);
 	}
-	
+
 
 	music1->SoundPlayer();
 
@@ -156,10 +162,10 @@ void SceneGame::Exit()
 
 void SceneGame::Update(float dt)
 {
-	
+
 	player->SetWallBounds(gameWallSize, gameBackground->sprite.getGlobalBounds().width, gameBackground->sprite.getGlobalBounds().height);
 	bossCirno->SetWallBounds(gameWallSize, gameBackground->sprite.getGlobalBounds().width, gameBackground->sprite.getGlobalBounds().height);
-
+	bossEffect->SetPosition(bossCirno->GetPosition());
 	/*frames++;
 	frameTime += clock.restart();
 	if (frameTime >= sf::seconds(1.0f))
@@ -172,16 +178,49 @@ void SceneGame::Update(float dt)
 	}*/
 
 
+	int hp = bossCirno->GetBossHp();
+	if (hp % 50 == 0 && !getBoomb)
+	{
+		randStatus = Utils::RandomRange(0, 3);
+		if (randStatus == 0)
+		{
+			boombCountSpriteCurrent++;
+			if (boombCountSpriteCurrent >= 5) return;
+			boombCountSprite[boombCountSpriteCurrent]->SetActive(true);
+		}
+		else if (player->GetPlayerDamage() <= 5.f && randStatus == 2) player->IncreaseDamage();
+		getBoomb = true;
+	}
+	else if (hp % 50 != 0) getBoomb = false;
+
+	if (hp % 100 == 0 && !getPlayerLife && (player->GetPlayerLife() < 2) && player->GetPlayerLife() > 0)
+	{
+		randStatus = Utils::RandomRange(0,4);
+		if (randStatus == 0)
+		{
+			std::cout << "µæÅÛ" << std::endl;
+			IncreasePlayerLife();
+			player->IncreasePlayerLife();
+		}
+	}
+	
 	if (bossCirno->GetBossDie())
 	{
-		std::cout << "Change Scene Ending creadit" << std::endl;
+		SCENE_MGR.ChangeScene(SceneId::Ending);
 		hpBar.setSize({ 0.f, 5.f });
 	}
 	else hpBar.setSize({ bossCirno->GetBossHp(), 5.f });
-	
-	
 
-	/*if (music1->sound.getStatus() != sf::Sound::Playing)
+	if (bossCirno->GetBossStop())
+	{
+		bossEffect->SetActive(true);
+	}
+	else
+	{
+		bossEffect->SetActive(false);
+	}
+	bossEffect->SetActive(bossCirno->GetBossStop());
+	if (music1->sound.getStatus() != sf::Sound::Playing)
 	{
 		music1->SoundPlayer();
 	}
@@ -193,12 +232,7 @@ void SceneGame::Update(float dt)
 	{
 		soundTime = 0.f;
 		music1->SoundPlayer();
-	}*/
-	/*if (INPUT_MGR.GetKeyDown(sf::Keyboard::F5))
-	{
-		music1->SoundStop();
-		SCENE_MGR.ChangeScene(SceneId::Ending);
-	}*/
+	}
 	if (INPUT_MGR.GetKeyDown(sf::Keyboard::F1))
 	{
 		musicVolum += 2.5f;
@@ -210,32 +244,46 @@ void SceneGame::Update(float dt)
 	music1->sound.setVolume(musicVolum);
 
 	if (player->GetPlayerDie()) { gameOver->SetActive(player->GetPlayerDie()); }
+
+	if (player->GetPlayerDie() && INPUT_MGR.GetKeyDown(sf::Keyboard::Return))
+	{
+		player->Reset();
+		bossCirno->Reset();
+		gameOver->SetActive(false);
+		gameTimer = 90.f;
+		for (int i = 0;i < 2;++i)
+		{
+			playerLifeSprite[i]->SetActive(true);
+			playerLifeSpriteCurrent = 2;
+		}
+	}
+
 	if (isTalking && INPUT_MGR.GetKeyDown(sf::Keyboard::Space))
 	{
-			if (talkCount % 2 == 0 && !talking.empty())
-			{
-				talk->text.setFillColor(sf::Color::Red);
-				cirnoTalking->SetActive(false);
-				playerTalking->SetActive(true);
-			}
-			else if(talkCount % 2 == 1 && !talking.empty())
-			{
-				talk->text.setFillColor(sf::Color::Blue);
-				cirnoTalking->SetActive(true);
-				playerTalking->SetActive(false);
-			}
-			if (talking.empty())
-			{
-				isTalking = false;
-			}
-			else
-			{
-				talkCount++;
-				if (talkCount == 1) cirnoTalking->sprite.setTextureRect({130,14,126,242});
-				std::wstring tex = talking.front();
-				talk->text.setString(tex);
-				talking.pop();
-			}
+		if (talkCount % 2 == 0 && !talking.empty())
+		{
+			talk->text.setFillColor(sf::Color::Red);
+			cirnoTalking->SetActive(false);
+			playerTalking->SetActive(true);
+		}
+		else if (talkCount % 2 == 1 && !talking.empty())
+		{
+			talk->text.setFillColor(sf::Color::Blue);
+			cirnoTalking->SetActive(true);
+			playerTalking->SetActive(false);
+		}
+		if (talking.empty())
+		{
+			isTalking = false;
+		}
+		else
+		{
+			talkCount++;
+			if (talkCount == 1) cirnoTalking->sprite.setTextureRect({ 130,14,126,242 });
+			std::wstring tex = talking.front();
+			talk->text.setString(tex);
+			talking.pop();
+		}
 	}
 	else if (!isTalking)
 	{
@@ -253,6 +301,10 @@ void SceneGame::Update(float dt)
 	std::stringstream stream;
 	stream << std::setw(5) << std::setfill('0') << bossCirno->GetScore();
 	scoreNumber->text.setString(stream.str());
+
+	std::stringstream damagestream;
+	damagestream << "Power : " << player->GetPlayerDamage();
+	playerDamageText->text.setString(damagestream.str());
 }
 
 void SceneGame::Draw(sf::RenderWindow& window)
@@ -265,16 +317,20 @@ void SceneGame::Draw(sf::RenderWindow& window)
 	{
 		window.draw(shape);
 	}
-	
+
 }
 
-void SceneGame::isCollied()
+void SceneGame::DecreasePlayerLife()
 {
-	
-	playerLifeSpriteCurrent --;
-	if (playerLifeSpriteCurrent <0) playerLifeSpriteCurrent = 0; //
+	playerLifeSpriteCurrent--;
+	if (playerLifeSpriteCurrent < 0) playerLifeSpriteCurrent = 0; 
 	this->playerLifeSprite[playerLifeSpriteCurrent]->SetActive(false);
-	
+
+}
+
+void SceneGame::IncreasePlayerLife()
+{
+	playerLifeSprite[playerLifeSpriteCurrent ++]->SetActive(true);
 }
 
 void SceneGame::UseBoomb()
@@ -346,6 +402,13 @@ void SceneGame::textSetting()
 	playerLife->text.setOutlineThickness(5);
 	playerLife->text.setOutlineColor(sf::Color::Green);
 
+	playerDamageText = (TextGo*)AddGo(new TextGo("fonts/THE Nakseo.ttf"));
+	playerDamageText->SetOrigin(Origins::ML);
+	playerDamageText->SetPosition(280.f, 0.0f);
+	playerDamageText->text.setCharacterSize(30);
+	playerDamageText->text.setString("Power :");
+	playerDamageText->text.setOutlineThickness(5);
+	playerDamageText->text.setOutlineColor(sf::Color::Green);
 
 
 	for (int i = 0;i < 2;++i)

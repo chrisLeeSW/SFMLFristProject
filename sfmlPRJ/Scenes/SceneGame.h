@@ -16,7 +16,9 @@ protected:
 	SpriteGo* gameBackground;
 	SpriteGo* miniUi;
 	SpriteGo* titleNameHong;
+	SpriteGo* bossEffect;
 	sf::Vector2f gameWallSize;
+
 
 	bool isTalking;
 	bool bossAngry;
@@ -60,12 +62,17 @@ protected:
 	TextGo* gameTimeText;
 	float gameTimer = 90.f;
 
+	TextGo* playerDamageText;
+
 	std::queue<std::wstring> talking;
 
 	void textSetting();
 
 	SpriteGo* gameOver;
 	bool timeOut = false;
+	int randStatus;
+	bool getBoomb = false;
+	bool getPlayerLife = false;
 public:
 	SceneGame();
 	virtual ~SceneGame() override = default;
@@ -78,7 +85,8 @@ public:
 
 	virtual void Update(float dt) override;
 	virtual void Draw(sf::RenderWindow& window) override;
-	void isCollied();
+	void DecreasePlayerLife();
+	void IncreasePlayerLife();
 	void UseBoomb();
 	int GetBoombCountSpriteCurrent() { return boombCountSpriteCurrent; }
 };
