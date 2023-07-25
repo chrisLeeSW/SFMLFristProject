@@ -96,13 +96,13 @@ void Shoot::Update(float dt)
 		Scene* scene = SCENE_MGR.GetCurrScene();
 		scene->RemoveGo(this);
 	}
-	else if (position.x - sprite.getGlobalBounds().width * 0.5f < WallBounds.x - 20.f)
+	else if (position.x - sprite.getGlobalBounds().width * 0.5f < WallBounds.x)
 	{
 		pool->Return(this);
 		Scene* scene = SCENE_MGR.GetCurrScene();
 		scene->RemoveGo(this);
 	}
-	else if (position.x + sprite.getGlobalBounds().width * 0.5f > WallBounds.x + bgWidth + 20.f)
+	else if (position.x + sprite.getGlobalBounds().width * 0.5f > WallBounds.x + bgWidth)
 	{
 		pool->Return(this);
 		Scene* scene = SCENE_MGR.GetCurrScene();

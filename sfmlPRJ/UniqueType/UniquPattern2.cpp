@@ -6,10 +6,6 @@
 #include "Boss.h"
 UniquPattern2::UniquPattern2()
 {
-	bossShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->pool = &bossShootPool;
-	};
-	bossShootPool.Init();
 }
 
 void UniquPattern2::ShootBullets()
@@ -20,7 +16,7 @@ void UniquPattern2::ShootBullets()
 	float angleInterval = 360.f / maxCount;
 	for (int i = 0; i < maxCount; ++i)
 	{
-		Shoot* shoot = bossShootPool.Get();
+		Shoot* shoot = boss->GetObjectPool().Get();
 		shoot->SetPlayer(player);
 		float angle = angleInterval * i;
 

@@ -7,10 +7,7 @@
 
 Pattern4::Pattern4()
 {
-	bossShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->pool = &bossShootPool;
-	};
-    bossShootPool.Init();
+
 }
 
 void Pattern4::ShootBullets()
@@ -26,12 +23,12 @@ void Pattern4::ShootBullets()
     float space = distanceWall / shootCount;
     for (int count = 0; count < shootCount; ++count)
     {
-        Shoot* shoot = bossShootPool.Get();
+        Shoot* shoot = boss->GetObjectPool().Get();
         shoot->SetPlayer(player);
         shoot->SetPattenInfo(Shoot::NoramalPatten::ColumnType, sf::Vector2f{ wallBounds.x+20.f +(space *count),boss->GetPosition().y}, 0.f, "BossNormalShooting1");
         shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
         shoot->sortLayer = -1;
-
+        
         if (sceneGame != nullptr)
         {
             sceneGame->AddGo(shoot);

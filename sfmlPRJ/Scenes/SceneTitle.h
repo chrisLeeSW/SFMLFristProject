@@ -13,6 +13,7 @@ protected:
 	TextGo* gameSceneText;
 	TextGo* rankSceneText;
 	TextGo* exitText;
+
 public:
 	SceneTitle();
 	virtual ~SceneTitle() override = default;
@@ -25,5 +26,7 @@ public:
 
 	virtual void Update(float dt) override;
 	virtual void Draw(sf::RenderWindow& window) override;
-};
 
+	void LoadResourceAndSetting();
+	void HandleSceneSelection();
+};

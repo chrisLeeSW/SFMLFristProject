@@ -77,5 +77,7 @@ public:
 	int GetScore() { return score; }
 	void SetUseBoomb(bool t) { useBoomb = t; }
 	bool GetBossStop() {return effectUniqueAttack;}
+
+	ObjectPool<Shoot>& GetObjectPool() { return bossShootPool; }
 };
 

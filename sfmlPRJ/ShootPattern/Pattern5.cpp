@@ -6,10 +6,7 @@
 #include "Boss.h"
 Pattern5::Pattern5()
 {
-	bossShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->pool = &bossShootPool;
-	};
-    bossShootPool.Init();
+	
 }
 
 void Pattern5::ShootBullets()
@@ -25,9 +22,9 @@ void Pattern5::ShootBullets()
     float space = distanceWall / shootCount;
     for (int count = 0; count < shootCount; ++count)
     {
-        Shoot* shoot = bossShootPool.Get();
+        Shoot* shoot = boss->GetObjectPool().Get();
         shoot->SetPlayer(player);
-        shoot->SetPattenInfo(Shoot::NoramalPatten::RowRightType, sf::Vector2f{ wallBounds.x ,wallBounds.y +20.f + (space * count) }, 0.f, "BossNormalShooting1");
+        shoot->SetPattenInfo(Shoot::NoramalPatten::RowRightType, sf::Vector2f{ wallBounds.x +20.f,wallBounds.y +20.f + (space * count) }, 0.f, "BossNormalShooting1");
         shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
         shoot->sortLayer = -1;
 

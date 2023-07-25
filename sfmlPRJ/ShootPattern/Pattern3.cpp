@@ -6,10 +6,7 @@
 #include "Boss.h"
 Pattern3::Pattern3()
 {
-	bossShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->pool = &bossShootPool;
-	};
-	bossShootPool.Init();
+	
 }
 
 void Pattern3::ShootBullets()
@@ -19,7 +16,7 @@ void Pattern3::ShootBullets()
 	float minFrequency = 2.f;
 	float maxFrequency = 50.f;
 	float amplitude = 100.f;
-	Shoot* shoot = bossShootPool.Get();
+	Shoot* shoot = boss->GetObjectPool().Get();
 	shoot->SetPlayer(player);
 
 	sf::Vector2f playerPosition = player->GetPosition();

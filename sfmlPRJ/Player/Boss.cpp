@@ -40,8 +40,6 @@ void Boss::Release()
 void Boss::Reset()
 {
 	bossShootPool.Clear();
-	shootPatternMgr.ClearBossShootPools();
-	uniqueshootPatternMgr.ClearBossShootPools();
 	animation.Play("Idle");
 	SetOrigin(Origins::MC);
 	SetPosition(-270.f, -250.f);
@@ -53,6 +51,7 @@ void Boss::Reset()
 	moveTimerDuration = 0.f;
 	bossAttackNoramalPatternChangeTime = 0.f;
 	bossAttackTimeOneLimit = 1.0f;
+	bossAttackTimeOne = 3.0f;
 	stopAttackTime = 0.f;
 	bossDie = false;
 	score = 0;
@@ -82,7 +81,7 @@ void Boss::Update(float dt)
 		threePage = false;
 		fourPage = true;
 	}
-
+	std::cout << bossHp << std::endl;
 	if (bossHp == 0.f)
 		bossDie = true;
 	if (!bossDie && !player->GetPlayerDie())
@@ -94,8 +93,7 @@ void Boss::Update(float dt)
 		SceneGame* sceneGame = dynamic_cast<SceneGame*>(scene);
 		if (INPUT_MGR.GetKeyDown(sf::Keyboard::Tab) && sceneGame->GetBoombCountSpriteCurrent()> -1 && player->GetEffectDraw())
 		{
-			shootPatternMgr.ClearBossShootPools();
-			uniqueshootPatternMgr.ClearBossShootPools();
+			bossShootPool.Clear();
 			sceneGame->UseBoomb();
 		}
 		
@@ -104,8 +102,7 @@ void Boss::Update(float dt)
 	}
 	if (player->GetPlayerDie())
 	{
-		shootPatternMgr.ClearBossShootPools();
-		uniqueshootPatternMgr.ClearBossShootPools();
+		bossShootPool.Clear();
 	}
 }
 

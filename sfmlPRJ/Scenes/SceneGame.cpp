@@ -15,43 +15,15 @@ SceneGame::SceneGame() : Scene(SceneId::Game)
 void SceneGame::Init()
 {
 	Release();
-	{
-		talking.push(L"길을 잃는 건, 요정 때문이야");
-		talking.push(L"아 그래? 그럼 안내해줄래?\n이 주변에 섬이 있었던 걸로 아는데?");
-		talking.push(L"당신, 조금은 놀라줘야지.\n눈 앞에 강적이 있는 거 알고 있는거야 ? ");
-		talking.push(L"표적? 이거 놀라운데~");
-		talking.push(L"까불기는!\n너 따위는 영국 쇠고기랑 같이\n냉동보관해주겠어!!");
-	}
+
 	player = (Player*)AddGo(new Player());
 	bossCirno = (Boss*)AddGo(new Boss());
-
-	background = (SpriteGo*)AddGo(new SpriteGo("graphics/GameSceneBackGround.png", "Background"));
-	background->sortLayer = -3;
-	background->SetPosition(-FRAMEWORK.GetWindowSize() * 0.5f);
-
-	gameBackground = (SpriteGo*)AddGo(new SpriteGo("graphics/GamePlayBackGround.png", "GameBackground"));
-	gameBackground->sortLayer = -1;
-	gameBackground->sortOrder = 0;
-	gameBackground->SetOrigin(Origins::TL);
-	gameBackground->SetScale(0.9f, 1.f);
-	gameWallSize = { -FRAMEWORK.GetWindowSize().x * 0.5f + 50.f, -FRAMEWORK.GetWindowSize().y * 0.5f + 60.f };
-	gameBackground->SetPosition(gameWallSize);
-
-	miniUi = (SpriteGo*)AddGo(new SpriteGo("graphics/GameName.png", "miniUi"));
-	miniUi->SetOrigin(Origins::MC);
-	miniUi->SetPosition(FRAMEWORK.GetWindowSize().x * 0.35f, FRAMEWORK.GetWindowSize().y * 0.25f);
-	miniUi->sortLayer = -2;
-
-	titleNameHong = (SpriteGo*)AddGo(new SpriteGo("graphics/Hong.png"));
-	titleNameHong->sprite.setTextureRect({ 23,11,55,71 });
-	titleNameHong->SetPosition(FRAMEWORK.GetWindowSize().x * 0.31f, FRAMEWORK.GetWindowSize().y * 0.2f);
-	titleNameHong->sortLayer = -1;
-
 
 	bossCirno->SetPlayer(player);
 	player->SetBoss(bossCirno);
 
-	textSetting();
+	LoadGameSceneResource();
+	SettingText();
 
 	shape.setSize({ 650.f, 100.f });
 	shape.setOutlineColor(sf::Color::Black);
@@ -60,49 +32,12 @@ void SceneGame::Init()
 	Utils::SetOrigin(shape, Origins::ML);
 	shape.setPosition({ -450.f,200.f });
 
-	talk = (TextGo*)AddGo(new TextGo("fonts/neodgm.ttf"));
-	talk->text.setCharacterSize(30);
-	std::wstring tex = talking.front();
-	talk->text.setString(tex);
-	talking.pop();
-	talk->SetOrigin(Origins::ML);
-	talk->text.setFillColor(sf::Color::Blue);
-	talk->SetPosition(-450.f, 150.f);
-
 	hpBar.setFillColor(sf::Color::Yellow);
 	hpBar.setPosition({ gameWallSize.x,gameWallSize.y - 10.f });
 	Utils::SetOrigin(hpBar, Origins::ML);
 	hpBarbyX = gameWallSize.x;
 
-
-	music1 = new SoundGo("Sounds/치르노의-퍼펙트-산수-교실-풀버전.wav");
-	bossDie = new SoundGo("Sounds/BossDie.wav");
-	timeOutSound = new SoundGo("Sounds/timeout.wav");
-
-	cirnoTalking = (SpriteGo*)AddGo(new SpriteGo("graphics/cirnoFace.png"));
-	cirnoTalking->sprite.setTextureRect({ 0,12,127,244 });
-	cirnoTalking->SetPosition(gameWallSize.x, FRAMEWORK.GetWindowSize().y * 0.2f);
-	cirnoTalking->SetOrigin(Origins::ML);
-
-	playerTalking = (SpriteGo*)AddGo(new SpriteGo("graphics/PlaterFace.png"));
-	playerTalking->sprite.setTextureRect({ 0,12,127,244 });
-	playerTalking->SetPosition(gameWallSize.x, FRAMEWORK.GetWindowSize().y * 0.2f);
-	playerTalking->SetOrigin(Origins::ML);
-	playerTalking->SetActive(false);
-
-	gameOver = (SpriteGo*)AddGo(new SpriteGo("graphics/touhou_font.png"));
-	gameOver->sprite.setTextureRect({ 150,196,30,9 });
-	gameOver->SetPosition(-160.f, 0);
-	gameOver->SetActive(false);
-	gameOver->SetOrigin(Origins::MC);
-	gameOver->SetScale(5.f, 5.f);
-	gameOver->sortLayer = 1;
-
-	bossEffect = (SpriteGo*)AddGo(new SpriteGo("graphics/Boss.png"));
-	bossEffect->sprite.setTextureRect({609,1182,125,122});
-	bossEffect->sortLayer = -1;
-	bossEffect->SetOrigin(Origins::MC);
-	bossEffect->SetActive(false);
+	isTalking = true;
 	for (auto go : gameObjects)
 	{
 		go->Init();
@@ -132,7 +67,7 @@ void SceneGame::Enter()
 	uiView.setSize(size);
 	uiView.setCenter(size * 0.5f);
 
-	isTalking = false;
+	
 
 	boombCountSpriteCurrent = -1;
 	playerLifeSpriteCurrent = 2;
@@ -152,10 +87,8 @@ void SceneGame::Enter()
 	music1->SoundPlay();
 
 
-
 	gameTimer = 90.f;
 	timeOut = true;
-
 	Scene::Enter();
 }
 
@@ -169,7 +102,8 @@ void SceneGame::Update(float dt)
 
 	player->SetWallBounds(gameWallSize, gameBackground->sprite.getGlobalBounds().width, gameBackground->sprite.getGlobalBounds().height);
 	bossCirno->SetWallBounds(gameWallSize, gameBackground->sprite.getGlobalBounds().width, gameBackground->sprite.getGlobalBounds().height);
-	bossEffect->SetPosition(bossCirno->GetPosition());
+
+	BossEffectSetting();
 
 	frames++;
 	frameTime += clock.restart();
@@ -179,73 +113,13 @@ void SceneGame::Update(float dt)
 		frames = 0;
 		frameTime = sf::Time::Zero;
 		std::stringstream frameS;
-		std::cout << "FPS :" << fps << std::endl; //- > 죽여버림 ;;
+		std::cout << "FPS :" << fps << std::endl; 
 	}
 
+	PlayerStatusSetting();
+	BossHpBarSet();
+	GameOver();
 
-	int hp = bossCirno->GetBossHp();
-	if (hp % 50 == 0 && !getBoomb)
-	{
-		randStatus = Utils::RandomRange(0, 3);
-		if (randStatus == 0)
-		{
-			boombCountSpriteCurrent++;
-			if (boombCountSpriteCurrent >= 5) return;
-			boombCountSprite[boombCountSpriteCurrent]->SetActive(true);
-		}
-		else if (player->GetPlayerDamage() <= 5.f && randStatus == 2) player->IncreaseDamage();
-		getBoomb = true;
-	}
-	else if (hp % 50 != 0) getBoomb = false;
-
-	if (hp % 100 == 0 && !getPlayerLife && (player->GetPlayerLife() < 2) && player->GetPlayerLife() > 0)
-	{
-		randStatus = Utils::RandomRange(0,4);
-		if (randStatus == 0)
-		{
-			std::cout << "득템" << std::endl;
-			IncreasePlayerLife();
-			player->IncreasePlayerLife();
-		}
-	}
-	
-	if (bossCirno->GetBossDie())
-	{
-		bossDie->SoundPlay();
-		SCENE_MGR.ChangeScene(SceneId::Ending);
-		hpBar.setSize({ 0.f, 5.f });
-	}
-	else hpBar.setSize({ bossCirno->GetBossHp(), 5.f });
-
-	if (bossCirno->GetBossStop())
-	{
-		bossEffect->SetActive(true);
-	}
-	else
-	{
-		bossEffect->SetActive(false);
-	}
-	bossEffect->SetActive(bossCirno->GetBossStop());
-
-
-	if (player->GetPlayerDie()) { gameOver->SetActive(player->GetPlayerDie()); }
-	if (gameTimer <= 0.f)
-	{
-		player->SetPlayerDie(true);
-		timeOutSound->SoundPlay();
-	}
-	if (player->GetPlayerDie() && INPUT_MGR.GetKeyDown(sf::Keyboard::Return))
-	{
-		player->Reset();
-		bossCirno->Reset();
-		gameOver->SetActive(false);
-		gameTimer = 90.f;
-		for (int i = 0;i < 2;++i)
-		{
-			playerLifeSprite[i]->SetActive(true);
-			playerLifeSpriteCurrent = 2;
-		}
-	}
 
 	if (isTalking && INPUT_MGR.GetKeyDown(sf::Keyboard::Space))
 	{
@@ -281,19 +155,13 @@ void SceneGame::Update(float dt)
 		cirnoTalking->SetActive(isTalking);
 		talk->SetActive(isTalking);
 	}
+	SetTextGoByTexture();
 
-	if (gameTimer <= 0.f) gameTimer = 0.f;
-	std::stringstream timerstr;
-	timerstr << "Time :" << gameTimer;
-	gameTimeText->text.setString(timerstr.str());
-
-	std::stringstream stream;
-	stream << std::setw(5) << std::setfill('0') << bossCirno->GetScore();
-	scoreNumber->text.setString(stream.str());
-
-	std::stringstream damagestream;
-	damagestream << "Power : " << player->GetPlayerDamage();
-	playerDamageText->text.setString(damagestream.str());
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Escape))
+	{
+		GamePlaySettingReset();
+		SCENE_MGR.ChangeScene(SceneId::Title);
+	}
 }
 
 void SceneGame::Draw(sf::RenderWindow& window)
@@ -326,10 +194,9 @@ void SceneGame::UseBoomb()
 {
 	if (boombCountSpriteCurrent < 0) return;
 	boombCountSprite[boombCountSpriteCurrent--]->SetActive(false);
-	//if (boombCountSpriteCurrent < 0) boombCountSpriteCurrent = 0;
 }
 
-void SceneGame::textSetting()
+void SceneGame::SettingText()
 {
 	bossName = (TextGo*)AddGo(new TextGo("fonts/THE Nakseo.ttf"));
 	bossName->text.setCharacterSize(30);
@@ -369,7 +236,7 @@ void SceneGame::textSetting()
 	scoreByr->SetPosition(335.f, -245.f);
 
 	scoreBye = (SpriteGo*)AddGo(new SpriteGo("graphics/touhou_font.png"));
-	scoreBye->sprite.setTextureRect({ 105,63,10,8 });
+	scoreBye->sprite.setTextureRect({ 218,49,9,8 });
 	scoreBye->SetScale(2.0f, 2.0f);
 	scoreBye->SetPosition(355.f, -245.f);
 
@@ -379,17 +246,8 @@ void SceneGame::textSetting()
 	scoreByClone->SetPosition(375.f, -245.f);
 
 	scoreNumber = (TextGo*)AddGo(new TextGo("fonts/THE Nakseo.ttf"));
-	scoreNumber->SetOrigin(Origins::ML);
-	scoreNumber->SetPosition(390.f, -255.0f);
+	scoreNumber->SetPosition(400.f, -245.0f);
 	scoreNumber->text.setCharacterSize(30);
-
-	playerLife = (TextGo*)AddGo(new TextGo("fonts/THE Nakseo.ttf"));
-	playerLife->SetOrigin(Origins::ML);
-	playerLife->SetPosition(280.f, -150.0f);
-	playerLife->text.setCharacterSize(30);
-	playerLife->text.setString("Player :");
-	playerLife->text.setOutlineThickness(5);
-	playerLife->text.setOutlineColor(sf::Color::Green);
 
 	playerDamageText = (TextGo*)AddGo(new TextGo("fonts/THE Nakseo.ttf"));
 	playerDamageText->SetOrigin(Origins::ML);
@@ -398,6 +256,14 @@ void SceneGame::textSetting()
 	playerDamageText->text.setString("Power :");
 	playerDamageText->text.setOutlineThickness(5);
 	playerDamageText->text.setOutlineColor(sf::Color::Green);
+
+	playerLife = (TextGo*)AddGo(new TextGo("fonts/THE Nakseo.ttf"));
+	playerLife->SetOrigin(Origins::ML);
+	playerLife->SetPosition(280.f, -150.0f);
+	playerLife->text.setCharacterSize(30);
+	playerLife->text.setString("Player :");
+	playerLife->text.setOutlineThickness(5);
+	playerLife->text.setOutlineColor(sf::Color::Green);
 
 
 	for (int i = 0;i < 2;++i)
@@ -414,6 +280,7 @@ void SceneGame::textSetting()
 	boombCount->text.setString("Boomb :");
 	boombCount->text.setOutlineThickness(5);
 	boombCount->text.setOutlineColor(sf::Color::Red);
+
 	for (int i = 0;i < maxBoombCountSpritecurretn;++i)
 	{
 		boombCountSprite[i] = (SpriteGo*)AddGo(new SpriteGo("graphics/TouhuoPlayerShoot.png"));
@@ -423,4 +290,184 @@ void SceneGame::textSetting()
 		boombCountSprite[i]->sprite.setColor(sf::Color::White);
 		boombCountSprite[i]->SetActive(false);
 	}
+
+	talking.push(L"길을 잃는 건, 요정 때문이야");
+	talking.push(L"아 그래? 그럼 안내해줄래?\n이 주변에 섬이 있었던 걸로 아는데?");
+	talking.push(L"당신, 조금은 놀라줘야지.\n눈 앞에 강적이 있는 거 알고 있는거야 ? ");
+	talking.push(L"표적? 이거 놀라운데~");
+	talking.push(L"까불기는!\n너 따위는 영국 쇠고기랑 같이\n냉동보관해주겠어!!");
+
+	talk = (TextGo*)AddGo(new TextGo("fonts/neodgm.ttf"));
+	talk->text.setCharacterSize(30);
+	std::wstring tex = talking.front();
+	talk->text.setString(tex);
+	talking.pop();
+	talk->SetOrigin(Origins::ML);
+	talk->text.setFillColor(sf::Color::Blue);
+	talk->SetPosition(-450.f, 150.f);
+}
+
+void SceneGame::LoadGameSceneResource()
+{
+	background = (SpriteGo*)AddGo(new SpriteGo("graphics/GameSceneBackGround.png", "Background"));
+	background->sortLayer = -3;
+	background->SetPosition(-FRAMEWORK.GetWindowSize() * 0.5f);
+
+	gameBackground = (SpriteGo*)AddGo(new SpriteGo("graphics/GamePlayBackGround.png", "GameBackground"));
+	gameBackground->sortLayer = -1;
+	gameBackground->sortOrder = 0;
+	gameBackground->SetOrigin(Origins::TL);
+	gameBackground->SetScale(0.9f, 1.f);
+	gameWallSize = { -FRAMEWORK.GetWindowSize().x * 0.5f + 50.f, -FRAMEWORK.GetWindowSize().y * 0.5f + 60.f };
+	gameBackground->SetPosition(gameWallSize);
+
+	miniUi = (SpriteGo*)AddGo(new SpriteGo("graphics/GameName.png", "miniUi"));
+	miniUi->SetOrigin(Origins::MC);
+	miniUi->SetPosition(FRAMEWORK.GetWindowSize().x * 0.35f, FRAMEWORK.GetWindowSize().y * 0.25f);
+	miniUi->sortLayer = -2;
+
+	titleNameHong = (SpriteGo*)AddGo(new SpriteGo("graphics/Hong.png"));
+	titleNameHong->sprite.setTextureRect({ 23,11,55,71 });
+	titleNameHong->SetPosition(FRAMEWORK.GetWindowSize().x * 0.31f, FRAMEWORK.GetWindowSize().y * 0.2f);
+	titleNameHong->sortLayer = -1;
+
+	cirnoTalking = (SpriteGo*)AddGo(new SpriteGo("graphics/cirnoFace.png"));
+	cirnoTalking->sprite.setTextureRect({ 0,12,127,244 });
+	cirnoTalking->SetPosition(gameWallSize.x, FRAMEWORK.GetWindowSize().y * 0.2f);
+	cirnoTalking->SetOrigin(Origins::ML);
+
+	playerTalking = (SpriteGo*)AddGo(new SpriteGo("graphics/PlaterFace.png"));
+	playerTalking->sprite.setTextureRect({ 0,12,127,244 });
+	playerTalking->SetPosition(gameWallSize.x, FRAMEWORK.GetWindowSize().y * 0.2f);
+	playerTalking->SetOrigin(Origins::ML);
+	playerTalking->SetActive(false);
+
+	gameOver = (SpriteGo*)AddGo(new SpriteGo("graphics/touhou_font.png"));
+	gameOver->sprite.setTextureRect({ 150,196,30,9 });
+	gameOver->SetPosition(-160.f, 0);
+	gameOver->SetActive(false);
+	gameOver->SetOrigin(Origins::MC);
+	gameOver->SetScale(5.f, 5.f);
+	gameOver->sortLayer = 1;
+
+	bossEffect = (SpriteGo*)AddGo(new SpriteGo("graphics/Boss.png"));
+	bossEffect->sprite.setTextureRect({ 609,1182,125,122 });
+	bossEffect->sortLayer = -1;
+	bossEffect->SetOrigin(Origins::MC);
+	bossEffect->SetActive(false);
+
+	music1 = new SoundGo("Sounds/치르노의-퍼펙트-산수-교실-풀버전.wav");
+	bossDie = new SoundGo("Sounds/BossDie.wav");
+	timeOutSound = new SoundGo("Sounds/timeout.wav");
+}
+
+void SceneGame::GamePlaySettingReset()
+{
+	player->Reset();
+	bossCirno->Reset();
+	gameOver->SetActive(false);
+	gameTimer = 90.f;
+	for (int i = 0;i < 2;++i)
+	{
+		playerLifeSprite[i]->SetActive(true);
+		playerLifeSpriteCurrent = 2;
+	}
+}
+
+void SceneGame::GameOver()
+{
+	if (player->GetPlayerDie())
+	{
+		gameOver->SetActive(player->GetPlayerDie());
+		gameTimer = 0.f;
+	}
+	if (gameTimer <= 0.f && !player->GetPlayerDie())
+	{
+		player->SetPlayerDie(true);
+		timeOutSound->SoundPlay();
+	}
+	if (player->GetPlayerDie() && INPUT_MGR.GetKeyDown(sf::Keyboard::Return))
+	{
+		GamePlaySettingReset();
+	}
+}
+
+void SceneGame::BossEffectSetting()
+{
+	bossEffect->SetPosition(bossCirno->GetPosition());
+
+	if (bossCirno->GetBossStop())
+	{
+		bossEffect->SetActive(true);
+	}
+	else
+	{
+		bossEffect->SetActive(false);
+	}
+	bossEffect->SetActive(bossCirno->GetBossStop());
+}
+
+void SceneGame::PlayerStatusSetting()
+{
+	int hp = bossCirno->GetBossHp();
+	if (hp % 50 == 0 && !getBoomb)
+	{
+		randStatus = Utils::RandomRange(0, 3);
+		if (randStatus == 0)
+		{
+			boombCountSpriteCurrent++;
+			if (boombCountSpriteCurrent >= 5) return;
+			boombCountSprite[boombCountSpriteCurrent]->SetActive(true);
+		}
+		else if (player->GetPlayerDamage() <= 5.f && randStatus == 2) player->IncreaseDamage();
+		getBoomb = true;
+	}
+	else if (hp % 50 != 0) getBoomb = false;
+
+	if (hp % 100 == 0 && !getPlayerLife && (player->GetPlayerLife() < 2) && player->GetPlayerLife() > 0)
+	{
+		randStatus = Utils::RandomRange(0, 4);
+		if (randStatus == 0)
+		{
+			IncreasePlayerLife();
+			player->IncreasePlayerLife();
+		}
+	}
+}
+
+void SceneGame::BossHpBarSet()
+{
+	if (bossCirno->GetBossDie())
+	{
+		bossDie->SoundPlay();
+		music1->SoundStop();
+		SCENE_MGR.ChangeScene(SceneId::Ending);
+		hpBar.setSize({ 0.f, 5.f });
+	}
+	else hpBar.setSize({ bossCirno->GetBossHp(), 5.f });
+}
+
+void SceneGame::SetTextGoByTexture()
+{
+	if (INPUT_MGR.GetKeyDown(sf::Keyboard::Num0))
+	{
+		std::cout << scoreNumber->text.getOrigin().x<<"//"<< scoreNumber->text.getOrigin().y << std::endl;
+	}
+
+
+	if (gameTimer <= 0.f) gameTimer = 0.f;
+	std::stringstream timerstr;
+	timerstr << "Time :" << gameTimer;
+	gameTimeText->text.setString(timerstr.str());
+
+	std::stringstream stream;
+	stream << std::setw(5) << std::setfill('0') << bossCirno->GetScore();
+	scoreNumber->text.setString(stream.str());
+	scoreNumber->SetOrigin(Origins::ML);
+
+	std::stringstream damagestream;
+	damagestream << "Power : " << player->GetPlayerDamage();
+	playerDamageText->text.setString(damagestream.str());
+
+
 }

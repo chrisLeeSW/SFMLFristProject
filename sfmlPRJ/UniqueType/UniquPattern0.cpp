@@ -7,10 +7,7 @@
 
 UniquPattern0::UniquPattern0()
 {
-	bossShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->pool = &bossShootPool;
-	};
-	bossShootPool.Init();
+	
 }
 
 void UniquPattern0::ShootBullets()
@@ -21,7 +18,7 @@ void UniquPattern0::ShootBullets()
 	float angleInterval = 360.f / maxCount;
 	for (int i = 0; i < 30; ++i)
 	{
-		Shoot* shoot = bossShootPool.Get();
+		Shoot* shoot = boss->GetObjectPool().Get();
 		shoot->SetPlayer(player);
 		float angle = angleInterval * i;
 		shoot->SetPattenInfo(Shoot::NoramalPatten::DelayTimeAttackOneType, boss->GetPosition(), "BossNormalShooting1", angle, 0.5f + (i * .3f), 300.f);

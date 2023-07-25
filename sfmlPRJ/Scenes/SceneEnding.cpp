@@ -64,13 +64,14 @@ void SceneEnding::Update(float dt)
 {
 	timer += dt;
 
-	if (timer > 5.f)
+	if (timer > 0.5f)
 	{
 		timer = 0.f;
 		currentTextureId++;
-		if (currentTextureId == textureId.size())
+		if (currentTextureId >= textureId.size())
 		{
 			SCENE_MGR.ChangeScene(SceneId::Title);
+			return;
 		}
 		ending->textureId = textureId[currentTextureId];
 		ending->Reset();

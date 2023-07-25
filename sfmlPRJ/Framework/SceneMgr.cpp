@@ -5,6 +5,7 @@
 #include "StringTable.h"
 #include "SceneTitle.h"
 #include "SceneEnding.h"
+#include "SceneRankingDisplay.h"
 void SceneMgr::Init() 
 {
 	if (!scenes.empty())
@@ -14,6 +15,7 @@ void SceneMgr::Init()
 	scenes.push_back(new SceneTitle()); // 브레이크 포인트 걸었을때 383MB먹음
 	scenes.push_back(new SceneGame());
 	scenes.push_back(new SceneEnding());
+	scenes.push_back(new SceneRankingDisplay());
 	for (auto scene : scenes)
 	{
 		scene->Init();

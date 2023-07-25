@@ -6,10 +6,7 @@
 #include "Boss.h"
 UniquPattern1::UniquPattern1()
 {
-	bossShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->pool = &bossShootPool;
-	};
-	bossShootPool.Init();
+
 }
 
 void UniquPattern1::ShootBullets()
@@ -25,7 +22,7 @@ void UniquPattern1::ShootBullets()
 		float angle = angleInterval * i;
 		float xOffset = std::cos(Utils::DegreesToRadians(angle)) * triangleWidth;
 		float yOffset = std::sin(Utils::DegreesToRadians(angle)) * triangleHeight;
-		Shoot* shoot = bossShootPool.Get();
+		Shoot* shoot = boss->GetObjectPool().Get();
 		shoot->SetPlayer(player);
 		shoot->SetPattenInfo(Shoot::NoramalPatten::SectorType, boss->GetPosition() + sf::Vector2f(xOffset, yOffset), angle, "BossNormalShooting1", 100.f); // angle °ª °¡´É
 		shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);

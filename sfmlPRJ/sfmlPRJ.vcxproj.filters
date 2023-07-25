@@ -120,7 +120,7 @@
     <ClCompile Include="SpriteFont\SpriteFont.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SceneEnding.cpp">
+    <ClCompile Include="Scenes\SceneEnding.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="UniqueType\UniquPattern3.cpp">
@@ -133,6 +133,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="AudiGo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneRankingDisplay.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -254,7 +257,7 @@
     <ClInclude Include="SpriteFont\SpriteFont.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SceneEnding.h">
+    <ClInclude Include="Scenes\SceneEnding.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="UniqueType\UniquPattern3.h">
@@ -267,6 +270,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="AudiGo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneRankingDisplay.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

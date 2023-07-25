@@ -6,10 +6,7 @@
 #include "Boss.h"
 Pattern1::Pattern1()
 {
-	bossShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->pool = &bossShootPool;
-	};
-	bossShootPool.Init();
+	
 }
 
 void Pattern1::ShootBullets()
@@ -21,7 +18,7 @@ void Pattern1::ShootBullets()
 	int shootCount = 5; //
 	for (int count = 0;count < shootCount;++count)
 	{
-		Shoot* shoot = bossShootPool.Get();
+		Shoot* shoot =boss->GetObjectPool().Get();
 		shoot->SetPlayer(player);
 		float angle = Utils::DegreesToRadians(90.f);
 		if (count >= 1)
@@ -42,7 +39,7 @@ void Pattern1::ShootBullets()
 	}
 	for (int i = 0; i < shootCount; i++)
 	{
-		Shoot* shoot = bossShootPool.Get();
+		Shoot* shoot = boss->GetObjectPool().Get();
 		shoot->SetPlayer(player);
 		shoot->SetWallBounds(wallBounds, imgWidth, imgHeight);
 		shoot->SetPattenInfo(Shoot::NoramalPatten::ColumnType, bossPos + sf::Vector2f(0.f, 20.f * i), "BossNormalShooting1",150.f);

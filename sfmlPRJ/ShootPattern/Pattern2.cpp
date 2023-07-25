@@ -6,10 +6,7 @@
 #include "Boss.h"
 Pattern2::Pattern2()
 {
-	bossShootPool.OnCreate = [this](Shoot* bullet) {
-		bullet->pool = &bossShootPool;
-	};
-	bossShootPool.Init();
+	
 }
 
 void Pattern2::ShootBullets()
@@ -21,7 +18,7 @@ void Pattern2::ShootBullets()
 	float pattenAngle = 360.f / shootCount;
 	for (int count = 0; count < shootCount; ++count)
 	{
-		Shoot* shoot = bossShootPool.Get();
+		Shoot* shoot = boss->GetObjectPool().Get();
 		shoot->SetPlayer(player);
 
 		float additionalAngle = pattenAngle * count;

@@ -19,7 +19,6 @@ protected:
 	SpriteGo* bossEffect;
 	sf::Vector2f gameWallSize;
 
-
 	bool isTalking;
 	bool bossAngry;
 	int talkCount = 0;
@@ -68,7 +67,7 @@ protected:
 
 	std::queue<std::wstring> talking;
 
-	void textSetting();
+
 
 	SpriteGo* gameOver;
 	bool timeOut = false;
@@ -81,15 +80,22 @@ public:
 
 	virtual void Init() override;
 	virtual void Release() override;
-
 	virtual void Enter() override;
 	virtual void Exit() override;
-
 	virtual void Update(float dt) override;
 	virtual void Draw(sf::RenderWindow& window) override;
+
 	void DecreasePlayerLife();
 	void IncreasePlayerLife();
 	void UseBoomb();
 	int GetBoombCountSpriteCurrent() { return boombCountSpriteCurrent; }
+	void SettingText();
+	void LoadGameSceneResource();
+	void GamePlaySettingReset();
+	void GameOver();
+	void BossEffectSetting();
+	void PlayerStatusSetting();
+	void BossHpBarSet();
+	void SetTextGoByTexture();
 };
 

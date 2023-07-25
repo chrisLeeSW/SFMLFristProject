@@ -57,18 +57,3 @@ void ShootMGR::SetWallBounds(sf::Vector2f pos, float width, float height)
     patterns[currentPatternIndex]->SetWallBounds(pos, width, height);
 }
 
-void ShootMGR::ClearBossShootPools()
-{
-    for (auto pattern : patterns)
-    {
-        pattern->ClearBossShootPool();
-    }
-}
-
-void ShootMGR::ReleaseBossShootPool()
-{
-    for (auto pattern : patterns)
-    {
-        pattern->ReleaseBossShootPool();
-    }
-}

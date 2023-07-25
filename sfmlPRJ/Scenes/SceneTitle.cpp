@@ -10,28 +10,11 @@ SceneTitle::SceneTitle() : Scene(SceneId::Title)
 	
 }
 
-void SceneTitle::Init() // 383 MB
+void SceneTitle::Init() 
 {
 	Release();
-	
-	backGroundGame = (SpriteGo*)AddGo(new SpriteGo("graphics/MainTitleGame.png"));
-	backGroundGame->SetPosition(-FRAMEWORK.GetWindowSize() * 0.5f);
+	LoadResourceAndSetting();
 
-	titleSound = new SoundGo("Sounds/TitleGameSound.wav");
-
-
-
-	gameSceneText=(TextGo*)AddGo(new TextGo("fonts/THE Nakseo.ttf"));
-	gameSceneText->text.setCharacterSize(50);
-	gameSceneText->SetOrigin(Origins::MC);
-	gameSceneText->SetPosition(380.f, 50.f);
-	gameSceneText->text.setString("GamePlay");
-
-	rankSceneText = (TextGo*)AddGo(new TextGo("fonts/THE Nakseo.ttf"));
-	rankSceneText->text.setCharacterSize(50);
-	rankSceneText->SetOrigin(Origins::MC);
-	rankSceneText->SetPosition(330.f,130.f);
-	rankSceneText->text.setString("Rank");
 	for (auto go : gameObjects)	
 	{
 		go->Init();
@@ -55,7 +38,7 @@ void SceneTitle::Enter()
 	worldView.setCenter({ 0,0 });
 
 	uiView.setSize(size);
-
+	
 	titleSound->SoundPlay();
 	Scene::Enter();
 }
@@ -68,8 +51,48 @@ void SceneTitle::Exit()
 void SceneTitle::Update(float dt)
 {
 	Scene::Update(dt);
-	sf::Vector2f mousePos = ScreenToWorldPos(INPUT_MGR.GetMousePos());
+	HandleSceneSelection();
+}
+
+void SceneTitle::Draw(sf::RenderWindow& window)
+{
+	Scene::Draw(window);
+}
+
+void SceneTitle::LoadResourceAndSetting()
+{
+	const sf::Vector2f windowSize = FRAMEWORK.GetWindowSize();
+	const sf::Vector2f centerOffset = windowSize * 0.5f;
+
+	const std::string backgroundTexturePath = "graphics/MainTitleGame.png";
+	const std::string titleSoundPath = "Sounds/TitleGameSound.wav";
+	const std::string fontPath = "fonts/THE Nakseo.ttf";
+
 	
+	backGroundGame = (SpriteGo*)AddGo(new SpriteGo(backgroundTexturePath));
+	backGroundGame->SetPosition(-centerOffset);
+
+	
+	titleSound = new SoundGo(titleSoundPath);
+
+	
+	gameSceneText = (TextGo*)AddGo(new TextGo(fontPath));
+	gameSceneText->text.setCharacterSize(50);
+	gameSceneText->SetOrigin(Origins::MC);
+	gameSceneText->SetPosition(380.f, 50.f);
+	gameSceneText->text.setString("GamePlay");
+
+	
+	rankSceneText = (TextGo*)AddGo(new TextGo(fontPath));
+	rankSceneText->text.setCharacterSize(50);
+	rankSceneText->SetOrigin(Origins::MC);
+	rankSceneText->SetPosition(330.f, 130.f);
+	rankSceneText->text.setString("Exit");
+}
+
+void SceneTitle::HandleSceneSelection()
+{
+	sf::Vector2f mousePos = ScreenToWorldPos(INPUT_MGR.GetMousePos());
 	if (gameSceneText->text.getGlobalBounds().contains(mousePos))
 	{
 		gameSceneText->text.setFillColor(sf::Color::Black);
@@ -77,30 +100,21 @@ void SceneTitle::Update(float dt)
 		{
 			titleSound->SoundStop();
 			SCENE_MGR.ChangeScene(SceneId::Game);
+			return;
+		}
+	}
+	else if (rankSceneText->text.getGlobalBounds().contains(mousePos))
+	{
+		rankSceneText->text.setFillColor(sf::Color::Black);
+		if (INPUT_MGR.GetMouseButtonDown(sf::Mouse::Left))
+		{
+			titleSound->SoundStop();
+			FRAMEWORK.GetWindow().close();
 		}
 	}
 	else
 	{
 		gameSceneText->text.setFillColor(sf::Color::White);
-	}
-	if (rankSceneText->text.getGlobalBounds().contains(mousePos))
-	{
-		rankSceneText->text.setFillColor(sf::Color::Black);
-		if (INPUT_MGR.GetMouseButtonDown(sf::Mouse::Left))
-		{
-			std::cout << "rank로가야하지만 아직 구현이 안되어 있음" << std::endl;
-			titleSound->SoundStop();
-			SCENE_MGR.ChangeScene(SceneId::Game);
-		}
-	}
-	else
-	{
 		rankSceneText->text.setFillColor(sf::Color::White);
 	}
-}
-
-void SceneTitle::Draw(sf::RenderWindow& window)
-{
-	
-	Scene::Draw(window);
 }

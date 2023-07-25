@@ -17,6 +17,4 @@ public:
 	virtual void Update(float dt) = 0;
 	virtual void SetCharceterAll(Player* player, Boss* boss) = 0;
 	virtual void SetWallBounds(sf::Vector2f pos, float width, float height) = 0;
-	virtual void ClearBossShootPool() = 0;
-	virtual void ReleaseBossShootPool() = 0;
 };

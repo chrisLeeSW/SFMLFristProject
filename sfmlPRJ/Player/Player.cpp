@@ -9,7 +9,6 @@ void Player::Init()
 
 	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Player_Ani_Idel.csv"));
 	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Player_Ani_Move.csv"));
-
 	animation.SetTarget(&sprite);
 	SetOrigin(Origins::MC);
 
@@ -48,7 +47,7 @@ void Player::Reset()
 	hitboxCircle.setPosition(position);
 	Utils::SetOrigin(hitboxCircle, Origins::MC);
 	damage = 0.5f;
-	invincibilityTime = 0.f;
+	invincibilityTime = 10.f;
 	playerLife = 2;
 	playerLifeDown = false;
 	playerDie = false;
@@ -72,7 +71,7 @@ void Player::Update(float dt)
 			timerBlink = 0.f;
 		}
 	}
-	if (invincibilityTime >= 10.f)
+	if (invincibilityTime >= 5.f)
 	{
 		playerLifeDown = false;
 		invincibilityTime = 0.f;
