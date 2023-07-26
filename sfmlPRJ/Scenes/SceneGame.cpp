@@ -99,7 +99,6 @@ void SceneGame::Exit()
 
 void SceneGame::Update(float dt)
 {
-
 	player->SetWallBounds(gameWallSize, gameBackground->sprite.getGlobalBounds().width, gameBackground->sprite.getGlobalBounds().height);
 	bossCirno->SetWallBounds(gameWallSize, gameBackground->sprite.getGlobalBounds().width, gameBackground->sprite.getGlobalBounds().height);
 
@@ -305,6 +304,7 @@ void SceneGame::SettingText()
 	talk->SetOrigin(Origins::ML);
 	talk->text.setFillColor(sf::Color::Blue);
 	talk->SetPosition(-450.f, 150.f);
+
 }
 
 void SceneGame::LoadGameSceneResource()
@@ -367,10 +367,16 @@ void SceneGame::GamePlaySettingReset()
 	bossCirno->Reset();
 	gameOver->SetActive(false);
 	gameTimer = 90.f;
+	playerLifeSpriteCurrent = 2;
+	boombCountSpriteCurrent = -1;
 	for (int i = 0;i < 2;++i)
 	{
 		playerLifeSprite[i]->SetActive(true);
-		playerLifeSpriteCurrent = 2;
+		
+	}
+	for (int i = 0;i < maxBoombCountSpritecurretn;++i)
+	{
+		boombCountSprite[i]->SetActive(false);
 	}
 }
 

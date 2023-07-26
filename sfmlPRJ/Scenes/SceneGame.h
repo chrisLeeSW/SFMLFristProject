@@ -67,13 +67,13 @@ protected:
 
 	std::queue<std::wstring> talking;
 
-
-
 	SpriteGo* gameOver;
 	bool timeOut = false;
 	int randStatus;
 	bool getBoomb = false;
 	bool getPlayerLife = false;
+
+
 public:
 	SceneGame();
 	virtual ~SceneGame() override = default;

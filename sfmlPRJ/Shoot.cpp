@@ -29,6 +29,8 @@ void Shoot::Reset()
 	animation.Play("Shooting");
 	checkFireType = false;
 	delayOnAttackType = false;
+	delayOnAttackingOne = false;
+	accuTime = 0.f;
 	SpriteGo::Reset();
 }
 
@@ -43,9 +45,10 @@ void Shoot::Update(float dt)
 	{
 		BossFire(dt);
 	}
+
 	if (patternInfo.pattenType == NoramalPatten::TornadoTypeLoof && accuTime > 1.0f)
 	{
-		float angleOffset = 30.0f; 
+		float angleOffset = 30.0f;
 
 		float radian = Utils::DegreesToRadians(angleOffset);
 		float newX = direction.x * std::cos(radian) - direction.y * std::sin(radian);
@@ -53,13 +56,7 @@ void Shoot::Update(float dt)
 		direction = sf::Vector2f(newX, newY);
 		accuTime = 0.f;
 	}
-	if (patternInfo.pattenType == NoramalPatten::DelayTimeAttackOneType && accuTime > 0.5f && !delayOnAttackType && !delayOnAttackingOne)
-	{
-		direction = { 0.f, 0.f };
-		accuTime = 0.f;
-		delayOnAttackType = true;
-	}
-	else if (patternInfo.pattenType == NoramalPatten::DelayTimeAttackTwoType && accuTime > 0.5f && !delayOnAttackType && !delayOnAttackingOne)
+	if ((patternInfo.pattenType == NoramalPatten::DelayTimeAttackOneType || patternInfo.pattenType == NoramalPatten::DelayTimeAttackTwoType) && accuTime > 0.5f && !delayOnAttackType && !delayOnAttackingOne)
 	{
 		direction = { 0.f, 0.f };
 		accuTime = 0.f;
@@ -72,7 +69,7 @@ void Shoot::Update(float dt)
 		delayOnAttackType = false;
 		delayOnAttackingOne = true;
 	}
-	if (patternInfo.pattenType == NoramalPatten::FrequencyType )
+	if (patternInfo.pattenType == NoramalPatten::FrequencyType)
 	{
 		position.x = patternInfo.pos.x + std::sin(accuTime * patternInfo.frequency) * patternInfo.amplitude;
 		position.y += direction.y * patternInfo.speed * dt;
@@ -84,31 +81,18 @@ void Shoot::Update(float dt)
 	sprite.setPosition(position);
 	animation.Update(dt);
 
-	if (position.y - sprite.getGlobalBounds().height * 0.5f < WallBounds.y - sprite.getGlobalBounds().height * 0.5)
+
+	if (position.y - sprite.getGlobalBounds().height * 0.5f < WallBounds.y - sprite.getGlobalBounds().height * 0.5 ||
+		position.y + sprite.getGlobalBounds().height * 0.5f > WallBounds.y + bgHeight ||
+		position.x - sprite.getGlobalBounds().width * 0.5f < WallBounds.x ||
+		position.x + sprite.getGlobalBounds().width * 0.5f > WallBounds.x + bgWidth)
 	{
 		pool->Return(this);
 		Scene* scene = SCENE_MGR.GetCurrScene();
 		scene->RemoveGo(this);
 	}
-	else if (position.y + sprite.getGlobalBounds().height * 0.5f > WallBounds.y + bgHeight)
-	{
-		pool->Return(this);
-		Scene* scene = SCENE_MGR.GetCurrScene();
-		scene->RemoveGo(this);
-	}
-	else if (position.x - sprite.getGlobalBounds().width * 0.5f < WallBounds.x)
-	{
-		pool->Return(this);
-		Scene* scene = SCENE_MGR.GetCurrScene();
-		scene->RemoveGo(this);
-	}
-	else if (position.x + sprite.getGlobalBounds().width * 0.5f > WallBounds.x + bgWidth)
-	{
-		pool->Return(this);
-		Scene* scene = SCENE_MGR.GetCurrScene();
-		scene->RemoveGo(this);
-	}
-	if (player->GetPlayerDie()) pool->Clear();
+
+	if (player->GetPlayerDie() || boss->GetBossDie()) pool->Clear();
 	SpriteGo::Update(dt);
 }
 
@@ -121,74 +105,59 @@ void Shoot::BossFire(float dt)
 {
 	if (!checkFireType)
 	{
+		SetPosition(patternInfo.pos);
+		animation.Play(patternInfo.animationClipId);
 		switch (patternInfo.pattenType)
 		{
 		case NoramalPatten::SectorType:
 		{
-			SetPosition(patternInfo.pos);
 			direction = sf::Vector2f(std::cos(patternInfo.angle), std::sin(patternInfo.angle));
-			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::AngleDirectionType:
 		{
-			SetPosition(patternInfo.pos);
 			SetAngleDirection();
-			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::FrequencyType:
 		{
-			SetPosition(patternInfo.pos);
 			direction = { 1.f,0.1f };
-			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::ColumnType:
 		{
-			SetPosition(patternInfo.pos);
 			direction = { 0.f,1.f };
-			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::RowRightType:
 		{
-			SetPosition(patternInfo.pos);
 			direction = { 1.f,0.f };
-			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::RowLeftType:
 		{
-			SetPosition(patternInfo.pos);
 			direction = { -1.f,0.f };
-			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::DelayTimeAttackOneType:
 		{
-			SetPosition(patternInfo.pos);
 			SetAngleDirection();
-			animation.Play(patternInfo.animationClipId);
 		}
-		break; case NoramalPatten::DelayTimeAttackTwoType:
+		break;
+		case NoramalPatten::DelayTimeAttackTwoType:
 		{
-			SetPosition(patternInfo.pos);
-			animation.Play(patternInfo.animationClipId);
+			direction.x = Utils::RandomRange(-0.5f, 0.5f);
+			direction.y = Utils::RandomRange(-0.5f, 0.5f);
 		}
 		break;
 		case NoramalPatten::DelayType:
 		{
-			SetPosition(patternInfo.pos);
 			SetAngleDirection();
-			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		case NoramalPatten::TornadoTypeLoof:
 		{
-			SetPosition(patternInfo.pos);
 			SetAngleDirection();
-			animation.Play(patternInfo.animationClipId);
 		}
 		break;
 		}
@@ -213,7 +182,7 @@ void Shoot::PlayerFire(float dt)
 
 }
 
-void Shoot::PlayerFire(sf::Vector2f pos, sf::Vector2f dir,std::string clipId)
+void Shoot::PlayerFire(sf::Vector2f pos, sf::Vector2f dir, std::string clipId)
 {
 
 	type = CharceterType::Player;
@@ -262,7 +231,7 @@ void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, sf::Vector
 	patternInfo.animationClipId = clipId;
 }
 
-void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos,  std::string clipId, float angle, float delay, float speed)
+void Shoot::SetPattenInfo(NoramalPatten pattenType, sf::Vector2f pos, std::string clipId, float angle, float delay, float speed)
 {
 	type = CharceterType::Boss;
 	patternInfo.pattenType = pattenType;

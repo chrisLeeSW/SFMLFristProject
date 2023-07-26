@@ -6,7 +6,6 @@
 #include "SoundGo.h"
 void Player::Init()
 {
-
 	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Player_Ani_Idel.csv"));
 	animation.AddClip(*RESOURCE_MGR.GetAnimationClip("Animations/Player_Ani_Move.csv"));
 	animation.SetTarget(&sprite);
@@ -27,8 +26,11 @@ void Player::Init()
 	texid.loadFromFile("graphics/EffectSprite.png");
 	effectBoomb.setTexture(texid);
 	effectBoomb.setTextureRect({ 258,746,256,256 });
-	effectBoomb.setScale(0.5f, 0.5f);
+	effectBoomb.setScale(0.25f, 0.25f);
 	Utils::SetOrigin(effectBoomb, Origins::MC);
+
+
+
 }
 
 void Player::Release()
@@ -55,6 +57,7 @@ void Player::Reset()
 	effecTime = 0.f;
 	timerBlink = 0.f;
 	timerBlinkDuration = 0.3f;
+	autoShot = false;
 }
 
 void Player::Update(float dt)
@@ -64,11 +67,8 @@ void Player::Update(float dt)
 		invincibilityTime += dt;
 		timerBlink += dt;
 		if (timerBlink >= 0.f && timerBlink < timerBlinkDuration)
-			sprite.setColor(sf::Color::Color(255, 255, 255, 150));
-		else if (timerBlink > timerBlinkDuration && timerBlink < timerBlinkDuration * 2.f)
 		{
-			sprite.setColor(sf::Color::Color(255, 255, 255, 255));
-			timerBlink = 0.f;
+			sprite.setColor(sf::Color::Color(255, 255, 255, 150));
 		}
 	}
 	if (invincibilityTime >= 5.f)
@@ -84,6 +84,7 @@ void Player::Update(float dt)
 		playerDie = true;
 		return;
 	}
+
 	effectRoate += speed*dt;
 	if(!playerDie)
 	{
@@ -203,8 +204,9 @@ void Player::PlayerShoot(float dt)
 				else if (count % 2 == 0)
 					shoot->PlayerFire(GetPosition()  + sf::Vector2f{ -20.f  * (count/2) ,0.f * count }, dir, str);
 			}
-			shoot->sortLayer = 2;
 			shoot->SetWallBounds(WallBounds, bgWidth, bgHeight);
+			shoot->sortLayer = -1;
+			shoot->sortOrder = 0;
 			if (sceneGame != nullptr)
 			{
 				sceneGame->AddGo(shoot);

@@ -43,6 +43,8 @@ protected:
 	bool effectDraw = false;
 	float timerBlink=0.f;
 	float timerBlinkDuration = 0.3f;
+
+	
 public:
 	Player(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId, n) {}
 	virtual ~Player() override { Release(); }

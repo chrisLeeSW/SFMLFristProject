@@ -9,13 +9,11 @@ class Player;
 class Scene;
 class SceneGame;
 class SoundGo;
-class Boss :public SpriteGo // æ‡ 900MB∏‘¿Ω
+class Boss :public SpriteGo 
 {
 protected:
 	AnimationController animation;
-	sf::Vector2f direction;
 	bool moveBoss = false;
-	float speed = 300.f;
 	Player* player=nullptr;
 	sf::Vector2f WallBounds;
 	float bgWidth=0.f;
@@ -37,12 +35,11 @@ protected:
 	float moveDuration = 3.f;
 	float stopLimit = 5.f;
 
-	int attackRand1 = -1;
-	float bossAttackTimeOne = 0.f;
-	float bossAttackTimeOneLimit = 1.0f;
-	float bossAttackNoramalPatternChangeTimeLimit = 0.f;
-	float bossAttackNoramalPatternChangeTime = 0.f;
-	float bossAttackTimeTwoLimit = 1.0f;
+	int attackTypeRand = -1;
+	float normalAttackTime = 0.f;
+	float normalAttackDuration = 1.0f;
+	float normalPatternTimeDuration = 0.f;
+	float normalPatternTime = 0.f;
 
 	bool bossDie = false;
 	int score = 0;
@@ -53,6 +50,8 @@ protected:
 	bool threePage = false;
 	bool fourPage = false;
 	bool effectUniqueAttack = false;
+
+
 public:
 	Boss(const std::string& textureId = "", const std::string& n = "") :SpriteGo(textureId, n){}
 	virtual ~Boss() override { Release(); }
@@ -77,7 +76,7 @@ public:
 	int GetScore() { return score; }
 	void SetUseBoomb(bool t) { useBoomb = t; }
 	bool GetBossStop() {return effectUniqueAttack;}
-
+	void PageCheck();
 	ObjectPool<Shoot>& GetObjectPool() { return bossShootPool; }
 };
 
