@@ -4,7 +4,7 @@
 #include "SpriteGo.h"
 #include "TextGo.h"
 #include "SoundGo.h"
-#include "AudiGo.h"
+
 SceneTitle::SceneTitle() : Scene(SceneId::Title)
 {
 	
